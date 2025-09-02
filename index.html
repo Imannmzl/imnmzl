@@ -1709,39 +1709,48 @@
       }
 
       function activateSlide(i) {
+        console.log('activateSlide called with index:', i);
+        
         // Stop current audio when changing slides
         stopCurrentAudio();
         
         // Scroll to top of the page smoothly
         // Use both methods for better browser compatibility
-        try {
-          window.scrollTo({
-            top: 0,
-            behavior: 'smooth'
-          });
-        } catch (e) {
-          // Fallback for older browsers
-          window.scrollTo(0, 0);
-        }
+        console.log('Scrolling to top...');
         
-        // Also scroll body and document element for better compatibility
-        try {
-          document.body.scrollTo({
-            top: 0,
-            behavior: 'smooth'
-          });
-        } catch (e) {
-          document.body.scrollTop = 0;
-        }
-        
-        try {
-          document.documentElement.scrollTo({
-            top: 0,
-            behavior: 'smooth'
-          });
-        } catch (e) {
-          document.documentElement.scrollTop = 0;
-        }
+        // Add small delay to ensure DOM is ready
+        setTimeout(() => {
+          try {
+            window.scrollTo({
+              top: 0,
+              behavior: 'smooth'
+            });
+          } catch (e) {
+            // Fallback for older browsers
+            window.scrollTo(0, 0);
+          }
+          
+          // Also scroll body and document element for better compatibility
+          try {
+            document.body.scrollTo({
+              top: 0,
+              behavior: 'smooth'
+            });
+          } catch (e) {
+            document.body.scrollTop = 0;
+          }
+          
+          try {
+            document.documentElement.scrollTo({
+              top: 0,
+              behavior: 'smooth'
+            });
+          } catch (e) {
+            document.documentElement.scrollTop = 0;
+          }
+          
+          console.log('Scroll to top executed');
+        }, 50);
         
         slides.forEach((el, idx) => {
           if (idx === i) el.classList.add('active'); else el.classList.remove('active');
@@ -3049,10 +3058,10 @@
         // Call updateFooter initially and whenever slide changes
         updateFooter();
         
-        // Override activateSlide to update footer
-        const originalActivateSlide = activateSlide;
-        activateSlide = function(i) {
-          originalActivateSlide(i);
+        // Update footer whenever progress updates (which happens on slide change)
+        const originalUpdateProgress = updateProgress;
+        updateProgress = function() {
+          originalUpdateProgress();
           updateFooter();
         };
       }
