@@ -1618,6 +1618,37 @@
         // Stop current audio when changing slides
         stopCurrentAudio();
         
+        // Scroll to top of the page smoothly
+        // Use both methods for better browser compatibility
+        try {
+          window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+          });
+        } catch (e) {
+          // Fallback for older browsers
+          window.scrollTo(0, 0);
+        }
+        
+        // Also scroll body and document element for better compatibility
+        try {
+          document.body.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+          });
+        } catch (e) {
+          document.body.scrollTop = 0;
+        }
+        
+        try {
+          document.documentElement.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+          });
+        } catch (e) {
+          document.documentElement.scrollTop = 0;
+        }
+        
         slides.forEach((el, idx) => {
           if (idx === i) el.classList.add('active'); else el.classList.remove('active');
         });
