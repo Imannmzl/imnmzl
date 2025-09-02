@@ -143,34 +143,38 @@
       margin: 0; 
       padding: 0;
       height: 100%;
+      /* Allow content to determine height */
+      min-height: 100vh;
       /* Prevent overscroll bounce */
       overscroll-behavior: none;
       overscroll-behavior-y: none;
       -webkit-overscroll-behavior-y: none;
     }
     .slides {
-      height: 100%; 
+      height: auto; 
       min-height: 100vh;
-      display: grid; 
-      place-items: start center;
       position: relative;
       padding: 0;
       margin: 0;
     }
     .slide {
       position: absolute; 
-      inset: 0; 
+      top: 0;
+      left: 0;
+      right: 0;
+      min-height: 100vh;
+      height: auto;
       padding: 1rem 0; 
-      display: grid; 
-      place-items: start center;
-      align-content: start;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
       opacity: 0; 
       transform: translateX(30px) scale(.98);
       transition: opacity .35s ease, transform .35s ease;
       pointer-events: none;
-      overflow-y: auto;
+      overflow-y: visible;
       overflow-x: hidden;
-      -webkit-overflow-scrolling: touch;
     }
     .slide.active { opacity: 1; transform: translateX(0) scale(1); pointer-events: auto; }
 
@@ -181,8 +185,10 @@
       border-radius: 18px;
       box-shadow: var(--shadow);
       padding: clamp(16px, 3vw, 28px);
-      margin: 1rem auto 2rem auto;
+      margin: 1rem auto 3rem auto;
       max-height: none;
+      height: auto;
+      flex-shrink: 0;
     }
     .title {
       font-size: clamp(22px, 4.8vw, 36px);
@@ -307,14 +313,22 @@
       
       .card { 
         padding: 1rem; 
-        margin: 0.5rem 0.25rem 2rem 0.25rem; 
+        margin: 0.5rem 0.25rem 3rem 0.25rem; 
         max-height: none;
+        height: auto;
+        flex-shrink: 0;
       }
       
       .slide {
-        padding: 0.5rem 0 1rem 0 !important;
-        overflow-y: auto !important;
+        padding: 0.5rem 0 2rem 0 !important;
+        min-height: 100vh !important;
+        height: auto !important;
+        overflow-y: visible !important;
         overflow-x: hidden !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: flex-start !important;
       }
       .card .title { 
         font-size: 1.2rem; 
