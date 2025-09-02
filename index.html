@@ -1,46 +1,2604 @@
-
 <!DOCTYPE html>
 <html lang="id">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Petualangan Digital: Jaringan & Internet</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="dark light">
+  <title>Sang Alkemis Muda dan Hutan Harmoni</title>
+  <meta name="description" content="Media interaktif edukatif berbasis slide dan mobile friendly: Berpikir Komputasional – Himpunan.">
+  <style>
+    :root {
+      --bg: #0b1220;
+      --bg2: #0e1628;
+      --card: #121a2a;
+      --card2: #1a2540;
+      --text: #e7efff;
+      --muted: #aab7d4;
+      --accent: #7ae3ff;
+      --accent-2: #ffc857;
+      --ok: #51d88a;
+      --warn: #ff8a65;
+      --shadow: 0 10px 30px rgba(0,0,0,.45);
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; max-width: 100%; overflow-x: hidden; }
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      color: var(--text);
+      background: radial-gradient(1200px 800px at 20% -10%, #1b2b4d 0%, transparent 60%),
+                  radial-gradient(900px 600px at 120% 0%, #263a66 0%, transparent 55%),
+                  linear-gradient(180deg, var(--bg) 0%, var(--bg2) 100%);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* App Shell */
+    .app {
+      min-height: 100dvh;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      overflow-x: hidden;
+      margin: 0;
+      padding: 0;
+    }
+
+    header.app-header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: linear-gradient(180deg, rgba(18,26,42,.9) 0%, rgba(18,26,42,.7) 100%);
+      backdrop-filter: blur(6px);
+      border-bottom: 1px solid rgba(255,255,255,.06);
+    }
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: .75rem;
+      padding: .75rem 1rem .5rem 1rem;
+    }
+    .brand {
+      display: flex; align-items: center; gap: .75rem;
+    }
+    .brand .logo {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: radial-gradient(circle at 70% 30%, #7ae3ff, #2bbaea 60%, #1b7aa0 100%);
+      box-shadow: inset 0 0 12px rgba(255,255,255,.25), var(--shadow);
+    }
+    .brand h1 { font-size: clamp(16px, 2.6vw, 20px); margin: 0; letter-spacing: .3px; }
+    .brand .subtitle { color: var(--muted); font-size: 12px; margin-top: 2px; }
+
+    .header-actions { display: flex; gap: .5rem; align-items:center; }
+    .btn {
+      appearance: none; -webkit-appearance: none;
+      border: 1px solid rgba(255,255,255,.1);
+      background: linear-gradient(180deg, rgba(255,255,255,.06) 0%, rgba(255,255,255,.03) 100%);
+      color: var(--text);
+      padding: .65rem .9rem;
+      border-radius: 12px;
+      font-weight: 600;
+      letter-spacing: .2px;
+      cursor: pointer;
+      transition: transform .06s ease, border-color .2s ease, background .2s ease, opacity .2s ease;
+    }
+    .btn[disabled] { opacity: .55; cursor: not-allowed; }
+    .btn:active { transform: translateY(1px) scale(.99); }
+    .btn.primary { border-color: rgba(122,227,255,.6); background: linear-gradient(180deg, rgba(122,227,255,.18) 0%, rgba(122,227,255,.08) 100%); color: #e9fbff; }
+
+    .draggable-item {
+      touch-action: none;
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      -khtml-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      position: relative;
+      z-index: 1;
+    }
+    .draggable-item.dragging {
+      z-index: 1000;
+      position: relative;
+    }
+    .btn.ghost { background: transparent; }
+
+    .progress {
+      height: 6px; width: 100%; background: rgba(255,255,255,.06);
+    }
+    .progress .bar {
+      height: 100%; width: 0%; background: linear-gradient(90deg, var(--accent), #4cd4ff);
+      box-shadow: 0 0 12px rgba(122,227,255,.8);
+      transition: width .35s ease;
+    }
+
+    /* Slides */
+    main { position: relative; overflow-x: hidden; overflow-y: auto; -webkit-overflow-scrolling: touch; margin: 0; padding: 0; }
+    .slides {
+      height: 100%; min-height: calc(100dvh - 60px);
+      display: grid; place-items: center;
+      position: relative;
+      padding: 0;
+      margin: 0;
+    }
+    .slide {
+      position: absolute; inset: 0; padding: 0; display: grid; place-items: center;
+      opacity: 0; transform: translateX(30px) scale(.98);
+      transition: opacity .35s ease, transform .35s ease;
+      pointer-events: none;
+    }
+    .slide.active { opacity: 1; transform: translateX(0) scale(1); pointer-events: auto; }
+
+    .card {
+      width: min(880px, 92vw);
+      background: linear-gradient(180deg, rgba(255,255,255,.06) 0%, rgba(255,255,255,.03) 100%);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      padding: clamp(16px, 3vw, 28px);
+      margin: 1rem auto;
+    }
+    .title {
+      font-size: clamp(22px, 4.8vw, 36px);
+      line-height: 1.15; margin: 0 0 .5rem 0;
+      text-wrap: balance;
+    }
+    .lead { color: var(--muted); font-size: clamp(14px, 2.8vw, 18px); margin: .25rem 0 1rem 0; }
+
+    .illustration {
+      width: 100%;
+      max-height: min(38vh, 360px);
+      object-fit: cover;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.08);
+      box-shadow: var(--shadow);
+      margin: .25rem 0 1rem 0;
+      background: #0e1628;
+    }
+
+    .cta { display: flex; gap: .75rem; flex-wrap: wrap; margin-top: 1rem; }
+
+    .bg-ornament {
+      position: absolute; inset: -10% -10% auto auto; pointer-events: none; opacity: .25; filter: blur(2px);
+      width: 220px; height: 220px; border-radius: 50%;
+      background: radial-gradient(circle at 60% 40%, #ffc857, #e28d2a 60%, #a66400 100%);
+      box-shadow: 0 0 60px rgba(255,200,87,.45);
+    }
+
+    footer.app-footer {
+      position: sticky; bottom: 0; z-index: 10;
+      background: linear-gradient(180deg, rgba(18,26,42,.4) 0%, rgba(18,26,42,.9) 100%);
+      backdrop-filter: blur(6px);
+      border-top: 1px solid rgba(255,255,255,.06);
+    }
+    .footer-inner { display: flex; align-items: center; justify-content: space-between; gap: .75rem; padding: .6rem 1rem calc(.6rem + env(safe-area-inset-bottom)) 1rem; }
+    .nav { display: flex; gap: .5rem; }
+
+    /* Modal Buku Resep Kuno */
+    .modal {
+      position: fixed; inset: 0; z-index: 50; display: none; align-items: center; justify-content: center;
+      background: rgba(3,6,12,.55);
+      backdrop-filter: blur(8px);
+      padding: 16px;
+    }
+    .modal.open { display: flex; }
+    .modal .sheet {
+      width: min(920px, 96vw);
+      max-height: 88dvh;
+      overflow: auto;
+      background: linear-gradient(180deg, rgba(255,255,255,.06) 0%, rgba(255,255,255,.03) 100%);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      padding: 18px;
+    }
+    .modal .sheet h3 { margin: 0 0 .75rem 0; font-size: clamp(18px, 3.2vw, 22px); }
+    .notes { display: grid; gap: .5rem; }
+    .note {
+      background: linear-gradient(180deg, rgba(255,255,255,.05) 0%, rgba(255,255,255,.02) 100%);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 14px; padding: .75rem .9rem;
+    }
+    .note h4 { margin: 0 0 .25rem 0; font-size: 15px; }
+    .note p { margin: 0; color: var(--muted); font-size: 14px; }
+
+    /* Toast */
+    .toast { position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%);
+      background: rgba(0,0,0,.75); color: #fff; padding: .6rem .85rem; border-radius: 12px; font-size: 14px; display: none; z-index: 60; }
+    .toast.show { display: block; animation: toast-in .2s ease, toast-out .2s ease 2.2s forwards; }
+    @keyframes toast-in { from { opacity: 0; transform: translate(-50%, 8px);} to { opacity: 1; transform: translate(-50%, 0);} }
+    @keyframes toast-out { to { opacity: 0; transform: translate(-50%, 8px);} }
+
+    /* Accessibility helpers */
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Reduce motion preference */
+    @media (prefers-reduced-motion: reduce) {
+      .slide { transition: none; }
+      .toast.show { animation: none; }
+      * { animation: none !important; }
+    }
+
+    /* Mobile optimizations */
+    @media (max-width: 768px) {
+      .app {
+        min-height: 100vh;
+        margin: 0;
+        padding: 0;
+      }
       body {
-        font-family: 'Inter', sans-serif; /* Using a common sans-serif font available via Tailwind's defaults or system */
+        margin: 0;
+        padding: 0;
       }
-      /* Additional global styles if absolutely necessary, but prefer Tailwind classes */
-      .custom-scroll::-webkit-scrollbar {
-        width: 8px;
+      .slides {
+        margin-bottom: 0;
+        padding-bottom: 0;
       }
-      .custom-scroll::-webkit-scrollbar-track {
-        background: #f1f1f1;
-        border-radius: 10px;
+      main {
+        min-height: calc(100vh - 60px);
+        padding: 0;
+        margin: 0;
       }
-      .custom-scroll::-webkit-scrollbar-thumb {
-        background: #888;
-        border-radius: 10px;
+      .app-header { 
+        padding: 0.5rem 1rem; 
       }
-      .custom-scroll::-webkit-scrollbar-thumb:hover {
-        background: #555;
+      .app-header h1 { 
+        font-size: 1.1rem; 
+        line-height: 1.2;
       }
-    </style>
-  <script type="importmap">
-{
-  "imports": {
-    "react-router-dom": "https://esm.sh/react-router-dom@^7.6.1",
-    "react/": "https://esm.sh/react@^19.1.0/",
-    "react": "https://esm.sh/react@^19.1.0",
-    "react-dom/": "https://esm.sh/react-dom@^19.1.0/"
-  }
-}
-</script>
+      .app-header .subtitle { 
+        font-size: 0.8rem; 
+      }
+      
+      .card { 
+        padding: 1rem; 
+        margin: 0.5rem 0.25rem; 
+      }
+      .card:last-child {
+        margin-bottom: 0;
+      }
+      .slide:last-child {
+        margin-bottom: 0;
+        padding-bottom: 0;
+      }
+      .card .title { 
+        font-size: 1.2rem; 
+        margin-bottom: 0.8rem;
+      }
+      .card .lead { 
+        font-size: 0.9rem; 
+        margin-bottom: 1rem;
+      }
+      .card p {
+        margin-bottom: 0.8rem;
+        line-height: 1.4;
+      }
+      .card .illustration { 
+        max-height: 180px; 
+        margin: 0.8rem 0;
+      }
+      
+      .cta { 
+        flex-direction: column; 
+        gap: 0.5rem; 
+        margin-top: 1rem;
+      }
+      .cta .btn { 
+        width: 100%; 
+        padding: 0.8rem;
+      }
+      
+      .audio-controls { 
+        margin: 0.5rem 0 !important; 
+        gap: 0.3rem !important;
+      }
+      .audio-controls .btn {
+        padding: 0.5rem;
+        font-size: 0.9rem;
+      }
+      .audio-time {
+        font-size: 10px !important;
+      }
+      
+
+      
+
+      
+      .modal { 
+        padding: 1rem; 
+      }
+      .modal-content { 
+        max-height: 85vh; 
+        margin: 0.5rem;
+      }
+      .notes-list { 
+        max-height: 50vh; 
+      }
+      
+      /* Reduce spacing in interactive elements */
+      .quiz-options, .puzzle-options {
+        gap: 0.5rem;
+      }
+      .quiz-options .btn, .puzzle-options .btn {
+        padding: 0.7rem;
+        font-size: 0.9rem;
+      }
+      
+      .drag-drop-area {
+        min-height: 120px;
+        padding: 0.8rem;
+      }
+      .draggable-item {
+        padding: 0.5rem;
+        font-size: 0.8rem;
+        touch-action: none;
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+      }
+      
+      .simulation-result {
+        padding: 0.8rem;
+        margin: 0.5rem 0;
+      }
+      
+      .ingredient-grid {
+        gap: 0.5rem;
+      }
+      .ingredient-item {
+        padding: 0.6rem;
+        font-size: 0.8rem;
+      }
+    }
+
+    /* Extra small mobile devices */
+    @media (max-width: 480px) {
+      .app-header { 
+        padding: 0.4rem 0.8rem; 
+      }
+      .app-header h1 { 
+        font-size: 1rem; 
+      }
+      .app-header .subtitle { 
+        font-size: 0.75rem; 
+      }
+      
+      .card { 
+        padding: 0.8rem; 
+        margin: 0.3rem 0.2rem; 
+      }
+      .card:last-child {
+        margin-bottom: 0;
+      }
+      .slide:last-child {
+        margin-bottom: 0;
+        padding-bottom: 0;
+      }
+      .card .title { 
+        font-size: 1.1rem; 
+        margin-bottom: 0.6rem;
+      }
+      .card .lead { 
+        font-size: 0.85rem; 
+        margin-bottom: 0.8rem;
+      }
+      .card p {
+        margin-bottom: 0.6rem;
+        font-size: 0.9rem;
+      }
+      .card .illustration { 
+        max-height: 150px; 
+        margin: 0.6rem 0;
+      }
+      
+      .cta { 
+        margin-top: 0.8rem;
+      }
+      .cta .btn { 
+        padding: 0.7rem;
+        font-size: 0.9rem;
+      }
+      
+      .audio-controls { 
+        margin: 0.4rem 0 !important; 
+      }
+      .audio-controls .btn {
+        padding: 0.4rem;
+        font-size: 0.8rem;
+      }
+      .audio-time {
+        font-size: 9px !important;
+      }
+      
+
+      
+
+      
+      .modal-content { 
+        margin: 0.3rem;
+        padding: 0.8rem;
+      }
+      
+      .quiz-options .btn, .puzzle-options .btn {
+        padding: 0.6rem;
+        font-size: 0.85rem;
+      }
+      
+      .drag-drop-area {
+        min-height: 100px;
+        padding: 0.6rem;
+      }
+      .draggable-item {
+        padding: 0.4rem;
+        font-size: 0.75rem;
+        touch-action: none;
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+      }
+      
+      .simulation-result {
+        padding: 0.6rem;
+        margin: 0.4rem 0;
+      }
+      
+      .ingredient-item {
+        padding: 0.5rem;
+        font-size: 0.75rem;
+      }
+    }
+  </style>
 </head>
-  <body class="bg-slate-900 text-slate-100">
-    <div id="root"></div>
-    <script type="module" src="/index.tsx"></script>
-  </body>
+<body>
+  <div class="app" id="app">
+    <header class="app-header" role="banner">
+      <div class="header-inner">
+        <div class="brand" aria-label="Judul aplikasi">
+          <div class="logo" aria-hidden="true"></div>
+          <div>
+            <h1>Sang Alkemis Muda dan Hutan Harmoni</h1>
+            <div class="subtitle">Berpikir Komputasional – Himpunan</div>
+          </div>
+        </div>
+        <div class="header-actions">
+          <button class="btn" id="btn-resep" aria-haspopup="dialog" aria-controls="modal-resep" title="Buka Buku Resep Kuno">📜 Buku Resep</button>
+        </div>
+      </div>
+      <div class="progress" aria-hidden="true"><div class="bar" id="progress-bar"></div></div>
+    </header>
+
+    <main role="main">
+      <div class="slides" id="slides" aria-live="polite">
+        <!-- Slide 0: Title / Start -->
+        <section class="slide active" data-slide="0" aria-labelledby="title-0">
+          <div class="card">
+            <div class="bg-ornament" aria-hidden="true"></div>
+            <h2 class="title" id="title-0">Prolog: Panggilan dari Desa</h2>
+            <img class="illustration" src="images/Prolog-Panggilan-dari-Desa.png" alt="Prolog: Panggilan dari Desa" loading="lazy">
+            <p class="lead">
+              Hutan Harmoni dilanda kekacauan. Kristal Logika retak, membuat segala sesuatu menjadi tidak teratur.
+              Sebagai Alkemis Muda, kamu dipanggil oleh Tetua Desa untuk memulihkan keseimbangan.
+            </p>
+            <div class="audio-controls" style="display: flex; align-items: center; gap: 0.5rem; margin: 1rem 0; justify-content: center;">
+              <button class="btn" id="btn-play-0" title="Putar Narasi">▶️</button>
+              <span class="audio-time" id="audio-time-0" style="font-size: 12px; color: var(--muted);">0:00 / 0:00</span>
+            </div>
+            <div class="cta">
+              <button class="btn primary" id="btn-start">Mulai Petualangan</button>
+              <button class="btn ghost" id="btn-help">❓ Cara Navigasi</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Slide 1: Scene + Mission context -->
+        <section class="slide" data-slide="1" aria-labelledby="title-1">
+          <div class="card">
+            <h2 class="title" id="title-1">Tetua Desa: Misi Ramuan Keseimbangan</h2>
+            <img class="illustration" src="images/Prolog-Panggilan-dari-Desa.png" alt="Tetua Desa dan Kristal Logika" loading="lazy">
+            <p class="lead">
+              "Kristal Logika menjaga harmoni. Retaknya kristal menimbulkan keanehan: <em>kumpulan hewan bersayap yang tidak bisa terbang</em>,
+              <em>kumpulan buah manis yang rasanya pahit</em>."
+            </p>
+            <p>
+              Kamu menerima tugas untuk menyeduh <strong>Ramuan Keseimbangan</strong>. Resep kunonya ditulis dalam <em>Bahasa Kuno para Pelindung</em> —
+              yang ternyata adalah prinsip-prinsip dasar <strong>Himpunan</strong>.
+            </p>
+            <div class="audio-controls" style="display: flex; align-items: center; gap: 0.5rem; margin: 1rem 0; justify-content: center;">
+              <button class="btn" id="btn-play-1" title="Putar Narasi">▶️</button>
+              <span class="audio-time" id="audio-time-1" style="font-size: 12px; color: var(--muted);">0:00 / 0:00</span>
+            </div>
+            <div class="cta">
+              <button class="btn primary" data-next>Selanjutnya</button>
+              <button class="btn" data-prev>Sebelumnya</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Slide 2: Buku Resep Kuno introduced & call to action -->
+        <section class="slide" data-slide="2" aria-labelledby="title-2">
+          <div class="card">
+            <h2 class="title" id="title-2">Buku Resep Kuno</h2>
+            <img class="illustration" src="images/Prolog-Panggilan-dari-Desa.png" alt="Buku Resep Kuno" loading="lazy">
+            <p class="lead">
+              Buku Resep Kuno akan mencatat konsep yang kamu pelajari sepanjang perjalanan.
+              Lengkapi bahan-bahan untuk memulihkan Kristal Logika.
+            </p>
+            <ul>
+              <li>Bab 1: Gerbang Logika & Definisi Himpunan</li>
+              <li>Bab 2: Taman Pelangi & Keanggotaan</li>
+              <li>Bab 3: Sungai Kembar & Operasi Himpunan (∪, ∩)</li>
+              <li>Bab 4: Altar Keseimbangan & Pemecahan Masalah</li>
+            </ul>
+            
+            <div class="cta">
+              <button class="btn primary" id="btn-to-bab1">Menuju Gerbang Kuno (Bab 1)</button>
+              <button class="btn" data-prev>Sebelumnya</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Bab 1: Slide 1 - Gerbang Logika -->
+        <section class="slide" data-slide="3" aria-labelledby="title-3">
+          <div class="card">
+            <h2 class="title" id="title-3">Bab 1: Gerbang Logika & Definisi yang Jelas</h2>
+            <img class="illustration" src="images/Babak-1-Gerbang-Logika-&amp;-Definisi-yang-Jelas.png" alt="Bab 1: Gerbang Logika &amp; Definisi yang Jelas" loading="lazy">
+            <p class="lead">
+              Kamu tiba di Gerbang Logika yang megah. Di atas gerbang tertulis: <em>"Hanya mereka yang memahami definisi yang jelas yang boleh masuk."</em>
+            </p>
+            <p>
+              Seorang Penjaga Gerbang muncul: <strong>"Halo, Alkemis Muda! Untuk melewati gerbang ini, kamu harus memahami konsep dasar Himpunan. 
+              Himpunan adalah kumpulan objek yang terdefinisi dengan jelas. Mari kita mulai dengan contoh sederhana."</strong>
+            </p>
+            <div class="cta">
+              <button class="btn primary" data-next>Pelajari Definisi Himpunan</button>
+              <button class="btn" data-prev>Kembali ke Prolog</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Bab 1: Slide 2 - Definisi Himpunan -->
+        <section class="slide" data-slide="4" aria-labelledby="title-4">
+          <div class="card">
+            <h2 class="title" id="title-4">Definisi Himpunan</h2>
+            <img class="illustration" src="images/Babak-1-Gerbang-Logika-&amp;-Definisi-yang-Jelas.png" alt="Contoh himpunan di hutan" loading="lazy">
+            <p class="lead">
+              <strong>Himpunan</strong> adalah kumpulan objek yang terdefinisi dengan jelas dan dapat dibedakan satu sama lain.
+            </p>
+            <div style="background: rgba(122,227,255,0.1); border: 1px solid rgba(122,227,255,0.3); border-radius: 12px; padding: 1rem; margin: 1rem 0;">
+              <h4 style="margin: 0 0 0.5rem 0; color: var(--accent);">Contoh Himpunan di Hutan Harmoni:</h4>
+              <ul style="margin: 0; color: var(--muted);">
+                <li><strong>H = {burung, kupu-kupu, lebah}</strong> - Himpunan hewan bersayap</li>
+                <li><strong>B = {apel, jeruk, mangga}</strong> - Himpunan buah-buahan</li>
+                <li><strong>P = {mawar, melati, anggrek}</strong> - Himpunan bunga</li>
+              </ul>
+      </div>
+            <p>
+              Setiap objek dalam himpunan disebut <strong>anggota</strong> atau <strong>elemen</strong> himpunan.
+            </p>
+            <div class="cta">
+              <button class="btn primary" data-next>Pahami Keanggotaan</button>
+              <button class="btn" data-prev>Sebelumnya</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Bab 1: Slide 3 - Mini Game: Identifikasi Himpunan -->
+        <section class="slide" data-slide="5" aria-labelledby="title-5">
+          <div class="card">
+            <h2 class="title" id="title-5">Tantangan: Identifikasi Himpunan</h2>
+            <img class="illustration" src="images/Babak-1-Gerbang-Logika-&amp;-Definisi-yang-Jelas.png" alt="Tantangan identifikasi himpunan" loading="lazy">
+            <p class="lead">
+              Penjaga Gerbang: <em>"Sekarang, coba identifikasi mana yang merupakan himpunan yang terdefinisi dengan jelas!"</em>
+            </p>
+            
+            <div id="himpunan-quiz" style="margin: 1rem 0;">
+              <div class="quiz-question" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 1rem; margin: 0.5rem 0;">
+                <p style="margin: 0 0 0.5rem 0;"><strong>Pertanyaan 1:</strong> Mana yang merupakan himpunan?</p>
+                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                  <button class="btn quiz-option" data-answer="false" style="flex: 1; min-width: 200px;">A. {hewan yang lucu}</button>
+                  <button class="btn quiz-option" data-answer="true" style="flex: 1; min-width: 200px;">B. {kucing, anjing, kelinci}</button>
+        </div>
+                <div class="quiz-feedback" style="margin-top: 0.5rem; display: none;"></div>
+        </div>
+
+              <div class="quiz-question" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 1rem; margin: 0.5rem 0;">
+                <p style="margin: 0 0 0.5rem 0;"><strong>Pertanyaan 2:</strong> Mana yang merupakan himpunan?</p>
+                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                  <button class="btn quiz-option" data-answer="true" style="flex: 1; min-width: 200px;">A. {merah, hijau, biru}</button>
+                  <button class="btn quiz-option" data-answer="false" style="flex: 1; min-width: 200px;">B. {warna yang indah}</button>
+      </div>
+                <div class="quiz-feedback" style="margin-top: 0.5rem; display: none;"></div>
+              </div>
+
+              <div class="quiz-question" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 1rem; margin: 0.5rem 0;">
+                <p style="margin: 0 0 0.5rem 0;"><strong>Pertanyaan 3:</strong> Mana yang merupakan himpunan?</p>
+                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                  <button class="btn quiz-option" data-answer="false" style="flex: 1; min-width: 200px;">A. {benda yang besar}</button>
+                  <button class="btn quiz-option" data-answer="true" style="flex: 1; min-width: 200px;">B. {gunung, laut, langit}</button>
+                </div>
+                <div class="quiz-feedback" style="margin-top: 0.5rem; display: none;"></div>
+              </div>
+            </div>
+
+            <div id="quiz-result" style="display: none; background: rgba(81,216,138,0.1); border: 1px solid rgba(81,216,138,0.3); border-radius: 12px; padding: 1rem; margin: 1rem 0;">
+              <p style="margin: 0; color: var(--ok);"><strong>Bagus! Kamu sudah memahami definisi himpunan!</strong></p>
+            </div>
+
+            <div class="cta">
+              <button class="btn primary" id="btn-next-bab1" data-next style="display: none;">Lanjut ke Taman Pelangi</button>
+              <button class="btn" data-prev>Sebelumnya</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Bab 1: Slide 4 - Notasi Himpunan -->
+        <section class="slide" data-slide="6" aria-labelledby="title-6">
+          <div class="card">
+            <h2 class="title" id="title-6">Notasi dan Simbol Himpunan</h2>
+            <img class="illustration" src="images/Babak-1-Gerbang-Logika-&amp;-Definisi-yang-Jelas.png" alt="Simbol-simbol himpunan" loading="lazy">
+            <p class="lead">
+              Penjaga Gerbang: <em>"Sekarang kamu perlu mempelajari bahasa resmi himpunan!"</em>
+            </p>
+            
+            <div style="display: grid; gap: 1rem; margin: 1rem 0;">
+              <div style="background: rgba(122,227,255,0.1); border: 1px solid rgba(122,227,255,0.3); border-radius: 12px; padding: 1rem;">
+                <h4 style="margin: 0 0 0.5rem 0; color: var(--accent);">Notasi Himpunan:</h4>
+                <ul style="margin: 0; color: var(--muted);">
+                  <li><strong>Himpunan kosong:</strong> ∅ atau {}</li>
+                  <li><strong>Keanggotaan:</strong> a ∈ A (a adalah anggota A)</li>
+                  <li><strong>Bukan anggota:</strong> b ∉ A (b bukan anggota A)</li>
+                  <li><strong>Himpunan bagian:</strong> A ⊆ B (A adalah himpunan bagian dari B)</li>
+                </ul>
+              </div>
+
+              <div style="background: rgba(255,200,87,0.1); border: 1px solid rgba(255,200,87,0.3); border-radius: 12px; padding: 1rem;">
+                <h4 style="margin: 0 0 0.5rem 0; color: var(--accent-2);">Contoh Praktis:</h4>
+                <p style="margin: 0; color: var(--muted);">
+                  Jika A = {1, 2, 3}, maka:<br>
+                  • 2 ∈ A (2 adalah anggota A)<br>
+                  • 5 ∉ A (5 bukan anggota A)<br>
+                  • {1, 2} ⊆ A ({1, 2} adalah himpunan bagian dari A)
+                </p>
+              </div>
+            </div>
+
+            <div class="cta">
+              <button class="btn primary" data-next>Lanjut ke Bab 2</button>
+              <button class="btn" data-prev>Sebelumnya</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Bab 2: Slide 1 - Taman Pelangi -->
+        <section class="slide" data-slide="7" aria-labelledby="title-7">
+          <div class="card">
+            <h2 class="title" id="title-7">Bab 2: Taman Pelangi & Keanggotaan</h2>
+            <img class="illustration" src="images/Babak-2-Taman-Pelangi-&-Klarifikasi-Anggota.png" alt="Taman Pelangi yang indah" loading="lazy">
+            <p class="lead">
+              Kamu berhasil melewati Gerbang Logika! Sekarang kamu memasuki Taman Pelangi yang memukau. 
+              Di sini, kamu akan belajar tentang <strong>keanggotaan himpunan</strong>.
+            </p>
+            <p>
+              Penjaga Taman: <em>"Selamat datang di Taman Pelangi! Di sini, setiap warna memiliki himpunan objeknya sendiri. 
+              Mari kita pelajari bagaimana menentukan apakah suatu objek termasuk dalam himpunan atau tidak."</em>
+            </p>
+            <div class="cta">
+              <button class="btn primary" data-next>Pelajari Keanggotaan</button>
+              <button class="btn" data-prev>Kembali ke Bab 1</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Bab 2: Slide 2 - Konsep Keanggotaan -->
+        <section class="slide" data-slide="8" aria-labelledby="title-8">
+          <div class="card">
+            <h2 class="title" id="title-8">Konsep Keanggotaan Himpunan</h2>
+            <img class="illustration" src="images/Babak-2-Taman-Pelangi-&-Klarifikasi-Anggota.png" alt="Contoh keanggotaan himpunan" loading="lazy">
+            <p class="lead">
+              <strong>Keanggotaan</strong> adalah konsep untuk menentukan apakah suatu objek termasuk dalam himpunan atau tidak.
+            </p>
+            
+            <div style="display: grid; gap: 1rem; margin: 1rem 0;">
+              <div style="background: rgba(122,227,255,0.1); border: 1px solid rgba(122,227,255,0.3); border-radius: 12px; padding: 1rem;">
+                <h4 style="margin: 0 0 0.5rem 0; color: var(--accent);">Contoh di Taman Pelangi:</h4>
+                <p style="margin: 0; color: var(--muted);">
+                  Jika <strong>H = {merah, hijau, biru}</strong> (himpunan warna pelangi)<br>
+                  • <strong>merah ∈ H</strong> (merah adalah anggota H)<br>
+                  • <strong>kuning ∈ H</strong> (kuning adalah anggota H)<br>
+                  • <strong>hitam ∉ H</strong> (hitam bukan anggota H)
+                </p>
+              </div>
+
+              <div style="background: rgba(255,200,87,0.1); border: 1px solid rgba(255,200,87,0.3); border-radius: 12px; padding: 1rem;">
+                <h4 style="margin: 0 0 0.5rem 0; color: var(--accent-2);">Simbol Keanggotaan:</h4>
+                <ul style="margin: 0; color: var(--muted);">
+                  <li><strong>∈</strong> = "adalah anggota" atau "termasuk dalam"</li>
+                  <li><strong>∉</strong> = "bukan anggota" atau "tidak termasuk dalam"</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="cta">
+              <button class="btn primary" data-next>Praktik Drag & Drop</button>
+              <button class="btn" data-prev>Sebelumnya</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Bab 2: Slide 3 - Mini Game: Drag & Drop Keanggotaan -->
+        <section class="slide" data-slide="9" aria-labelledby="title-9">
+          <div class="card">
+            <h2 class="title" id="title-9">Tantangan: Drag & Drop Keanggotaan</h2>
+            <img class="illustration" src="images/Babak-2-Taman-Pelangi-&-Klarifikasi-Anggota.png" alt="Game drag and drop keanggotaan" loading="lazy">
+            <p class="lead">
+              Penjaga Taman: <em>"Sekarang, coba masukkan objek-objek ke dalam himpunan yang tepat!"</em>
+            </p>
+            
+            <div id="drag-drop-game" style="margin: 1rem 0;">
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                <!-- Himpunan 1: Hewan Bersayap -->
+                <div class="drop-zone" data-set="hewan-bersayap" style="background: rgba(122,227,255,0.1); border: 2px dashed rgba(122,227,255,0.5); border-radius: 12px; padding: 1rem; min-height: 120px;">
+                  <h4 style="margin: 0 0 0.5rem 0; color: var(--accent);">H = {hewan bersayap}</h4>
+                  <p style="margin: 0; font-size: 14px; color: var(--muted);">Seret hewan bersayap ke sini</p>
+                  <div class="drop-area" style="min-height: 60px; display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem;"></div>
+                </div>
+
+                <!-- Himpunan 2: Buah-buahan -->
+                <div class="drop-zone" data-set="buah-buahan" style="background: rgba(255,200,87,0.1); border: 2px dashed rgba(255,200,87,0.5); border-radius: 12px; padding: 1rem; min-height: 120px;">
+                  <h4 style="margin: 0 0 0.5rem 0; color: var(--accent-2);">B = {buah-buahan}</h4>
+                  <p style="margin: 0; font-size: 14px; color: var(--muted);">Seret buah-buahan ke sini</p>
+                  <div class="drop-area" style="min-height: 60px; display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem;"></div>
+                </div>
+              </div>
+
+              <!-- Objek yang bisa di-drag -->
+              <div class="draggable-items" style="display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; margin: 1rem 0;">
+                <div class="draggable-item" data-category="hewan-bersayap" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 0.5rem 1rem; cursor: grab; user-select: none;">🦅 Elang</div>
+                <div class="draggable-item" data-category="buah-buahan" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 0.5rem 1rem; cursor: grab; user-select: none;">🍎 Apel</div>
+                <div class="draggable-item" data-category="hewan-bersayap" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 0.5rem 1rem; cursor: grab; user-select: none;">🦋 Kupu-kupu</div>
+                <div class="draggable-item" data-category="buah-buahan" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 0.5rem 1rem; cursor: grab; user-select: none;">🍌 Pisang</div>
+                <div class="draggable-item" data-category="hewan-bersayap" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 0.5rem 1rem; cursor: grab; user-select: none;">🐝 Lebah</div>
+                <div class="draggable-item" data-category="buah-buahan" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 0.5rem 1rem; cursor: grab; user-select: none;">🍊 Jeruk</div>
+                <div class="draggable-item" data-category="hewan-bersayap" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 0.5rem 1rem; cursor: grab; user-select: none;">🦆 Bebek</div>
+                <div class="draggable-item" data-category="buah-buahan" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 0.5rem 1rem; cursor: grab; user-select: none;">🍇 Anggur</div>
+              </div>
+
+              <div id="drag-drop-result" style="display: none; background: rgba(81,216,138,0.1); border: 1px solid rgba(81,216,138,0.3); border-radius: 12px; padding: 1rem; margin: 1rem 0;">
+                <p style="margin: 0; color: var(--ok);"><strong>🎉 Bagus! Kamu sudah memahami konsep keanggotaan himpunan!</strong></p>
+              </div>
+
+              <div style="text-align: center; margin: 1rem 0;">
+                <button class="btn" id="btn-reset-dragdrop" style="margin: 0.5rem;">🔄 Reset Game</button>
+              </div>
+            </div>
+
+            <div class="cta">
+              <button class="btn primary" id="btn-next-bab2" data-next style="display: none;">Lanjut ke Sungai Kembar</button>
+              <button class="btn" data-prev>Sebelumnya</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Bab 2: Slide 4 - Himpunan Kosong dan Universal -->
+        <section class="slide" data-slide="10" aria-labelledby="title-10">
+          <div class="card">
+            <h2 class="title" id="title-10">Himpunan Kosong dan Universal</h2>
+            <img class="illustration" src="images/Babak-2-Taman-Pelangi-&-Klarifikasi-Anggota.png" alt="Himpunan kosong dan universal" loading="lazy">
+            <p class="lead">
+              Penjaga Taman: <em>"Sebelum melanjutkan, ada dua himpunan khusus yang perlu kamu ketahui!"</em>
+            </p>
+            
+            <div style="display: grid; gap: 1rem; margin: 1rem 0;">
+              <div style="background: rgba(255,138,101,0.1); border: 1px solid rgba(255,138,101,0.3); border-radius: 12px; padding: 1rem;">
+                <h4 style="margin: 0 0 0.5rem 0; color: var(--warn);">Himpunan Kosong (∅ atau {})</h4>
+                <p style="margin: 0; color: var(--muted);">
+                  Himpunan yang tidak memiliki anggota sama sekali.<br>
+                  <strong>Contoh:</strong> Himpunan hewan bersayap yang bisa terbang di dalam air = ∅
+                </p>
+              </div>
+
+              <div style="background: rgba(81,216,138,0.1); border: 1px solid rgba(81,216,138,0.3); border-radius: 12px; padding: 1rem;">
+                <h4 style="margin: 0 0 0.5rem 0; color: var(--ok);">Himpunan Universal (U)</h4>
+                <p style="margin: 0; color: var(--muted);">
+                  Himpunan yang berisi semua objek yang sedang dibicarakan.<br>
+                  <strong>Contoh:</strong> Jika kita membicarakan hewan di Taman Pelangi, maka U = {semua hewan di Taman Pelangi}
+                </p>
+              </div>
+            </div>
+
+            <div class="cta">
+              <button class="btn primary" data-next>Lanjut ke Bab 3</button>
+              <button class="btn" data-prev>Sebelumnya</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Bab 3: Slide 1 - Sungai Kembar -->
+        <section class="slide" data-slide="11" aria-labelledby="title-11">
+          <div class="card">
+            <h2 class="title" id="title-11">Bab 3: Sungai Kembar & Operasi Himpunan</h2>
+            <img class="illustration" src="images/Babak-3-Sungai-Kembar-&-Operasi-Himpunan.png" alt="Sungai Kembar yang mengalir" loading="lazy">
+            <p class="lead">
+              Kamu tiba di Sungai Kembar yang mengalir dengan tenang. Di sini, kamu akan belajar tentang <strong>operasi himpunan</strong> - 
+              cara menggabungkan dan memisahkan himpunan.
+            </p>
+            <p>
+              Penjaga Sungai: <em>"Selamat datang di Sungai Kembar! Di sini, dua aliran sungai bertemu dan berpisah. 
+              Ini adalah tempat yang sempurna untuk mempelajari operasi himpunan - gabungan dan irisan."</em>
+            </p>
+            <div class="cta">
+              <button class="btn primary" data-next>Pelajari Operasi Himpunan</button>
+              <button class="btn" data-prev>Kembali ke Bab 2</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Bab 3: Slide 2 - Operasi Gabungan (∪) -->
+        <section class="slide" data-slide="12" aria-labelledby="title-12">
+          <div class="card">
+            <h2 class="title" id="title-12">Operasi Gabungan (∪)</h2>
+            <img class="illustration" src="images/Babak-3-Sungai-Kembar-&-Operasi-Himpunan.png" alt="Operasi gabungan himpunan" loading="lazy">
+            <p class="lead">
+              <strong>Gabungan (∪)</strong> adalah operasi yang menggabungkan semua anggota dari dua himpunan atau lebih.
+            </p>
+            
+            <div style="display: grid; gap: 1rem; margin: 1rem 0;">
+              <div style="background: rgba(122,227,255,0.1); border: 1px solid rgba(122,227,255,0.3); border-radius: 12px; padding: 1rem;">
+                <h4 style="margin: 0 0 0.5rem 0; color: var(--accent);">Definisi Gabungan:</h4>
+                <p style="margin: 0; color: var(--muted);">
+                  A ∪ B = {x | x ∈ A atau x ∈ B}<br>
+                  <em>Gabungan A dan B adalah himpunan semua elemen yang ada di A atau di B (atau keduanya).</em>
+                </p>
+              </div>
+
+              <div style="background: rgba(255,200,87,0.1); border: 1px solid rgba(255,200,87,0.3); border-radius: 12px; padding: 1rem;">
+                <h4 style="margin: 0 0 0.5rem 0; color: var(--accent-2);">Contoh di Sungai Kembar:</h4>
+                <p style="margin: 0; color: var(--muted);">
+                  A = {ikan, udang, kepiting} (hewan sungai)<br>
+                  B = {burung, bebek, angsa} (hewan terbang)<br>
+                  A ∪ B = {ikan, udang, kepiting, burung, bebek, angsa}
+                </p>
+              </div>
+            </div>
+
+            <div class="cta">
+              <button class="btn primary" data-next>Simulasi Gabungan</button>
+              <button class="btn" data-prev>Sebelumnya</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Bab 3: Slide 3 - Simulasi Visual Gabungan -->
+        <section class="slide" data-slide="13" aria-labelledby="title-13">
+          <div class="card">
+            <h2 class="title" id="title-13">Simulasi Visual: Operasi Gabungan</h2>
+            <img class="illustration" src="images/Babak-3-Sungai-Kembar-&-Operasi-Himpunan.png" alt="Simulasi operasi gabungan" loading="lazy">
+            <p class="lead">
+              Penjaga Sungai: <em>"Mari kita lihat bagaimana dua himpunan bergabung menjadi satu!"</em>
+            </p>
+            
+            <div id="union-simulation" style="margin: 1rem 0;">
+              <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                <!-- Himpunan A -->
+                <div class="set-container" style="background: rgba(122,227,255,0.1); border: 2px solid rgba(122,227,255,0.5); border-radius: 12px; padding: 1rem; text-align: center;">
+                  <h4 style="margin: 0 0 0.5rem 0; color: var(--accent);">A = {hewan air}</h4>
+                  <div class="set-items" style="display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center;">
+                    <span class="set-item" style="background: rgba(122,227,255,0.3); padding: 0.25rem 0.5rem; border-radius: 6px; font-size: 14px;">🐟 Ikan</span>
+                    <span class="set-item" style="background: rgba(122,227,255,0.3); padding: 0.25rem 0.5rem; border-radius: 6px; font-size: 14px;">🦐 Udang</span>
+                    <span class="set-item" style="background: rgba(122,227,255,0.3); padding: 0.25rem 0.5rem; border-radius: 6px; font-size: 14px;">🦀 Kepiting</span>
+                  </div>
+                </div>
+
+                <!-- Simbol Gabungan -->
+                <div style="display: flex; align-items: center; justify-content: center; font-size: 2rem; color: var(--accent);">
+                  ∪
+                </div>
+
+                <!-- Himpunan B -->
+                <div class="set-container" style="background: rgba(255,200,87,0.1); border: 2px solid rgba(255,200,87,0.5); border-radius: 12px; padding: 1rem; text-align: center;">
+                  <h4 style="margin: 0 0 0.5rem 0; color: var(--accent-2);">B = {hewan terbang}</h4>
+                  <div class="set-items" style="display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center;">
+                    <span class="set-item" style="background: rgba(255,200,87,0.3); padding: 0.25rem 0.5rem; border-radius: 6px; font-size: 14px;">🦅 Burung</span>
+                    <span class="set-item" style="background: rgba(255,200,87,0.3); padding: 0.25rem 0.5rem; border-radius: 6px; font-size: 14px;">🦆 Bebek</span>
+                    <span class="set-item" style="background: rgba(255,200,87,0.3); padding: 0.25rem 0.5rem; border-radius: 6px; font-size: 14px;">🦢 Angsa</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Tombol untuk menjalankan simulasi -->
+              <div style="text-align: center; margin: 1rem 0;">
+                <button class="btn primary" id="btn-run-union" style="margin: 0.5rem;">Jalankan Simulasi Gabungan</button>
+              </div>
+
+              <!-- Hasil Gabungan -->
+              <div id="union-result" style="display: none; background: rgba(81,216,138,0.1); border: 2px solid rgba(81,216,138,0.5); border-radius: 12px; padding: 1rem; text-align: center;">
+                <h4 style="margin: 0 0 0.5rem 0; color: var(--ok);">A ∪ B = {hasil gabungan}</h4>
+                <div class="result-items" style="display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center;"></div>
+              </div>
+            </div>
+
+            <div class="cta">
+              <button class="btn primary" data-next>Pelajari Operasi Irisan</button>
+              <button class="btn" data-prev>Sebelumnya</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Bab 3: Slide 4 - Operasi Irisan (∩) -->
+        <section class="slide" data-slide="14" aria-labelledby="title-14">
+          <div class="card">
+            <h2 class="title" id="title-14">Operasi Irisan (∩)</h2>
+            <img class="illustration" src="images/Babak-3-Sungai-Kembar-&-Operasi-Himpunan.png" alt="Operasi irisan himpunan" loading="lazy">
+            <p class="lead">
+              <strong>Irisan (∩)</strong> adalah operasi yang mengambil anggota yang sama dari dua himpunan.
+            </p>
+            
+            <div style="display: grid; gap: 1rem; margin: 1rem 0;">
+              <div style="background: rgba(122,227,255,0.1); border: 1px solid rgba(122,227,255,0.3); border-radius: 12px; padding: 1rem;">
+                <h4 style="margin: 0 0 0.5rem 0; color: var(--accent);">Definisi Irisan:</h4>
+                <p style="margin: 0; color: var(--muted);">
+                  A ∩ B = {x | x ∈ A dan x ∈ B}<br>
+                  <em>Irisan A dan B adalah himpunan semua elemen yang ada di A dan juga di B.</em>
+                </p>
+              </div>
+
+              <div style="background: rgba(255,200,87,0.1); border: 1px solid rgba(255,200,87,0.3); border-radius: 12px; padding: 1rem;">
+                <h4 style="margin: 0 0 0.5rem 0; color: var(--accent-2);">Contoh di Sungai Kembar:</h4>
+                <p style="margin: 0; color: var(--muted);">
+                  A = {bebek, angsa, ikan} (hewan di sungai)<br>
+                  B = {bebek, angsa, burung} (hewan terbang)<br>
+                  A ∩ B = {bebek, angsa} (hewan yang bisa di air dan terbang)
+                </p>
+              </div>
+            </div>
+
+            <div class="cta">
+              <button class="btn primary" data-next>Simulasi Irisan</button>
+              <button class="btn" data-prev>Sebelumnya</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Bab 3: Slide 5 - Simulasi Visual Irisan -->
+        <section class="slide" data-slide="15" aria-labelledby="title-15">
+          <div class="card">
+            <h2 class="title" id="title-15">Simulasi Visual: Operasi Irisan</h2>
+            <img class="illustration" src="images/Babak-3-Sungai-Kembar-&-Operasi-Himpunan.png" alt="Simulasi operasi irisan" loading="lazy">
+            <p class="lead">
+              Penjaga Sungai: <em>"Sekarang mari kita lihat elemen apa saja yang ada di kedua himpunan!"</em>
+            </p>
+            
+            <div id="intersection-simulation" style="margin: 1rem 0;">
+              <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                <!-- Himpunan A -->
+                <div class="set-container" style="background: rgba(122,227,255,0.1); border: 2px solid rgba(122,227,255,0.5); border-radius: 12px; padding: 1rem; text-align: center;">
+                  <h4 style="margin: 0 0 0.5rem 0; color: var(--accent);">A = {hewan di air}</h4>
+                  <div class="set-items" style="display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center;">
+                    <span class="set-item" style="background: rgba(122,227,255,0.3); padding: 0.25rem 0.5rem; border-radius: 6px; font-size: 14px;">🦆 Bebek</span>
+                    <span class="set-item" style="background: rgba(122,227,255,0.3); padding: 0.25rem 0.5rem; border-radius: 6px; font-size: 14px;">🦢 Angsa</span>
+                    <span class="set-item" style="background: rgba(122,227,255,0.3); padding: 0.25rem 0.5rem; border-radius: 6px; font-size: 14px;">🐟 Ikan</span>
+                  </div>
+                </div>
+
+                <!-- Simbol Irisan -->
+                <div style="display: flex; align-items: center; justify-content: center; font-size: 2rem; color: var(--accent);">
+                  ∩
+                </div>
+
+                <!-- Himpunan B -->
+                <div class="set-container" style="background: rgba(255,200,87,0.1); border: 2px solid rgba(255,200,87,0.5); border-radius: 12px; padding: 1rem; text-align: center;">
+                  <h4 style="margin: 0 0 0.5rem 0; color: var(--accent-2);">B = {hewan terbang}</h4>
+                  <div class="set-items" style="display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center;">
+                    <span class="set-item" style="background: rgba(255,200,87,0.3); padding: 0.25rem 0.5rem; border-radius: 6px; font-size: 14px;">🦆 Bebek</span>
+                    <span class="set-item" style="background: rgba(255,200,87,0.3); padding: 0.25rem 0.5rem; border-radius: 6px; font-size: 14px;">🦢 Angsa</span>
+                    <span class="set-item" style="background: rgba(255,200,87,0.3); padding: 0.25rem 0.5rem; border-radius: 6px; font-size: 14px;">🦅 Burung</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Tombol untuk menjalankan simulasi -->
+              <div style="text-align: center; margin: 1rem 0;">
+                <button class="btn primary" id="btn-run-intersection" style="margin: 0.5rem;">Jalankan Simulasi Irisan</button>
+              </div>
+
+              <!-- Hasil Irisan -->
+              <div id="intersection-result" style="display: none; background: rgba(255,138,101,0.1); border: 2px solid rgba(255,138,101,0.5); border-radius: 12px; padding: 1rem; text-align: center;">
+                <h4 style="margin: 0 0 0.5rem 0; color: var(--warn);">A ∩ B = {hasil irisan}</h4>
+                <div class="result-items" style="display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center;"></div>
+              </div>
+            </div>
+
+            <div class="cta">
+              <button class="btn primary" data-next>Lanjut ke Bab 4</button>
+              <button class="btn" data-prev>Sebelumnya</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Bab 4: Slide 1 - Altar Keseimbangan -->
+        <section class="slide" data-slide="16" aria-labelledby="title-16">
+          <div class="card">
+            <h2 class="title" id="title-16">Bab 4: Altar Keseimbangan & Pemecahan Masalah</h2>
+            <img class="illustration" src="images/Babak-4-Altar-Keseimbangan-&-Pemecahan-Masalah.png" alt="Altar Keseimbangan yang megah" loading="lazy">
+            <p class="lead">
+              Kamu tiba di Altar Keseimbangan - tempat terakhir untuk memulihkan Kristal Logika. 
+              Di sini, kamu akan menghadapi tantangan terbesar yang menguji semua pengetahuan himpunan yang sudah dipelajari.
+            </p>
+            <p>
+              Penjaga Altar: <em>"Selamat datang, Alkemis Muda! Kristal Logika retak karena ketidakseimbangan dalam pemahaman himpunan. 
+              Hanya mereka yang benar-benar memahami semua konsep yang bisa memulihkannya. Siapkah kamu menghadapi tantangan final?"</em>
+            </p>
+            <div class="cta">
+              <button class="btn primary" data-next>Hadapi Tantangan Final</button>
+              <button class="btn" data-prev>Kembali ke Bab 3</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Bab 4: Slide 2 - Puzzle Kompleks: Analisis Himpunan -->
+        <section class="slide" data-slide="17" aria-labelledby="title-17">
+          <div class="card">
+            <h2 class="title" id="title-17">Puzzle Kompleks: Analisis Himpunan</h2>
+            <img class="illustration" src="images/Babak-4-Altar-Keseimbangan-&-Pemecahan-Masalah.png" alt="Puzzle analisis himpunan" loading="lazy">
+            <p class="lead">
+              Penjaga Altar: <em>"Untuk memulihkan Kristal Logika, kamu harus menyelesaikan puzzle kompleks ini. 
+              Analisis himpunan-himpunan berikut dan jawab pertanyaan dengan benar!"</em>
+            </p>
+            
+            <div id="complex-puzzle" style="margin: 1rem 0;">
+              <div style="background: rgba(122,227,255,0.1); border: 1px solid rgba(122,227,255,0.3); border-radius: 12px; padding: 1rem; margin: 1rem 0;">
+                <h4 style="margin: 0 0 0.5rem 0; color: var(--accent);">Data Himpunan di Hutan Harmoni:</h4>
+                <p style="margin: 0; color: var(--muted);">
+                  A = {burung, kupu-kupu, lebah, elang} (hewan bersayap)<br>
+                  B = {bebek, angsa, penguin, burung} (hewan air)<br>
+                  C = {apel, jeruk, mangga, pisang} (buah-buahan)<br>
+                  D = {mawar, melati, anggrek, tulip} (bunga)
+                </p>
+              </div>
+
+              <div class="puzzle-question" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 1rem; margin: 0.5rem 0;">
+                <p style="margin: 0 0 0.5rem 0;"><strong>Pertanyaan 1:</strong> Berapa banyak elemen dalam A ∪ B?</p>
+                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                  <button class="btn puzzle-option" data-answer="6" style="flex: 1; min-width: 100px;">A. 6</button>
+                  <button class="btn puzzle-option" data-answer="7" style="flex: 1; min-width: 100px;">B. 7</button>
+                  <button class="btn puzzle-option" data-answer="8" style="flex: 1; min-width: 100px;">C. 8</button>
+                </div>
+                <div class="puzzle-feedback" style="margin-top: 0.5rem; display: none;"></div>
+              </div>
+
+              <div class="puzzle-question" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 1rem; margin: 0.5rem 0;">
+                <p style="margin: 0 0 0.5rem 0;"><strong>Pertanyaan 2:</strong> Apa hasil dari A ∩ B?</p>
+                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                  <button class="btn puzzle-option" data-answer="burung" style="flex: 1; min-width: 120px;">A. {burung}</button>
+                  <button class="btn puzzle-option" data-answer="bebek" style="flex: 1; min-width: 120px;">B. {bebek}</button>
+                  <button class="btn puzzle-option" data-answer="kosong" style="flex: 1; min-width: 120px;">C. ∅</button>
+                </div>
+                <div class="puzzle-feedback" style="margin-top: 0.5rem; display: none;"></div>
+              </div>
+
+              <div class="puzzle-question" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 1rem; margin: 0.5rem 0;">
+                <p style="margin: 0 0 0.5rem 0;"><strong>Pertanyaan 3:</strong> Apakah "penguin ∈ A"?</p>
+                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                  <button class="btn puzzle-option" data-answer="false" style="flex: 1; min-width: 100px;">A. Ya</button>
+                  <button class="btn puzzle-option" data-answer="true" style="flex: 1; min-width: 100px;">B. Tidak</button>
+                </div>
+                <div class="puzzle-feedback" style="margin-top: 0.5rem; display: none;"></div>
+              </div>
+            </div>
+
+            <div id="puzzle-result" style="display: none; background: rgba(81,216,138,0.1); border: 1px solid rgba(81,216,138,0.3); border-radius: 12px; padding: 1rem; margin: 1rem 0;">
+              <p style="margin: 0; color: var(--ok);"><strong>🎉 Bagus! Kamu berhasil menyelesaikan puzzle analisis himpunan!</strong></p>
+            </div>
+
+            <div class="cta">
+              <button class="btn primary" id="btn-next-puzzle" data-next style="display: none;">Lanjut ke Puzzle Final</button>
+              <button class="btn" data-prev>Sebelumnya</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Bab 4: Slide 3 - Puzzle Final: Ramuan Keseimbangan -->
+        <section class="slide" data-slide="18" aria-labelledby="title-18">
+          <div class="card">
+            <h2 class="title" id="title-18">Puzzle Final: Ramuan Keseimbangan</h2>
+            <img class="illustration" src="images/Babak-4-Altar-Keseimbangan-&-Pemecahan-Masalah.png" alt="Ramuan keseimbangan" loading="lazy">
+            <p class="lead">
+              Penjaga Altar: <em>"Sekarang, saatnya menyeduh Ramuan Keseimbangan! 
+              Kamu harus memilih bahan-bahan yang tepat berdasarkan pengetahuan himpunan untuk memulihkan Kristal Logika."</em>
+            </p>
+            
+            <div id="final-puzzle" style="margin: 1rem 0;">
+              <div style="background: rgba(255,200,87,0.1); border: 1px solid rgba(255,200,87,0.3); border-radius: 12px; padding: 1rem; margin: 1rem 0;">
+                <h4 style="margin: 0 0 0.5rem 0; color: var(--accent-2);">Instruksi Ramuan:</h4>
+                <p style="margin: 0; color: var(--muted);">
+                  Pilih 3 bahan dari himpunan yang berbeda untuk menciptakan keseimbangan sempurna. 
+                  Setiap bahan harus mewakili konsep himpunan yang berbeda.
+                </p>
+              </div>
+
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1rem 0;">
+                <!-- Bahan yang tersedia -->
+                <div style="background: rgba(122,227,255,0.1); border: 2px solid rgba(122,227,255,0.5); border-radius: 12px; padding: 1rem;">
+                  <h4 style="margin: 0 0 0.5rem 0; color: var(--accent);">Bahan Tersedia:</h4>
+                  <div class="ingredient-list" style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+                    <div class="ingredient" data-concept="definisi" style="background: rgba(122,227,255,0.3); padding: 0.5rem; border-radius: 8px; cursor: pointer; user-select: none;">📚 Definisi Himpunan</div>
+                    <div class="ingredient" data-concept="keanggotaan" style="background: rgba(122,227,255,0.3); padding: 0.5rem; border-radius: 8px; cursor: pointer; user-select: none;">🎯 Keanggotaan</div>
+                    <div class="ingredient" data-concept="gabungan" style="background: rgba(122,227,255,0.3); padding: 0.5rem; border-radius: 8px; cursor: pointer; user-select: none;">🔗 Operasi Gabungan</div>
+                    <div class="ingredient" data-concept="irisan" style="background: rgba(122,227,255,0.3); padding: 0.5rem; border-radius: 8px; cursor: pointer; user-select: none;">⚡ Operasi Irisan</div>
+                    <div class="ingredient" data-concept="kosong" style="background: rgba(122,227,255,0.3); padding: 0.5rem; border-radius: 8px; cursor: pointer; user-select: none;">📭 Himpunan Kosong</div>
+                    <div class="ingredient" data-concept="universal" style="background: rgba(122,227,255,0.3); padding: 0.5rem; border-radius: 8px; cursor: pointer; user-select: none;">🌍 Himpunan Universal</div>
+                  </div>
+                </div>
+
+                <!-- Ramuan yang sedang dibuat -->
+                <div style="background: rgba(255,200,87,0.1); border: 2px dashed rgba(255,200,87,0.5); border-radius: 12px; padding: 1rem;">
+                  <h4 style="margin: 0 0 0.5rem 0; color: var(--accent-2);">Ramuan Keseimbangan:</h4>
+                  <div class="potion-container" style="min-height: 120px; display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: flex-start; align-content: flex-start;">
+                    <p style="margin: 0; color: var(--muted); font-size: 14px; width: 100%;">Seret 3 bahan ke sini...</p>
+                  </div>
+                </div>
+              </div>
+
+              <div style="text-align: center; margin: 1rem 0;">
+                <button class="btn primary" id="btn-brew-potion" style="margin: 0.5rem;">Seduh Ramuan</button>
+                <button class="btn" id="btn-reset-potion" style="margin: 0.5rem;">Reset</button>
+              </div>
+
+              <div id="potion-result" style="display: none; background: rgba(81,216,138,0.1); border: 1px solid rgba(81,216,138,0.3); border-radius: 12px; padding: 1rem; margin: 1rem 0;">
+                <p style="margin: 0; color: var(--ok);"><strong>🎉 Ramuan Keseimbangan berhasil diseduh! Kristal Logika mulai pulih!</strong></p>
+              </div>
+            </div>
+
+            <div class="cta">
+              <button class="btn primary" id="btn-next-final" data-next style="display: none;">Selesaikan Misi</button>
+              <button class="btn" data-prev>Sebelumnya</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Bab 4: Slide 4 - Epilog: Keseimbangan Terpulihkan -->
+        <section class="slide" data-slide="19" aria-labelledby="title-19">
+          <div class="card">
+            <h2 class="title" id="title-19">Epilog: Keseimbangan Terpulihkan</h2>
+            <img class="illustration" src="images/Epilog.png" alt="Kristal Logika yang pulih" loading="lazy">
+            <p class="lead">
+              <strong>Selamat! Kamu berhasil memulihkan Kristal Logika!</strong>
+            </p>
+            <p>
+              Penjaga Altar: <em>"Luar biasa, Alkemis Muda! Kamu telah menunjukkan pemahaman yang mendalam tentang konsep himpunan. 
+              Kristal Logika sekarang bersinar terang lagi, dan keseimbangan telah kembali ke Hutan Harmoni."</em>
+            </p>
+            
+            <div style="background: rgba(81,216,138,0.1); border: 1px solid rgba(81,216,138,0.3); border-radius: 12px; padding: 1rem; margin: 1rem 0;">
+              <h4 style="margin: 0 0 0.5rem 0; color: var(--ok);">Pengetahuan yang Telah Dikuasai:</h4>
+              <ul style="margin: 0; color: var(--muted);">
+                <li>✅ Definisi himpunan dan keanggotaan</li>
+                <li>✅ Notasi himpunan (∈, ∉, ⊆, ∅, U)</li>
+                <li>✅ Operasi gabungan (∪) dan irisan (∩)</li>
+                <li>✅ Himpunan kosong dan universal</li>
+                <li>✅ Pemecahan masalah dengan himpunan</li>
+              </ul>
+            </div>
+
+            <p>
+              <strong>Terima kasih telah menyelesaikan petualangan di Hutan Harmoni!</strong> 
+              Kamu sekarang telah menjadi Alkemis Himpunan yang sejati. 
+              Gunakan pengetahuan ini untuk memecahkan masalah-masalah kompleks di masa depan.
+            </p>
+
+            <div class="cta">
+              <button class="btn primary" id="btn-restart">Mulai Petualangan Lagi</button>
+              <button class="btn" id="btn-view-notes">Lihat Buku Resep</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Game Over Slide -->
+        <section class="slide" data-slide="20" aria-labelledby="title-20">
+          <div class="card">
+            <h2 class="title" id="title-20" style="color: var(--warn);">💥 Misi Gagal!</h2>
+            <img class="illustration" src="images/Babak-4-Altar-Keseimbangan-&-Pemecahan-Masalah.png" alt="Kristal Logika yang retak" loading="lazy">
+            <p class="lead" style="color: var(--warn);">
+              <strong>Kamu telah melakukan terlalu banyak kesalahan!</strong>
+            </p>
+            <p>
+              Penjaga Altar: <em>"Sayang sekali, Alkemis Muda. Kamu telah melakukan terlalu banyak kesalahan dari maksimal yang diperbolehkan. 
+              Kristal Logika tidak bisa dipulihkan dan Hutan Harmoni tetap dalam kekacauan."</em>
+            </p>
+            
+            <div style="background: rgba(255,138,101,0.1); border: 1px solid rgba(255,138,101,0.3); border-radius: 12px; padding: 1rem; margin: 1rem 0;">
+              <h4 style="margin: 0 0 0.5rem 0; color: var(--warn);">Yang Perlu Diperbaiki:</h4>
+              <ul style="margin: 0; color: var(--muted);">
+                <li>📚 Pelajari kembali definisi himpunan</li>
+                <li>🎯 Pahami konsep keanggotaan (∈, ∉)</li>
+                <li>🔗 Kuasai operasi gabungan (∪)</li>
+                <li>⚡ Kuasai operasi irisan (∩)</li>
+                <li>🧠 Latih analisis himpunan kompleks</li>
+              </ul>
+            </div>
+
+            <p style="color: var(--muted);">
+              <strong>Jangan menyerah!</strong> Setiap Alkemis hebat pernah gagal. 
+              Pelajari kembali konsep himpunan dan coba lagi. Hutan Harmoni menunggu penyelamatnya!
+            </p>
+
+            <div class="cta">
+              <button class="btn primary" id="btn-restart-from-gameover">🔄 Mulai Petualangan Lagi</button>
+              <button class="btn" id="btn-review-notes-from-gameover">📖 Review Buku Resep</button>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+
+
+  </div>
+
+  <!-- Modal Buku Resep Kuno -->
+  <div class="modal" id="modal-resep" role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-hidden="true">
+    <div class="sheet">
+      <div style="display:flex; align-items:center; justify-content: space-between; gap:.5rem; margin-bottom:.5rem;">
+        <h3 id="modal-title">📜 Buku Resep Kuno</h3>
+        <div style="display:flex; gap:.5rem;">
+          <button class="btn" id="btn-clear-notes" title="Reset catatan">🧹 Reset</button>
+          <button class="btn primary" id="btn-close-resep">Tutup</button>
+        </div>
+      </div>
+      <div class="notes" id="notes">
+        <!-- Catatan akan diisi via JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <!-- Audio Elements -->
+  <audio id="audio-0" preload="metadata">
+    <source src="audio/prolog/slide1_welcome.wav" type="audio/wav">
+  </audio>
+  <audio id="audio-1" preload="metadata">
+    <source src="audio/prolog/slide2_mission.wav" type="audio/wav">
+  </audio>
+  <audio id="audio-2" preload="metadata">
+    <source src="audio/prolog/slide3_recipe_book.wav" type="audio/wav">
+  </audio>
+  <audio id="audio-3" preload="metadata">
+    <source src="audio/bab1/slide1_gate.wav" type="audio/wav">
+  </audio>
+  <audio id="audio-4" preload="metadata">
+    <source src="audio/bab1/slide2_definition.wav" type="audio/wav">
+  </audio>
+  <audio id="audio-5" preload="metadata">
+    <source src="audio/bab1/slide3_quiz.wav" type="audio/wav">
+  </audio>
+  <audio id="audio-6" preload="metadata">
+    <source src="audio/bab1/slide4_notation.wav" type="audio/wav">
+  </audio>
+  <audio id="audio-7" preload="metadata">
+    <source src="audio/bab2/slide1_garden.wav" type="audio/wav">
+  </audio>
+  <audio id="audio-8" preload="metadata">
+    <source src="audio/bab2/slide2_membership.wav" type="audio/wav">
+  </audio>
+  <audio id="audio-9" preload="metadata">
+    <source src="audio/bab2/slide3_dragdrop.wav" type="audio/wav">
+  </audio>
+  <audio id="audio-10" preload="metadata">
+    <source src="audio/bab2/slide4_empty_universal.wav" type="audio/wav">
+  </audio>
+  <audio id="audio-11" preload="metadata">
+    <source src="audio/bab3/slide1_river.wav" type="audio/wav">
+  </audio>
+  <audio id="audio-12" preload="metadata">
+    <source src="audio/bab3/slide2_union.wav" type="audio/wav">
+  </audio>
+  <audio id="audio-13" preload="metadata">
+    <source src="audio/bab3/slide3_union_sim.wav" type="audio/wav">
+  </audio>
+  <audio id="audio-14" preload="metadata">
+    <source src="audio/bab3/slide4_intersection.wav" type="audio/wav">
+  </audio>
+  <audio id="audio-15" preload="metadata">
+    <source src="audio/bab3/slide5_intersection_sim.wav" type="audio/wav">
+  </audio>
+  <audio id="audio-16" preload="metadata">
+    <source src="audio/bab4/slide1_altar.wav" type="audio/wav">
+  </audio>
+  <audio id="audio-17" preload="metadata">
+    <source src="audio/bab4/slide2_complex_puzzle.wav" type="audio/wav">
+  </audio>
+  <audio id="audio-18" preload="metadata">
+    <source src="audio/bab4/slide3_final_puzzle.wav" type="audio/wav">
+  </audio>
+  <audio id="audio-19" preload="metadata">
+    <source src="audio/bab4/slide4_epilog.wav" type="audio/wav">
+  </audio>
+  <audio id="audio-20" preload="metadata">
+    <source src="audio/game_over/slide1_failure.wav" type="audio/wav">
+  </audio>
+
+  <script>
+    (function() {
+      const slides = Array.from(document.querySelectorAll('.slide'));
+      const progressBar = document.getElementById('progress-bar');
+      const btnStart = document.getElementById('btn-start');
+      const btnHelp = document.getElementById('btn-help');
+      const btnToBab1 = document.getElementById('btn-to-bab1');
+      const notesEl = document.getElementById('notes');
+      const btnResep = document.getElementById('btn-resep');
+      const modalResep = document.getElementById('modal-resep');
+      const btnCloseResep = document.getElementById('btn-close-resep');
+      const btnClearNotes = document.getElementById('btn-clear-notes');
+      const toastEl = document.getElementById('toast');
+
+      const STORAGE_KEY = 'hh-progress-v1';
+      const NOTES_KEY = 'hh-notes-v1';
+      const MISTAKES_KEY = 'hh-mistakes-v1';
+      const AUDIO_ENABLED_KEY = 'hh-audio-enabled-v1';
+      const AUTOPLAY_ENABLED_KEY = 'hh-autoplay-enabled-v1';
+
+      // State
+      let index = 0;
+      const maxIndex = slides.length - 1;
+      let totalMistakes = 0;
+      const MAX_MISTAKES = 5; // Maksimal 5 kesalahan sebelum Game Over
+      let audioEnabled = true;
+      let autoplayEnabled = true;
+      let currentAudio = null;
+
+      function clamp(n, min, max) { return Math.max(min, Math.min(max, n)); }
+
+      function showToast(msg) {
+        toastEl.textContent = msg;
+        toastEl.classList.add('show');
+        setTimeout(() => toastEl.classList.remove('show'), 2400);
+      }
+
+      // Audio System Functions
+      function loadAudioSettings() {
+        try {
+          const saved = localStorage.getItem(AUDIO_ENABLED_KEY);
+          if (saved !== null) audioEnabled = saved === 'true';
+          
+          const autoplaySaved = localStorage.getItem(AUTOPLAY_ENABLED_KEY);
+          if (autoplaySaved !== null) autoplayEnabled = autoplaySaved === 'true';
+        } catch(e) {}
+        updateAudioToggleButton();
+      }
+
+      function saveAudioSettings() {
+        try { 
+          localStorage.setItem(AUDIO_ENABLED_KEY, String(audioEnabled));
+          localStorage.setItem(AUTOPLAY_ENABLED_KEY, String(autoplayEnabled));
+        } catch(e) {}
+      }
+
+      function updateAudioToggleButton() {
+        // Update autoplay indicator on all play buttons
+        updateAutoplayIndicators();
+      }
+
+      function updateAutoplayIndicators() {
+        document.querySelectorAll('[id^="btn-play-"]').forEach(btn => {
+          const currentText = btn.textContent;
+          const baseText = currentText.replace(' 🔄', '');
+          btn.textContent = autoplayEnabled ? baseText + ' 🔄' : baseText;
+        });
+      }
+
+      function stopCurrentAudio() {
+        if (currentAudio) {
+          currentAudio.pause();
+          currentAudio.currentTime = 0;
+          currentAudio = null;
+        }
+        // Update all play buttons to show play state
+        document.querySelectorAll('[id^="btn-play-"]').forEach(btn => {
+          btn.textContent = '▶️';
+          btn.title = 'Putar Narasi';
+        });
+      }
+
+      function playAudio(slideIndex) {
+        if (!audioEnabled) return;
+        
+        stopCurrentAudio();
+        
+        const audio = document.getElementById(`audio-${slideIndex}`);
+        if (audio) {
+          currentAudio = audio;
+          audio.play().catch(e => {
+            console.log('Audio play failed:', e);
+            showToast('⚠️ Audio tidak dapat diputar. Periksa pengaturan browser.');
+          });
+          
+          // Update play button
+          const btn = document.getElementById(`btn-play-${slideIndex}`);
+          if (btn) {
+            btn.textContent = '⏸️';
+            btn.title = 'Jeda Narasi';
+          }
+          
+          // Update time display
+          updateAudioTime(slideIndex);
+        }
+      }
+
+      function pauseAudio() {
+        if (currentAudio) {
+          currentAudio.pause();
+          const slideIndex = currentAudio.id.split('-')[1];
+          const btn = document.getElementById(`btn-play-${slideIndex}`);
+          if (btn) {
+            btn.textContent = '▶️';
+            btn.title = 'Putar Narasi';
+          }
+        }
+      }
+
+      function updateAudioTime(slideIndex) {
+        const audio = document.getElementById(`audio-${slideIndex}`);
+        const timeDisplay = document.getElementById(`audio-time-${slideIndex}`);
+        
+        if (audio && timeDisplay) {
+          const formatTime = (seconds) => {
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins}:${secs.toString().padStart(2, '0')}`;
+          };
+          
+          const updateTime = () => {
+            if (audio.duration) {
+              timeDisplay.textContent = `${formatTime(audio.currentTime)} / ${formatTime(audio.duration)}`;
+            }
+          };
+          
+          audio.addEventListener('timeupdate', updateTime);
+          audio.addEventListener('loadedmetadata', updateTime);
+          audio.addEventListener('ended', () => {
+            const btn = document.getElementById(`btn-play-${slideIndex}`);
+            if (btn) {
+              btn.textContent = '▶️';
+              btn.title = 'Putar Narasi';
+            }
+            currentAudio = null;
+          });
+        }
+      }
+
+      function persistIndex() {
+        try { localStorage.setItem(STORAGE_KEY, String(index)); } catch(e) {}
+      }
+      function loadIndex() {
+        try {
+          const s = localStorage.getItem(STORAGE_KEY);
+          if (s != null && !Number.isNaN(+s)) index = clamp(+s, 0, maxIndex);
+        } catch(e) {}
+      }
+
+      function loadMistakes() {
+        try {
+          const m = localStorage.getItem(MISTAKES_KEY);
+          if (m != null && !Number.isNaN(+m)) totalMistakes = Math.max(0, +m);
+        } catch(e) {}
+      }
+
+      function saveMistakes() {
+        try { localStorage.setItem(MISTAKES_KEY, String(totalMistakes)); } catch(e) {}
+      }
+
+      function addMistake() {
+        totalMistakes++;
+        saveMistakes();
+        
+        // Update UI to show mistake count
+        updateMistakeDisplay();
+        
+        // Check for Game Over
+        if (totalMistakes >= MAX_MISTAKES) {
+          showGameOver();
+        } else {
+          showToast(`⚠️ Kesalahan ${totalMistakes}/${MAX_MISTAKES}. Hati-hati!`);
+        }
+      }
+
+      function updateMistakeDisplay() {
+        // Add mistake counter to header if not exists
+        let mistakeCounter = document.getElementById('mistake-counter');
+        if (!mistakeCounter) {
+          mistakeCounter = document.createElement('div');
+          mistakeCounter.id = 'mistake-counter';
+          mistakeCounter.style.cssText = `
+            background: rgba(255,138,101,0.2);
+            border: 1px solid rgba(255,138,101,0.5);
+            border-radius: 8px;
+            padding: 0.25rem 0.5rem;
+            font-size: 12px;
+            color: var(--warn);
+            margin-left: 0.5rem;
+          `;
+          document.querySelector('.header-actions').appendChild(mistakeCounter);
+        }
+        mistakeCounter.textContent = `❌ ${totalMistakes}/${MAX_MISTAKES}`;
+      }
+
+      function showGameOver() {
+        // Navigate to Game Over slide
+        goTo(20); // Game Over slide index
+        
+        // Disable navigation buttons
+        document.querySelectorAll('.btn[data-next], .btn[data-prev]').forEach(btn => {
+          btn.disabled = true;
+        });
+        
+        // Add event listeners for Game Over slide buttons
+        setTimeout(() => {
+          const btnRestart = document.getElementById('btn-restart-from-gameover');
+          const btnReview = document.getElementById('btn-review-notes-from-gameover');
+          
+          if (btnRestart) {
+            btnRestart.addEventListener('click', () => {
+              restartGame();
+            });
+          }
+          
+          if (btnReview) {
+            btnReview.addEventListener('click', () => {
+              openResep();
+            });
+          }
+        }, 100);
+      }
+
+      function restartGame() {
+        // Reset all progress
+        localStorage.removeItem(STORAGE_KEY);
+        localStorage.removeItem(NOTES_KEY);
+        localStorage.removeItem(MISTAKES_KEY);
+        totalMistakes = 0;
+        index = 0;
+        
+        // Reset attempt counters
+        quizAttempts = 0;
+        puzzleAttempts = 0;
+        
+        // Re-enable navigation
+        document.querySelectorAll('.btn[data-next], .btn[data-prev]').forEach(btn => {
+          btn.disabled = false;
+        });
+        
+        // Remove mistake counter
+        const mistakeCounter = document.getElementById('mistake-counter');
+        if (mistakeCounter) mistakeCounter.remove();
+        
+        // Go to first slide
+        activateSlide(0);
+        showToast('🔄 Petualangan dimulai dari awal! Semangat!');
+      }
+
+      function updateProgress() {
+        const pct = (index / maxIndex) * 100;
+        progressBar.style.width = pct + '%';
+      }
+
+      function activateSlide(i) {
+        // Stop current audio when changing slides
+        stopCurrentAudio();
+        
+        slides.forEach((el, idx) => {
+          if (idx === i) el.classList.add('active'); else el.classList.remove('active');
+        });
+        updateProgress();
+        
+        // Autoplay audio for the new slide (skip first slide to avoid unwanted autoplay)
+        if (audioEnabled && autoplayEnabled && i > 0) {
+          // Small delay to ensure slide transition is complete
+          setTimeout(() => {
+            playAudio(i);
+          }, 300);
+        }
+        // A11y: move focus to slide heading if available
+        const active = slides[i];
+        const labelledBy = active.getAttribute('aria-labelledby');
+        if (labelledBy) {
+          const h = document.getElementById(labelledBy);
+          if (h) h.focus && h.focus();
+        }
+        // Hook: when entering certain slides, add notes and initialize features
+        if (i === 1) addNoteOnce('Prolog', 'Menerima misi menyeduh Ramuan Keseimbangan untuk memulihkan Kristal Logika.');
+        if (i === 2) addNoteOnce('Buku Resep Kuno', 'Buku Resep akan mencatat konsep himpunan yang dipelajari di tiap bab.');
+        if (i === 5) {
+          // Initialize quiz when entering quiz slide
+          setTimeout(() => initQuiz(), 100);
+        }
+        if (i === 9) {
+          // Initialize drag & drop game when entering drag & drop slide
+          setTimeout(() => initDragDrop(), 100);
+        }
+        if (i === 13) {
+          // Initialize union simulation when entering union slide
+          setTimeout(() => initUnionSimulation(), 100);
+        }
+        if (i === 15) {
+          // Initialize intersection simulation when entering intersection slide
+          setTimeout(() => initIntersectionSimulation(), 100);
+        }
+        if (i === 17) {
+          // Initialize complex puzzle when entering puzzle slide
+          setTimeout(() => initComplexPuzzle(), 100);
+        }
+        if (i === 18) {
+          // Initialize final puzzle when entering final puzzle slide
+          setTimeout(() => initFinalPuzzle(), 100);
+        }
+      }
+
+      function goTo(i) {
+        index = clamp(i, 0, maxIndex);
+        activateSlide(index);
+        persistIndex();
+      }
+
+      function next() { goTo(index + 1); }
+      function prev() { goTo(index - 1); }
+
+      // Notes (Buku Resep)
+      function getNotes() {
+        try { return JSON.parse(localStorage.getItem(NOTES_KEY) || '[]'); } catch(e) { return []; }
+      }
+      function setNotes(arr) {
+        try { localStorage.setItem(NOTES_KEY, JSON.stringify(arr)); } catch(e) {}
+      }
+      function renderNotes() {
+        const notes = getNotes();
+        notesEl.innerHTML = '';
+        if (!notes.length) {
+          const d = document.createElement('div');
+          d.className = 'note';
+          d.innerHTML = '<p>Belum ada catatan. Jelajahi prolog atau bab-bab untuk mengisi Buku Resep.</p>';
+          notesEl.appendChild(d);
+          return;
+        }
+        for (const n of notes) {
+          const el = document.createElement('div');
+          el.className = 'note';
+          el.innerHTML = `<h4>${n.title}</h4><p>${n.body}</p>`;
+          notesEl.appendChild(el);
+        }
+      }
+      function addNoteOnce(title, body) {
+        const notes = getNotes();
+        const exists = notes.some(n => n.title === title);
+        if (!exists) { notes.push({ title, body }); setNotes(notes); }
+      }
+
+      // Modal controls
+      function openResep() {
+        renderNotes();
+        modalResep.classList.add('open');
+        modalResep.setAttribute('aria-hidden', 'false');
+      }
+      function closeResep() {
+        modalResep.classList.remove('open');
+        modalResep.setAttribute('aria-hidden', 'true');
+      }
+
+      // Event bindings
+      document.querySelectorAll('[data-next]').forEach(b => b.addEventListener('click', next));
+      document.querySelectorAll('[data-prev]').forEach(b => b.addEventListener('click', prev));
+      btnStart && btnStart.addEventListener('click', () => goTo(1));
+      btnHelp && btnHelp.addEventListener('click', () => showToast('Geser layar atau gunakan tombol ⇦ ⇨ untuk navigasi.'));
+      btnResep.addEventListener('click', openResep);
+      btnCloseResep.addEventListener('click', closeResep);
+      btnClearNotes.addEventListener('click', () => { setNotes([]); renderNotes(); showToast('Catatan direset.'); });
+
+
+
+      // Play buttons for each slide (will be set up after audio controls are added)
+      function setupPlayButtons() {
+        for (let i = 0; i <= maxIndex; i++) {
+          const btnPlay = document.getElementById(`btn-play-${i}`);
+          if (btnPlay) {
+            btnPlay.addEventListener('click', () => {
+              if (currentAudio && currentAudio.id === `audio-${i}` && !currentAudio.paused) {
+                pauseAudio();
+              } else {
+                playAudio(i);
+              }
+            });
+          }
+        }
+      }
+
+      btnToBab1.addEventListener('click', () => {
+        showToast('Selamat datang di Bab 1: Gerbang Logika!');
+        goTo(3);
+      });
+
+      // Quiz functionality for Bab 1
+      let quizAnswers = [];
+      let currentQuizQuestion = 0;
+      const totalQuizQuestions = 3;
+      let quizAttempts = 0; // Track number of quiz attempts
+
+      function initQuiz() {
+        quizAnswers = [];
+        currentQuizQuestion = 0;
+        quizAttempts++; // Increment attempt counter
+        document.querySelectorAll('.quiz-option').forEach(btn => {
+          btn.addEventListener('click', handleQuizAnswer);
+          btn.disabled = false;
+          btn.style.opacity = '1';
+        });
+        document.querySelectorAll('.quiz-feedback').forEach(feedback => {
+          feedback.style.display = 'none';
+        });
+        document.getElementById('quiz-result').style.display = 'none';
+        document.getElementById('btn-next-bab1').style.display = 'none';
+      }
+
+      function handleQuizAnswer(e) {
+        const button = e.target;
+        const questionDiv = button.closest('.quiz-question');
+        const feedback = questionDiv.querySelector('.quiz-feedback');
+        const isCorrect = button.dataset.answer === 'true';
+        
+        // Disable all options in this question
+        questionDiv.querySelectorAll('.quiz-option').forEach(btn => {
+          btn.disabled = true;
+          if (btn.dataset.answer === 'true') {
+            // Don't show correct answer with green color
+            btn.style.opacity = '1';
+          } else {
+            btn.style.opacity = '0.5';
+          }
+        });
+
+        // Show feedback
+        feedback.style.display = 'block';
+        if (isCorrect) {
+          feedback.innerHTML = '<p style="margin: 0; color: var(--ok);">✅ Benar! Himpunan harus terdefinisi dengan jelas.</p>';
+          quizAnswers.push(true);
+        } else {
+          // Show different feedback based on attempt number
+          if (quizAttempts === 1) {
+            feedback.innerHTML = '<p style="margin: 0; color: var(--warn);">❌ Salah. Himpunan harus berisi objek yang terdefinisi dengan jelas, bukan sifat yang subjektif.</p>';
+          } else {
+            feedback.innerHTML = '<p style="margin: 0; color: var(--warn);">❌ Salah. Coba lagi.</p>';
+          }
+          quizAnswers.push(false);
+          addMistake(); // Add mistake for wrong answer
+        }
+
+        currentQuizQuestion++;
+        
+        // Check if all questions answered
+        if (currentQuizQuestion >= totalQuizQuestions) {
+          setTimeout(() => {
+            const correctAnswers = quizAnswers.filter(answer => answer).length;
+            const resultDiv = document.getElementById('quiz-result');
+            resultDiv.style.display = 'block';
+            
+            if (correctAnswers >= 2) {
+              resultDiv.innerHTML = '<p style="margin: 0; color: var(--ok);"><strong>🎉 Bagus! Kamu sudah memahami definisi himpunan!</strong></p>';
+              document.getElementById('btn-next-bab1').style.display = 'inline-block';
+              addNoteOnce('Definisi Himpunan', 'Himpunan adalah kumpulan objek yang terdefinisi dengan jelas. Setiap objek disebut anggota atau elemen himpunan.');
+            } else {
+              resultDiv.innerHTML = '<p style="margin: 0; color: var(--warn);"><strong>💪 Coba lagi! Review definisi himpunan dan coba jawab ulang.</strong></p>';
+              setTimeout(() => {
+                initQuiz();
+              }, 2000);
+            }
+          }, 1000);
+        }
+      }
+
+      // Drag & Drop functionality for Bab 2
+      let draggedElement = null;
+      let correctPlacements = 0;
+      const totalItems = 8;
+
+      function initDragDrop() {
+        console.log('initDragDrop called');
+        correctPlacements = 0;
+        const draggableItems = document.querySelectorAll('.draggable-item');
+        console.log('Found draggable items:', draggableItems.length);
+        draggableItems.forEach(item => {
+          item.draggable = true;
+          item.addEventListener('dragstart', handleDragStart);
+          item.addEventListener('dragend', handleDragEnd);
+          
+          // Touch events for mobile
+          item.addEventListener('touchstart', handleTouchStart, { passive: false });
+          item.addEventListener('touchmove', handleTouchMove, { passive: false });
+          item.addEventListener('touchend', handleTouchEnd, { passive: false });
+          
+          console.log('Touch events registered for item:', { item, category: item.dataset.category });
+        });
+
+        const dropZones = document.querySelectorAll('.drop-zone');
+        console.log('Found drop zones:', dropZones.length);
+        dropZones.forEach(zone => {
+          zone.addEventListener('dragover', handleDragOver);
+          zone.addEventListener('drop', handleDrop);
+          zone.addEventListener('dragenter', handleDragEnter);
+          zone.addEventListener('dragleave', handleDragLeave);
+          
+          // Touch events for mobile
+          zone.addEventListener('touchmove', handleTouchMove, { passive: false });
+          zone.addEventListener('touchend', handleTouchEnd, { passive: false });
+          
+          console.log('Touch events registered for drop zone:', { zone, set: zone.dataset.set });
+        });
+
+        // Clear any existing items in drop areas
+        const dropAreas = document.querySelectorAll('.drop-area');
+        console.log('Found drop areas:', dropAreas.length);
+        dropAreas.forEach(area => {
+          area.innerHTML = '';
+        });
+
+        // Reset result display
+        document.getElementById('drag-drop-result').style.display = 'none';
+        document.getElementById('btn-next-bab2').style.display = 'none';
+        
+        // Add reset button event listener
+        const btnReset = document.getElementById('btn-reset-dragdrop');
+        if (btnReset) {
+          btnReset.addEventListener('click', resetDragDropGame);
+        }
+      }
+
+      function handleDragStart(e) {
+        draggedElement = e.target;
+        e.target.style.opacity = '0.5';
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/html', e.target.outerHTML);
+      }
+
+      function handleDragEnd(e) {
+        e.target.style.opacity = '1';
+        draggedElement = null;
+      }
+
+      // Touch event handlers for mobile
+      let touchStartX = 0;
+      let touchStartY = 0;
+      let touchElement = null;
+
+      function handleTouchStart(e) {
+        e.preventDefault();
+        touchElement = e.target;
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+        touchElement.style.opacity = '0.5';
+        touchElement.style.transform = 'scale(1.1)';
+        touchElement.style.zIndex = '1000';
+        touchElement.style.position = 'relative';
+        touchElement.classList.add('dragging');
+        
+        console.log('Touch start:', { 
+          element: touchElement, 
+          category: touchElement.dataset.category,
+          position: { x: touchStartX, y: touchStartY }
+        });
+      }
+
+      function handleTouchMove(e) {
+        if (!touchElement) return;
+        e.preventDefault();
+        
+        const touch = e.touches[0];
+        const deltaX = touch.clientX - touchStartX;
+        const deltaY = touch.clientY - touchStartY;
+        
+        touchElement.style.transform = `translate(${deltaX}px, ${deltaY}px) scale(1.1)`;
+        
+        // Check if over a drop zone
+        const elementBelow = document.elementFromPoint(touch.clientX, touch.clientY);
+        const dropZone = elementBelow?.closest('.drop-zone');
+        
+        // Reset all drop zones first
+        const dropZones = document.querySelectorAll('.drop-zone');
+        console.log('Found drop zones:', dropZones.length);
+        dropZones.forEach(zone => {
+          zone.style.backgroundColor = '';
+          zone.style.borderColor = '';
+        });
+        
+        if (dropZone) {
+          // Check if it's a valid drop
+          const itemCategory = touchElement.dataset.category;
+          const zoneCategory = dropZone.dataset.set;
+          
+          console.log('Touch move over drop zone:', { itemCategory, zoneCategory, isValid: itemCategory === zoneCategory });
+          
+          if (itemCategory === zoneCategory) {
+            // Valid drop zone - green highlight
+            dropZone.style.backgroundColor = 'rgba(81, 216, 138, 0.2)';
+            dropZone.style.borderColor = 'rgba(81, 216, 138, 0.8)';
+          } else {
+            // Invalid drop zone - red highlight
+            dropZone.style.backgroundColor = 'rgba(248, 113, 113, 0.2)';
+            dropZone.style.borderColor = 'rgba(248, 113, 113, 0.8)';
+          }
+        }
+      }
+
+      function handleTouchEnd(e) {
+        if (!touchElement) return;
+        e.preventDefault();
+        
+        const touch = e.changedTouches[0];
+        const elementBelow = document.elementFromPoint(touch.clientX, touch.clientY);
+        const dropZone = elementBelow?.closest('.drop-zone');
+        
+        console.log('Touch end:', { 
+          elementBelow, 
+          dropZone, 
+          touchElement: touchElement?.dataset?.category 
+        });
+        
+        if (dropZone) {
+          // Simulate drop
+          const dropEvent = new Event('drop');
+          dropEvent.target = dropZone;
+          dropEvent.preventDefault = () => {};
+          
+          // Call handleDrop directly with proper context
+          const dropArea = dropZone.querySelector('.drop-area');
+          const itemCategory = touchElement.dataset.category;
+          const zoneCategory = dropZone.dataset.set;
+          
+          console.log('Touch drop:', { itemCategory, zoneCategory, dropArea, dropZone });
+          console.log('Drop zone children:', dropZone.children);
+          console.log('Drop zone innerHTML:', dropZone.innerHTML);
+          
+          if (!dropArea) {
+            console.error('Drop area not found in drop zone:', dropZone);
+            return;
+          }
+          
+          if (itemCategory === zoneCategory) {
+            // Correct placement
+            const clonedItem = touchElement.cloneNode(true);
+            clonedItem.style.opacity = '1';
+            clonedItem.style.cursor = 'default';
+            clonedItem.draggable = false;
+            dropArea.appendChild(clonedItem);
+            
+            console.log('Item successfully dropped:', { clonedItem, dropArea });
+            console.log('Drop area after append:', dropArea.innerHTML);
+            
+            // Remove original item
+            touchElement.remove();
+            correctPlacements++;
+            
+            console.log('Original item removed, correctPlacements:', correctPlacements);
+            
+            // Visual feedback
+            dropZone.style.borderColor = 'rgba(81,216,138,0.8)';
+            dropZone.style.backgroundColor = 'rgba(81,216,138,0.2)';
+            
+            showToast('✅ Benar! Item ditempatkan dengan tepat.');
+          } else {
+            // Wrong placement
+            console.log('Wrong placement:', { itemCategory, zoneCategory });
+            showToast('❌ Salah zona! Coba tempatkan di zona yang benar.');
+            touchElement.style.opacity = '1';
+            addMistake();
+          }
+          
+          // Check if all items are placed correctly
+          console.log('Placement progress:', { correctPlacements, totalItems });
+          if (correctPlacements >= totalItems) {
+            setTimeout(() => {
+              const resultDiv = document.getElementById('drag-drop-result');
+              const nextBtn = document.getElementById('btn-next-bab2');
+              if (resultDiv) resultDiv.style.display = 'block';
+              if (nextBtn) nextBtn.style.display = 'block';
+              showToast('🎉 Selamat! Semua item berhasil ditempatkan dengan benar!');
+            }, 500);
+          }
+        } else {
+          // Reset element position if not dropped on valid zone
+          touchElement.style.opacity = '1';
+          touchElement.style.transform = '';
+        }
+        
+        // Reset styles
+        touchElement.style.zIndex = '';
+        touchElement.style.position = '';
+        touchElement.classList.remove('dragging');
+        
+        // Reset drop zone styles
+        const dropZones = document.querySelectorAll('.drop-zone');
+        console.log('Found drop zones:', dropZones.length);
+        dropZones.forEach(zone => {
+          zone.style.backgroundColor = '';
+          zone.style.borderColor = '';
+        });
+        
+        touchElement = null;
+      }
+
+      function handleDragOver(e) {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+      }
+
+      function handleDragEnter(e) {
+        e.preventDefault();
+        e.target.style.borderColor = 'rgba(122,227,255,0.8)';
+        e.target.style.backgroundColor = 'rgba(122,227,255,0.2)';
+      }
+
+      function handleDragLeave(e) {
+        e.target.style.borderColor = 'rgba(122,227,255,0.5)';
+        e.target.style.backgroundColor = 'rgba(122,227,255,0.1)';
+      }
+
+      function handleDrop(e) {
+        e.preventDefault();
+        e.target.style.borderColor = 'rgba(122,227,255,0.5)';
+        e.target.style.backgroundColor = 'rgba(122,227,255,0.1)';
+
+        const elementToDrop = draggedElement || touchElement;
+        if (elementToDrop) {
+          const dropZone = e.target.closest('.drop-zone');
+          const dropArea = dropZone.querySelector('.drop-area');
+          const itemCategory = elementToDrop.dataset.category;
+          const zoneCategory = dropZone.dataset.set;
+
+          // Check if the item is being dropped in the correct zone
+          if (itemCategory === zoneCategory) {
+            // Correct placement
+            const clonedItem = draggedElement.cloneNode(true);
+            clonedItem.style.opacity = '1';
+            clonedItem.style.cursor = 'default';
+            clonedItem.draggable = false;
+            dropArea.appendChild(clonedItem);
+            
+            // Remove original item
+            elementToDrop.remove();
+            correctPlacements++;
+            
+            // Visual feedback
+            dropZone.style.borderColor = 'rgba(81,216,138,0.8)';
+            dropZone.style.backgroundColor = 'rgba(81,216,138,0.2)';
+            
+            showToast('✅ Benar! Item ditempatkan dengan tepat.');
+          } else {
+            // Wrong placement
+            showToast('❌ Salah zona! Coba tempatkan di zona yang benar.');
+            elementToDrop.style.opacity = '1';
+            addMistake(); // Add mistake for wrong placement
+          }
+
+          // Check if all items are placed correctly
+          if (correctPlacements >= totalItems) {
+            setTimeout(() => {
+              const resultDiv = document.getElementById('drag-drop-result');
+              resultDiv.style.display = 'block';
+              document.getElementById('btn-next-bab2').style.display = 'inline-block';
+              addNoteOnce('Keanggotaan Himpunan', 'Keanggotaan (∈) menentukan apakah objek termasuk dalam himpunan. Himpunan kosong (∅) tidak memiliki anggota, sedangkan himpunan universal (U) berisi semua objek yang dibicarakan.');
+            }, 1000);
+          }
+        }
+      }
+
+      function resetDragDropGame() {
+        // Reset game state
+        correctPlacements = 0;
+        
+        // Clear all drop areas
+        document.querySelectorAll('.drop-area').forEach(area => {
+          area.innerHTML = '';
+        });
+        
+        // Reset drop zones styling
+        const dropZones = document.querySelectorAll('.drop-zone');
+        console.log('Found drop zones:', dropZones.length);
+        dropZones.forEach(zone => {
+          zone.style.borderColor = 'rgba(122,227,255,0.5)';
+          zone.style.backgroundColor = 'rgba(122,227,255,0.1)';
+        });
+        
+        // Recreate draggable items (they were removed when dropped)
+        const draggableItemsContainer = document.querySelector('.draggable-items');
+        draggableItemsContainer.innerHTML = `
+          <div class="draggable-item" data-category="hewan-bersayap" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 0.5rem 1rem; cursor: grab; user-select: none;">🦅 Elang</div>
+          <div class="draggable-item" data-category="buah-buahan" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 0.5rem 1rem; cursor: grab; user-select: none;">🍎 Apel</div>
+          <div class="draggable-item" data-category="hewan-bersayap" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 0.5rem 1rem; cursor: grab; user-select: none;">🦋 Kupu-kupu</div>
+          <div class="draggable-item" data-category="buah-buahan" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 0.5rem 1rem; cursor: grab; user-select: none;">🍌 Pisang</div>
+          <div class="draggable-item" data-category="hewan-bersayap" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 0.5rem 1rem; cursor: grab; user-select: none;">🐝 Lebah</div>
+          <div class="draggable-item" data-category="buah-buahan" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 0.5rem 1rem; cursor: grab; user-select: none;">🍊 Jeruk</div>
+          <div class="draggable-item" data-category="hewan-bersayap" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 0.5rem 1rem; cursor: grab; user-select: none;">🦆 Bebek</div>
+          <div class="draggable-item" data-category="buah-buahan" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 0.5rem 1rem; cursor: grab; user-select: none;">🍇 Anggur</div>
+        `;
+        
+        // Re-initialize drag and drop functionality
+        const draggableItems = document.querySelectorAll('.draggable-item');
+        console.log('Found draggable items:', draggableItems.length);
+        draggableItems.forEach(item => {
+          item.draggable = true;
+          item.addEventListener('dragstart', handleDragStart);
+          item.addEventListener('dragend', handleDragEnd);
+          
+          // Touch events for mobile
+          item.addEventListener('touchstart', handleTouchStart, { passive: false });
+          item.addEventListener('touchmove', handleTouchMove, { passive: false });
+          item.addEventListener('touchend', handleTouchEnd, { passive: false });
+          
+          console.log('Touch events registered for item:', { item, category: item.dataset.category });
+        });
+        
+        // Hide result and next button
+        document.getElementById('drag-drop-result').style.display = 'none';
+        document.getElementById('btn-next-bab2').style.display = 'none';
+        
+        showToast('🔄 Game drag & drop direset! Coba lagi.');
+      }
+
+      // Union Simulation functionality
+      function initUnionSimulation() {
+        const btnRunUnion = document.getElementById('btn-run-union');
+        if (btnRunUnion) {
+          btnRunUnion.addEventListener('click', runUnionSimulation);
+        }
+        
+        // Reset result display
+        const resultDiv = document.getElementById('union-result');
+        if (resultDiv) {
+          resultDiv.style.display = 'none';
+        }
+      }
+
+      function runUnionSimulation() {
+        const resultDiv = document.getElementById('union-result');
+        const resultItems = resultDiv.querySelector('.result-items');
+        
+        // Data untuk simulasi gabungan
+        const setA = ['🐟 Ikan', '🦐 Udang', '🦀 Kepiting'];
+        const setB = ['🦅 Burung', '🦆 Bebek', '🦢 Angsa'];
+        
+        // Gabungan (union) - semua elemen dari A dan B
+        const union = [...new Set([...setA, ...setB])];
+        
+        // Tampilkan hasil
+        resultDiv.style.display = 'block';
+        resultItems.innerHTML = '';
+        
+        // Animasi menampilkan elemen satu per satu
+        union.forEach((item, index) => {
+          setTimeout(() => {
+            const span = document.createElement('span');
+            span.style.background = 'rgba(81,216,138,0.3)';
+            span.style.padding = '0.25rem 0.5rem';
+            span.style.borderRadius = '6px';
+            span.style.fontSize = '14px';
+            span.style.animation = 'fadeIn 0.5s ease';
+            span.textContent = item;
+            resultItems.appendChild(span);
+          }, index * 300);
+        });
+        
+        // Update judul hasil
+        const title = resultDiv.querySelector('h4');
+        title.textContent = `A ∪ B = {${union.join(', ')}}`;
+        
+        showToast('🎉 Simulasi gabungan selesai! Semua elemen dari A dan B digabungkan.');
+        
+        // Add note to recipe book
+        addNoteOnce('Operasi Gabungan (∪)', 'Gabungan A ∪ B adalah himpunan semua elemen yang ada di A atau di B (atau keduanya).');
+      }
+
+      // Intersection Simulation functionality
+      function initIntersectionSimulation() {
+        const btnRunIntersection = document.getElementById('btn-run-intersection');
+        if (btnRunIntersection) {
+          btnRunIntersection.addEventListener('click', runIntersectionSimulation);
+        }
+        
+        // Reset result display
+        const resultDiv = document.getElementById('intersection-result');
+        if (resultDiv) {
+          resultDiv.style.display = 'none';
+        }
+      }
+
+      function runIntersectionSimulation() {
+        const resultDiv = document.getElementById('intersection-result');
+        const resultItems = resultDiv.querySelector('.result-items');
+        
+        // Data untuk simulasi irisan
+        const setA = ['🦆 Bebek', '🦢 Angsa', '🐟 Ikan'];
+        const setB = ['🦆 Bebek', '🦢 Angsa', '🦅 Burung'];
+        
+        // Irisan (intersection) - elemen yang ada di A dan B
+        const intersection = setA.filter(item => setB.includes(item));
+        
+        // Tampilkan hasil
+        resultDiv.style.display = 'block';
+        resultItems.innerHTML = '';
+        
+        if (intersection.length > 0) {
+          // Animasi menampilkan elemen satu per satu
+          intersection.forEach((item, index) => {
+            setTimeout(() => {
+              const span = document.createElement('span');
+              span.style.background = 'rgba(255,138,101,0.3)';
+              span.style.padding = '0.25rem 0.5rem';
+              span.style.borderRadius = '6px';
+              span.style.fontSize = '14px';
+              span.style.animation = 'fadeIn 0.5s ease';
+              span.textContent = item;
+              resultItems.appendChild(span);
+            }, index * 300);
+          });
+          
+          // Update judul hasil
+          const title = resultDiv.querySelector('h4');
+          title.textContent = `A ∩ B = {${intersection.join(', ')}}`;
+          
+          showToast('🎯 Simulasi irisan selesai! Elemen yang ada di kedua himpunan ditemukan.');
+        } else {
+          // Himpunan kosong
+          const title = resultDiv.querySelector('h4');
+          title.textContent = 'A ∩ B = ∅ (himpunan kosong)';
+          resultItems.innerHTML = '<p style="margin: 0; color: var(--muted);">Tidak ada elemen yang sama di kedua himpunan.</p>';
+          showToast('📭 Irisan adalah himpunan kosong! Tidak ada elemen yang sama.');
+        }
+        
+        // Add note to recipe book
+        addNoteOnce('Operasi Irisan (∩)', 'Irisan A ∩ B adalah himpunan semua elemen yang ada di A dan juga di B.');
+      }
+
+      // Complex Puzzle functionality for Bab 4
+      let puzzleAnswers = [];
+      let currentPuzzleQuestion = 0;
+      const totalPuzzleQuestions = 3;
+      let puzzleAttempts = 0; // Track number of puzzle attempts
+
+      function initComplexPuzzle() {
+        puzzleAnswers = [];
+        currentPuzzleQuestion = 0;
+        puzzleAttempts++; // Increment attempt counter
+        document.querySelectorAll('.puzzle-option').forEach(btn => {
+          btn.addEventListener('click', handlePuzzleAnswer);
+          btn.disabled = false;
+          btn.style.opacity = '1';
+        });
+        document.querySelectorAll('.puzzle-feedback').forEach(feedback => {
+          feedback.style.display = 'none';
+        });
+        document.getElementById('puzzle-result').style.display = 'none';
+        document.getElementById('btn-next-puzzle').style.display = 'none';
+      }
+
+      function handlePuzzleAnswer(e) {
+        const button = e.target;
+        const questionDiv = button.closest('.puzzle-question');
+        const feedback = questionDiv.querySelector('.puzzle-feedback');
+        const isCorrect = button.dataset.answer === getCorrectAnswer(currentPuzzleQuestion);
+        
+        // Disable all options in this question
+        questionDiv.querySelectorAll('.puzzle-option').forEach(btn => {
+          btn.disabled = true;
+          if (btn.dataset.answer === getCorrectAnswer(currentPuzzleQuestion)) {
+            // Don't show correct answer with green color
+            btn.style.opacity = '1';
+          } else {
+            btn.style.opacity = '0.5';
+          }
+        });
+
+        // Show feedback
+        feedback.style.display = 'block';
+        if (isCorrect) {
+          feedback.innerHTML = '<p style="margin: 0; color: var(--ok);">✅ Benar! Jawaban yang tepat.</p>';
+          puzzleAnswers.push(true);
+        } else {
+          // Show different feedback based on attempt number
+          if (puzzleAttempts === 1) {
+            feedback.innerHTML = '<p style="margin: 0; color: var(--warn);">❌ Salah. Coba analisis himpunan dengan lebih teliti.</p>';
+          } else {
+            feedback.innerHTML = '<p style="margin: 0; color: var(--warn);">❌ Salah. Coba lagi.</p>';
+          }
+          puzzleAnswers.push(false);
+          addMistake(); // Add mistake for wrong answer
+        }
+
+        currentPuzzleQuestion++;
+        
+        // Check if all questions answered
+        if (currentPuzzleQuestion >= totalPuzzleQuestions) {
+          setTimeout(() => {
+            const correctAnswers = puzzleAnswers.filter(answer => answer).length;
+            const resultDiv = document.getElementById('puzzle-result');
+            resultDiv.style.display = 'block';
+            
+            if (correctAnswers >= 2) {
+              resultDiv.innerHTML = '<p style="margin: 0; color: var(--ok);"><strong>🎉 Bagus! Kamu berhasil menyelesaikan puzzle analisis himpunan!</strong></p>';
+              document.getElementById('btn-next-puzzle').style.display = 'inline-block';
+              addNoteOnce('Pemecahan Masalah Himpunan', 'Berhasil menganalisis himpunan kompleks dan menyelesaikan operasi gabungan, irisan, dan keanggotaan.');
+            } else {
+              resultDiv.innerHTML = '<p style="margin: 0; color: var(--warn);"><strong>💪 Coba lagi! Review konsep himpunan dan coba jawab ulang.</strong></p>';
+              setTimeout(() => {
+                initComplexPuzzle();
+              }, 2000);
+            }
+          }, 1000);
+        }
+      }
+
+      function getCorrectAnswer(questionIndex) {
+        const answers = ['7', 'burung', 'true']; // Jawaban yang benar untuk setiap pertanyaan
+        return answers[questionIndex];
+      }
+
+      // Final Puzzle functionality for Bab 4
+      let selectedIngredients = [];
+      const requiredIngredients = 3;
+
+      function initFinalPuzzle() {
+        selectedIngredients = [];
+        document.querySelectorAll('.ingredient').forEach(ingredient => {
+          ingredient.addEventListener('click', handleIngredientClick);
+          ingredient.style.opacity = '1';
+        });
+        
+        // Clear potion container
+        const potionContainer = document.querySelector('.potion-container');
+        potionContainer.innerHTML = '<p style="margin: 0; color: var(--muted); font-size: 14px; width: 100%;">Seret 3 bahan ke sini...</p>';
+        
+        // Reset result display
+        document.getElementById('potion-result').style.display = 'none';
+        document.getElementById('btn-next-final').style.display = 'none';
+        
+        // Add event listeners for buttons
+        document.getElementById('btn-brew-potion').addEventListener('click', brewPotion);
+        document.getElementById('btn-reset-potion').addEventListener('click', resetPotion);
+      }
+
+      function handleIngredientClick(e) {
+        const ingredient = e.target;
+        const concept = ingredient.dataset.concept;
+        
+        if (selectedIngredients.length < requiredIngredients && !selectedIngredients.includes(concept)) {
+          // Add to potion
+          selectedIngredients.push(concept);
+          const potionContainer = document.querySelector('.potion-container');
+          
+          // Remove instruction text if first ingredient
+          if (selectedIngredients.length === 1) {
+            potionContainer.innerHTML = '';
+          }
+          
+          // Create ingredient element in potion
+          const potionIngredient = document.createElement('div');
+          potionIngredient.style.background = 'rgba(255,200,87,0.3)';
+          potionIngredient.style.padding = '0.5rem';
+          potionIngredient.style.borderRadius = '8px';
+          potionIngredient.style.cursor = 'pointer';
+          potionIngredient.style.animation = 'fadeIn 0.5s ease';
+          potionIngredient.textContent = ingredient.textContent;
+          potionIngredient.addEventListener('click', () => removeIngredient(concept, potionIngredient));
+          
+          potionContainer.appendChild(potionIngredient);
+          
+          // Visual feedback
+          ingredient.style.opacity = '0.5';
+          ingredient.style.cursor = 'not-allowed';
+          
+          showToast(`✅ ${ingredient.textContent} ditambahkan ke ramuan!`);
+        } else if (selectedIngredients.includes(concept)) {
+          showToast('⚠️ Bahan ini sudah ada di ramuan!');
+        } else {
+          showToast('⚠️ Ramuan sudah penuh! Klik bahan di ramuan untuk menghapus.');
+        }
+      }
+
+      function removeIngredient(concept, element) {
+        selectedIngredients = selectedIngredients.filter(c => c !== concept);
+        element.remove();
+        
+        // Re-enable ingredient
+        const originalIngredient = document.querySelector(`[data-concept="${concept}"]`);
+        originalIngredient.style.opacity = '1';
+        originalIngredient.style.cursor = 'pointer';
+        
+        showToast('🗑️ Bahan dihapus dari ramuan!');
+      }
+
+      function brewPotion() {
+        if (selectedIngredients.length !== requiredIngredients) {
+          showToast('⚠️ Pilih tepat 3 bahan untuk ramuan!');
+          return;
+        }
+        
+        // Check if the combination is correct - specific valid combinations
+        const validCombinations = [
+          ['definisi', 'keanggotaan', 'gabungan'],
+          ['definisi', 'keanggotaan', 'irisan'],
+          ['definisi', 'gabungan', 'irisan'],
+          ['keanggotaan', 'gabungan', 'irisan'],
+          ['definisi', 'keanggotaan', 'kosong'],
+          ['definisi', 'gabungan', 'universal'],
+          ['keanggotaan', 'irisan', 'universal']
+        ];
+        
+        // Sort selected ingredients to match with valid combinations
+        const sortedSelected = [...selectedIngredients].sort();
+        const isValid = validCombinations.some(combo => {
+          const sortedCombo = [...combo].sort();
+          return JSON.stringify(sortedSelected) === JSON.stringify(sortedCombo);
+        });
+        
+        if (isValid) {
+          // Success!
+          const resultDiv = document.getElementById('potion-result');
+          resultDiv.style.display = 'block';
+          document.getElementById('btn-next-final').style.display = 'inline-block';
+          
+          showToast('🎉 Ramuan Keseimbangan berhasil diseduh! Kristal Logika mulai pulih!');
+          addNoteOnce('Ramuan Keseimbangan', 'Berhasil menyeduh Ramuan Keseimbangan dengan menggabungkan 3 konsep himpunan yang tepat untuk memulihkan Kristal Logika.');
+        } else {
+          showToast('❌ Kombinasi bahan tidak tepat! Coba kombinasi lain.');
+          addMistake(); // Add mistake for wrong combination
+        }
+      }
+
+      function resetPotion() {
+        selectedIngredients = [];
+        document.querySelectorAll('.ingredient').forEach(ingredient => {
+          ingredient.style.opacity = '1';
+          ingredient.style.cursor = 'pointer';
+        });
+        
+        const potionContainer = document.querySelector('.potion-container');
+        potionContainer.innerHTML = '<p style="margin: 0; color: var(--muted); font-size: 14px; width: 100%;">Seret 3 bahan ke sini...</p>';
+        
+        document.getElementById('potion-result').style.display = 'none';
+        document.getElementById('btn-next-final').style.display = 'none';
+        
+        showToast('🔄 Ramuan direset! Coba lagi.');
+      }
+
+      // Final buttons functionality
+      document.addEventListener('DOMContentLoaded', () => {
+        const btnRestart = document.getElementById('btn-restart');
+        const btnViewNotes = document.getElementById('btn-view-notes');
+        
+        if (btnRestart) {
+          btnRestart.addEventListener('click', () => {
+            if (confirm('Apakah Anda yakin ingin memulai petualangan dari awal?')) {
+              localStorage.removeItem(STORAGE_KEY);
+              localStorage.removeItem(NOTES_KEY);
+              location.reload();
+            }
+          });
+        }
+        
+        if (btnViewNotes) {
+          btnViewNotes.addEventListener('click', () => {
+            openResep();
+          });
+        }
+      });
+
+      // Keyboard
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight') next();
+        else if (e.key === 'ArrowLeft') prev();
+        else if (e.key === 'Escape' && modalResep.classList.contains('open')) closeResep();
+        else if (e.key === ' ' && !e.target.matches('input, textarea')) {
+          e.preventDefault();
+          // Toggle audio for current slide
+          if (currentAudio && !currentAudio.paused) {
+            pauseAudio();
+          } else {
+            playAudio(index);
+          }
+        }
+        else if (e.key === 'm' || e.key === 'M') {
+          // Toggle audio on/off
+          audioEnabled = !audioEnabled;
+          saveAudioSettings();
+          updateAudioToggleButton();
+          if (!audioEnabled) {
+            stopCurrentAudio();
+            showToast('🔇 Audio dinonaktifkan');
+          } else {
+            showToast('🔊 Audio diaktifkan');
+          }
+        }
+        else if (e.key === 'a' || e.key === 'A') {
+          // Toggle autoplay on/off
+          autoplayEnabled = !autoplayEnabled;
+          saveAudioSettings();
+          updateAudioToggleButton();
+          if (!autoplayEnabled) {
+            showToast('⏸️ Autoplay dinonaktifkan');
+          } else {
+            showToast('▶️ Autoplay diaktifkan');
+            if (audioEnabled) {
+              playAudio(index);
+            }
+          }
+        }
+
+      });
+
+      // Touch (swipe)
+      let tStartX = 0, tStartY = 0, tTime = 0;
+      const SWIPE_T = 400; // ms
+      const SWIPE_X = 50;  // px
+      const SWIPE_Y = 60;  // px tolerance
+
+      function onTouchStart(ev) {
+        const t = ev.changedTouches[0];
+        tStartX = t.clientX; tStartY = t.clientY; tTime = Date.now();
+      }
+      function onTouchEnd(ev) {
+        const t = ev.changedTouches[0];
+        const dx = t.clientX - tStartX; const dy = Math.abs(t.clientY - tStartY);
+        const dt = Date.now() - tTime;
+        if (dt < SWIPE_T && Math.abs(dx) > SWIPE_X && dy < SWIPE_Y) {
+          if (dx < 0) next(); else prev();
+        }
+      }
+      document.getElementById('slides').addEventListener('touchstart', onTouchStart, { passive: true });
+      document.getElementById('slides').addEventListener('touchend', onTouchEnd, { passive: true });
+
+      // Add audio controls to all slides that don't have them
+      function addAudioControlsToSlides() {
+        slides.forEach((slide, i) => {
+          const card = slide.querySelector('.card');
+          const cta = card.querySelector('.cta');
+          const existingAudioControls = card.querySelector('.audio-controls');
+          
+          if (!existingAudioControls && cta) {
+            const audioControls = document.createElement('div');
+            audioControls.className = 'audio-controls';
+            audioControls.style.cssText = 'display: flex; align-items: center; gap: 0.5rem; margin: 1rem 0; justify-content: center;';
+            const autoplayIndicator = autoplayEnabled ? ' 🔄' : '';
+            audioControls.innerHTML = `
+              <button class="btn" id="btn-play-${i}" title="Putar Narasi">▶️${autoplayIndicator}</button>
+              <span class="audio-time" id="audio-time-${i}" style="font-size: 12px; color: var(--muted);">0:00 / 0:00</span>
+            `;
+            cta.parentNode.insertBefore(audioControls, cta);
+          }
+        });
+      }
+
+      // Init
+      loadIndex();
+      loadMistakes();
+      loadAudioSettings();
+      addAudioControlsToSlides();
+      setupPlayButtons();
+      updateAutoplayIndicators();
+      activateSlide(index);
+      
+      // Show mistake counter if there are any mistakes
+      if (totalMistakes > 0) {
+        updateMistakeDisplay();
+      }
+    })();
+  </script>
+</body>
 </html>
-    <link rel="stylesheet" href="index.css">
-<script src="index.tsx" type="module"></script>
