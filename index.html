@@ -1689,49 +1689,32 @@
           btn.disabled = true;
         });
         
-        // Add event listeners for Game Over slide buttons
+        // Setup restart buttons for Game Over slide
         setTimeout(() => {
-          const btnRestart = document.getElementById('btn-restart-from-gameover');
-          const btnReview = document.getElementById('btn-review-notes-from-gameover');
-          
-          if (btnRestart) {
-            btnRestart.addEventListener('click', () => {
-              restartGame();
-            });
-          }
-          
-          if (btnReview) {
-            btnReview.addEventListener('click', () => {
-              openResep();
-            });
-          }
+          setupRestartButtons();
         }, 100);
       }
 
       function restartGame() {
-        // Reset all progress
+        console.log('restartGame() called');
+        
+        // Reset all progress and storage
         localStorage.removeItem(STORAGE_KEY);
         localStorage.removeItem(NOTES_KEY);
         localStorage.removeItem(MISTAKES_KEY);
-        totalMistakes = 0;
-        index = 0;
+        localStorage.removeItem(AUDIO_ENABLED_KEY);
+        localStorage.removeItem(AUTOPLAY_ENABLED_KEY);
         
-        // Reset attempt counters
-        quizAttempts = 0;
-        puzzleAttempts = 0;
+        console.log('Local storage cleared');
         
-        // Re-enable navigation
-        document.querySelectorAll('.btn[data-next], .btn[data-prev]').forEach(btn => {
-          btn.disabled = false;
-        });
+        // Show confirmation toast
+        showToast('🔄 Memulai petualangan baru...');
         
-        // Remove mistake counter
-        const mistakeCounter = document.getElementById('mistake-counter');
-        if (mistakeCounter) mistakeCounter.remove();
-        
-        // Go to first slide
-        activateSlide(0);
-        showToast('🔄 Petualangan dimulai dari awal! Semangat!');
+        // Reload the page to ensure complete reset
+        setTimeout(() => {
+          console.log('Reloading page...');
+          location.reload();
+        }, 1000);
       }
 
       function updateProgress() {
@@ -2885,27 +2868,74 @@
         showToast('🔄 Ramuan direset! Coba lagi.');
       }
 
-      // Final buttons functionality
-      document.addEventListener('DOMContentLoaded', () => {
+      // Final buttons functionality - Setup restart buttons
+      function setupRestartButtons() {
+        console.log('Setting up restart buttons...');
+        
+        // Success ending restart button
         const btnRestart = document.getElementById('btn-restart');
         const btnViewNotes = document.getElementById('btn-view-notes');
         
         if (btnRestart) {
-          btnRestart.addEventListener('click', () => {
+          console.log('Found success ending restart button');
+          // Remove existing listeners
+          const newBtnRestart = btnRestart.cloneNode(true);
+          btnRestart.parentNode.replaceChild(newBtnRestart, btnRestart);
+          
+          newBtnRestart.addEventListener('click', (e) => {
+            console.log('Success restart button clicked');
+            e.preventDefault();
+            e.stopPropagation();
             if (confirm('Apakah Anda yakin ingin memulai petualangan dari awal?')) {
-              localStorage.removeItem(STORAGE_KEY);
-              localStorage.removeItem(NOTES_KEY);
-              location.reload();
+              restartGame();
             }
           });
+        } else {
+          console.log('Success ending restart button not found');
         }
         
         if (btnViewNotes) {
-          btnViewNotes.addEventListener('click', () => {
+          // Remove existing listeners
+          const newBtnViewNotes = btnViewNotes.cloneNode(true);
+          btnViewNotes.parentNode.replaceChild(newBtnViewNotes, btnViewNotes);
+          
+          newBtnViewNotes.addEventListener('click', () => {
             openResep();
           });
         }
-      });
+        
+        // Game over ending restart button
+        const btnRestartGameOver = document.getElementById('btn-restart-from-gameover');
+        const btnReviewGameOver = document.getElementById('btn-review-notes-from-gameover');
+        
+        if (btnRestartGameOver) {
+          console.log('Found game over restart button');
+          // Remove existing listeners
+          const newBtnRestartGameOver = btnRestartGameOver.cloneNode(true);
+          btnRestartGameOver.parentNode.replaceChild(newBtnRestartGameOver, btnRestartGameOver);
+          
+          newBtnRestartGameOver.addEventListener('click', (e) => {
+            console.log('Game over restart button clicked');
+            e.preventDefault();
+            e.stopPropagation();
+            if (confirm('Apakah Anda yakin ingin memulai petualangan dari awal?')) {
+              restartGame();
+            }
+          });
+        } else {
+          console.log('Game over restart button not found');
+        }
+        
+        if (btnReviewGameOver) {
+          // Remove existing listeners
+          const newBtnReviewGameOver = btnReviewGameOver.cloneNode(true);
+          btnReviewGameOver.parentNode.replaceChild(newBtnReviewGameOver, btnReviewGameOver);
+          
+          newBtnReviewGameOver.addEventListener('click', () => {
+            openResep();
+          });
+        }
+      }
 
       // Keyboard
       window.addEventListener('keydown', (e) => {
@@ -3067,6 +3097,7 @@
       setupPlayButtons();
       updateAutoplayIndicators();
       setupFooterNavigation();
+      setupRestartButtons(); // Setup restart buttons for both endings
       activateSlide(index);
       
       // Show mistake counter if there are any mistakes
