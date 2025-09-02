@@ -575,7 +575,6 @@
             </div>
             <div class="cta">
               <button class="btn primary" id="btn-start">Mulai Petualangan</button>
-              <button class="btn ghost" id="btn-help">❓ Cara Navigasi</button>
             </div>
           </div>
         </section>
@@ -1416,7 +1415,7 @@
       const slides = Array.from(document.querySelectorAll('.slide'));
       const progressBar = document.getElementById('progress-bar');
       const btnStart = document.getElementById('btn-start');
-      const btnHelp = document.getElementById('btn-help');
+
       const btnToBab1 = document.getElementById('btn-to-bab1');
       const notesEl = document.getElementById('notes');
       const btnResep = document.getElementById('btn-resep');
@@ -1807,7 +1806,7 @@
       document.querySelectorAll('[data-next]').forEach(b => b.addEventListener('click', next));
       document.querySelectorAll('[data-prev]').forEach(b => b.addEventListener('click', prev));
       btnStart && btnStart.addEventListener('click', () => goTo(1));
-      btnHelp && btnHelp.addEventListener('click', () => showToast('Geser layar atau gunakan tombol ⇦ ⇨ untuk navigasi.'));
+
       btnResep.addEventListener('click', openResep);
       btnCloseResep.addEventListener('click', closeResep);
       btnClearNotes.addEventListener('click', () => { setNotes([]); renderNotes(); showToast('Catatan direset.'); });
@@ -2985,26 +2984,7 @@
 
       });
 
-      // Touch (swipe)
-      let tStartX = 0, tStartY = 0, tTime = 0;
-      const SWIPE_T = 400; // ms
-      const SWIPE_X = 50;  // px
-      const SWIPE_Y = 60;  // px tolerance
 
-      function onTouchStart(ev) {
-        const t = ev.changedTouches[0];
-        tStartX = t.clientX; tStartY = t.clientY; tTime = Date.now();
-      }
-      function onTouchEnd(ev) {
-        const t = ev.changedTouches[0];
-        const dx = t.clientX - tStartX; const dy = Math.abs(t.clientY - tStartY);
-        const dt = Date.now() - tTime;
-        if (dt < SWIPE_T && Math.abs(dx) > SWIPE_X && dy < SWIPE_Y) {
-          if (dx < 0) next(); else prev();
-        }
-      }
-      document.getElementById('slides').addEventListener('touchstart', onTouchStart, { passive: true });
-      document.getElementById('slides').addEventListener('touchend', onTouchEnd, { passive: true });
 
       // Add audio controls to all slides that don't have them
       function addAudioControlsToSlides() {
