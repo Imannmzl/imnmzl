@@ -152,16 +152,25 @@
       height: 100%; 
       min-height: 100vh;
       display: grid; 
-      place-items: center;
+      place-items: start center;
       position: relative;
       padding: 0;
       margin: 0;
     }
     .slide {
-      position: absolute; inset: 0; padding: 0; display: grid; place-items: center;
-      opacity: 0; transform: translateX(30px) scale(.98);
+      position: absolute; 
+      inset: 0; 
+      padding: 1rem 0; 
+      display: grid; 
+      place-items: start center;
+      align-content: start;
+      opacity: 0; 
+      transform: translateX(30px) scale(.98);
       transition: opacity .35s ease, transform .35s ease;
       pointer-events: none;
+      overflow-y: auto;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
     }
     .slide.active { opacity: 1; transform: translateX(0) scale(1); pointer-events: auto; }
 
@@ -172,7 +181,8 @@
       border-radius: 18px;
       box-shadow: var(--shadow);
       padding: clamp(16px, 3vw, 28px);
-      margin: 1rem auto;
+      margin: 1rem auto 2rem auto;
+      max-height: none;
     }
     .title {
       font-size: clamp(22px, 4.8vw, 36px);
@@ -297,14 +307,14 @@
       
       .card { 
         padding: 1rem; 
-        margin: 0.5rem 0.25rem; 
+        margin: 0.5rem 0.25rem 2rem 0.25rem; 
+        max-height: none;
       }
-      .card:last-child {
-        margin-bottom: 0;
-      }
-      .slide:last-child {
-        margin-bottom: 0;
-        padding-bottom: 0;
+      
+      .slide {
+        padding: 0.5rem 0 1rem 0 !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
       }
       .card .title { 
         font-size: 1.2rem; 
