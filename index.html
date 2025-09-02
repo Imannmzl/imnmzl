@@ -1903,6 +1903,18 @@
               resultDiv.innerHTML = '<p style="margin: 0; color: var(--ok);"><strong>🎉 Bagus! Kamu sudah memahami definisi himpunan!</strong></p>';
               document.getElementById('btn-next-bab1').style.display = 'inline-block';
               addNoteOnce('Definisi Himpunan', 'Himpunan adalah kumpulan objek yang terdefinisi dengan jelas. Setiap objek disebut anggota atau elemen himpunan.');
+              
+              // Scroll to show navigation buttons
+              setTimeout(() => {
+                const ctaElement = document.querySelector('.slide.active .cta');
+                if (ctaElement) {
+                  ctaElement.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'end',
+                    inline: 'nearest' 
+                  });
+                }
+              }, 500);
             } else {
               resultDiv.innerHTML = '<p style="margin: 0; color: var(--warn);"><strong>💪 Coba lagi! Review definisi himpunan dan coba jawab ulang.</strong></p>';
               setTimeout(() => {
@@ -2244,6 +2256,18 @@
                 if (nextBtn) nextBtn.style.display = 'inline-block';
                 showToast('🎉 Selamat! Semua item berhasil ditempatkan dengan benar!');
                 addNoteOnce('Keanggotaan Himpunan', 'Keanggotaan (∈) menentukan apakah objek termasuk dalam himpunan. Himpunan kosong (∅) tidak memiliki anggota, sedangkan himpunan universal (U) berisi semua objek yang dibicarakan.');
+                
+                // Scroll to show navigation buttons
+                setTimeout(() => {
+                  const ctaElement = document.querySelector('.slide.active .cta');
+                  if (ctaElement) {
+                    ctaElement.scrollIntoView({ 
+                      behavior: 'smooth', 
+                      block: 'end',
+                      inline: 'nearest' 
+                    });
+                  }
+                }, 500);
               }, 1000);
             }
           } else {
@@ -2436,6 +2460,18 @@
             if (nextBtn) nextBtn.style.display = 'inline-block';
             showToast('🎉 Selamat! Semua item berhasil ditempatkan dengan benar!');
             addNoteOnce('Keanggotaan Himpunan', 'Keanggotaan (∈) menentukan apakah objek termasuk dalam himpunan. Himpunan kosong (∅) tidak memiliki anggota, sedangkan himpunan universal (U) berisi semua objek yang dibicarakan.');
+            
+            // Scroll to show navigation buttons
+            setTimeout(() => {
+              const ctaElement = document.querySelector('.slide.active .cta');
+              if (ctaElement) {
+                ctaElement.scrollIntoView({ 
+                  behavior: 'smooth', 
+                  block: 'end',
+                  inline: 'nearest' 
+                });
+              }
+            }, 500);
           }, 1000);
         }
       }
@@ -2670,6 +2706,18 @@
               resultDiv.innerHTML = '<p style="margin: 0; color: var(--ok);"><strong>🎉 Bagus! Kamu berhasil menyelesaikan puzzle analisis himpunan!</strong></p>';
               document.getElementById('btn-next-puzzle').style.display = 'inline-block';
               addNoteOnce('Pemecahan Masalah Himpunan', 'Berhasil menganalisis himpunan kompleks dan menyelesaikan operasi gabungan, irisan, dan keanggotaan.');
+              
+              // Scroll to show navigation buttons
+              setTimeout(() => {
+                const ctaElement = document.querySelector('.slide.active .cta');
+                if (ctaElement) {
+                  ctaElement.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'end',
+                    inline: 'nearest' 
+                  });
+                }
+              }, 500);
             } else {
               resultDiv.innerHTML = '<p style="margin: 0; color: var(--warn);"><strong>💪 Coba lagi! Review konsep himpunan dan coba jawab ulang.</strong></p>';
               setTimeout(() => {
@@ -2790,6 +2838,18 @@
           document.getElementById('btn-next-final').style.display = 'inline-block';
           
           showToast('🎉 Ramuan Keseimbangan berhasil diseduh! Kristal Logika mulai pulih!');
+          
+          // Scroll to show navigation buttons
+          setTimeout(() => {
+            const ctaElement = document.querySelector('.slide.active .cta');
+            if (ctaElement) {
+              ctaElement.scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'end',
+                inline: 'nearest' 
+              });
+            }
+          }, 500);
           addNoteOnce('Ramuan Keseimbangan', 'Berhasil menyeduh Ramuan Keseimbangan dengan menggabungkan 3 konsep himpunan yang tepat untuk memulihkan Kristal Logika.');
         } else {
           showToast('❌ Kombinasi bahan tidak tepat! Coba kombinasi lain.');
