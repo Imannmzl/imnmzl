@@ -173,13 +173,89 @@
     }
 
     footer.app-footer {
-      position: sticky; bottom: 0; z-index: 10;
-      background: linear-gradient(180deg, rgba(18,26,42,.4) 0%, rgba(18,26,42,.9) 100%);
-      backdrop-filter: blur(6px);
-      border-top: 1px solid rgba(255,255,255,.06);
+      position: fixed; 
+      bottom: 0; 
+      left: 0; 
+      right: 0; 
+      z-index: 20;
+      background: linear-gradient(180deg, rgba(18,26,42,.95) 0%, rgba(18,26,42,.98) 100%);
+      backdrop-filter: blur(12px);
+      border-top: 1px solid rgba(255,255,255,.08);
+      box-shadow: 0 -2px 20px rgba(0,0,0,.3);
     }
-    .footer-inner { display: flex; align-items: center; justify-content: space-between; gap: .75rem; padding: .6rem 1rem calc(.6rem + env(safe-area-inset-bottom)) 1rem; }
-    .nav { display: flex; gap: .5rem; }
+    
+    .footer-inner { 
+      display: flex; 
+      align-items: center; 
+      justify-content: space-between; 
+      gap: .5rem; 
+      padding: .5rem 1rem calc(.5rem + env(safe-area-inset-bottom)) 1rem; 
+      min-height: 60px;
+      max-width: 100%;
+    }
+    
+    .nav { 
+      display: flex; 
+      gap: .25rem; 
+      flex-shrink: 0;
+    }
+    
+    .footer-info {
+      flex: 1;
+      text-align: center;
+      min-width: 0;
+    }
+    
+    .slide-counter {
+      font-size: 14px;
+      color: var(--muted);
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    
+    .footer-actions {
+      display: flex;
+      gap: .25rem;
+      flex-shrink: 0;
+    }
+    
+    /* Compact footer buttons */
+    .footer-inner .btn {
+      padding: .5rem .75rem;
+      font-size: 16px;
+      line-height: 1;
+      min-width: 44px;
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      transition: transform 0.1s ease, opacity 0.2s ease;
+    }
+    
+    .footer-inner .btn:hover:not(:disabled) {
+      transform: translateY(-1px);
+    }
+    
+    .footer-inner .btn:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+    
+    /* Ensure main content doesn't overlap footer */
+    main {
+      padding-bottom: 80px;
+    }
+    
+    /* Hide footer on very small screens if needed */
+    @media (max-height: 500px) {
+      footer.app-footer {
+        display: none;
+      }
+      main {
+        padding-bottom: 0;
+      }
+    }
 
     /* Modal Buku Resep Kuno */
     .modal {
@@ -319,6 +395,39 @@
         min-height: 100px !important;
         padding: 1rem !important;
       }
+      
+      /* Mobile Footer Optimizations */
+      .footer-inner {
+        padding: .4rem .75rem calc(.4rem + env(safe-area-inset-bottom)) .75rem !important;
+        min-height: 56px !important;
+        gap: .3rem !important;
+      }
+      
+      .footer-inner .btn {
+        padding: .4rem .6rem !important;
+        font-size: 14px !important;
+        min-width: 40px !important;
+        min-height: 40px !important;
+        border-radius: 6px !important;
+      }
+      
+      .slide-counter {
+        font-size: 12px !important;
+      }
+      
+      .nav {
+        gap: .2rem !important;
+      }
+      
+      .footer-actions {
+        gap: .2rem !important;
+      }
+      
+      /* Adjust main content to account for fixed footer */
+      main {
+        padding-bottom: 70px !important;
+      }
+      
       .audio-controls .btn {
         padding: 0.5rem;
         font-size: 0.9rem;
@@ -1265,6 +1374,22 @@
 
 
   </div>
+
+  <!-- Footer Navigation -->
+  <footer class="app-footer" role="contentinfo">
+    <div class="footer-inner">
+      <div class="nav">
+        <button class="btn" id="btn-prev-footer" title="Slide Sebelumnya" disabled>‹</button>
+        <button class="btn" id="btn-next-footer" title="Slide Selanjutnya">›</button>
+      </div>
+      <div class="footer-info">
+        <span id="slide-counter" class="slide-counter">1 / 21</span>
+      </div>
+      <div class="footer-actions">
+        <button class="btn" id="btn-audio-toggle-footer" title="Toggle Audio">🔊</button>
+      </div>
+    </div>
+  </footer>
 
   <!-- Modal Buku Resep Kuno -->
   <div class="modal" id="modal-resep" role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-hidden="true">
@@ -2867,6 +2992,73 @@
         });
       }
 
+      // Footer Navigation Setup
+      function setupFooterNavigation() {
+        const btnPrevFooter = document.getElementById('btn-prev-footer');
+        const btnNextFooter = document.getElementById('btn-next-footer');
+        const btnAudioToggleFooter = document.getElementById('btn-audio-toggle-footer');
+        const slideCounter = document.getElementById('slide-counter');
+        
+        if (btnPrevFooter) {
+          btnPrevFooter.addEventListener('click', prev);
+        }
+        
+        if (btnNextFooter) {
+          btnNextFooter.addEventListener('click', next);
+        }
+        
+        if (btnAudioToggleFooter) {
+          btnAudioToggleFooter.addEventListener('click', () => {
+            audioEnabled = !audioEnabled;
+            saveAudioSettings();
+            updateAudioToggleButton();
+            updateFooterAudioButton();
+            if (!audioEnabled) {
+              stopCurrentAudio();
+              showToast('🔇 Audio dinonaktifkan');
+            } else {
+              showToast('🔊 Audio diaktifkan');
+            }
+          });
+        }
+        
+        // Update footer when slide changes
+        function updateFooter() {
+          // Update navigation buttons
+          if (btnPrevFooter) {
+            btnPrevFooter.disabled = index === 0;
+          }
+          if (btnNextFooter) {
+            btnNextFooter.disabled = index === maxIndex;
+          }
+          
+          // Update slide counter
+          if (slideCounter) {
+            slideCounter.textContent = `${index + 1} / ${slides.length}`;
+          }
+          
+          // Update audio button
+          updateFooterAudioButton();
+        }
+        
+        function updateFooterAudioButton() {
+          if (btnAudioToggleFooter) {
+            btnAudioToggleFooter.textContent = audioEnabled ? '🔊' : '🔇';
+            btnAudioToggleFooter.title = audioEnabled ? 'Nonaktifkan Audio' : 'Aktifkan Audio';
+          }
+        }
+        
+        // Call updateFooter initially and whenever slide changes
+        updateFooter();
+        
+        // Override activateSlide to update footer
+        const originalActivateSlide = activateSlide;
+        activateSlide = function(i) {
+          originalActivateSlide(i);
+          updateFooter();
+        };
+      }
+
       // Init
       loadIndex();
       loadMistakes();
@@ -2874,6 +3066,7 @@
       addAudioControlsToSlides();
       setupPlayButtons();
       updateAutoplayIndicators();
+      setupFooterNavigation();
       activateSlide(index);
       
       // Show mistake counter if there are any mistakes
