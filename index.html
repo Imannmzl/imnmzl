@@ -188,16 +188,10 @@
       display: flex; 
       align-items: center; 
       justify-content: space-between; 
-      gap: .5rem; 
-      padding: .5rem 1rem calc(.5rem + env(safe-area-inset-bottom)) 1rem; 
-      min-height: 60px;
+      gap: .75rem; 
+      padding: .4rem 1rem calc(.4rem + env(safe-area-inset-bottom)) 1rem; 
+      min-height: 50px;
       max-width: 100%;
-    }
-    
-    .nav { 
-      display: flex; 
-      gap: .25rem; 
-      flex-shrink: 0;
     }
     
     .footer-info {
@@ -244,7 +238,7 @@
     
     /* Ensure main content doesn't overlap footer */
     main {
-      padding-bottom: 80px;
+      padding-bottom: 60px;
     }
     
     /* Hide footer on very small screens if needed */
@@ -398,34 +392,30 @@
       
       /* Mobile Footer Optimizations */
       .footer-inner {
-        padding: .4rem .75rem calc(.4rem + env(safe-area-inset-bottom)) .75rem !important;
-        min-height: 56px !important;
-        gap: .3rem !important;
+        padding: .3rem .75rem calc(.3rem + env(safe-area-inset-bottom)) .75rem !important;
+        min-height: 44px !important;
+        gap: .5rem !important;
       }
       
       .footer-inner .btn {
-        padding: .4rem .6rem !important;
+        padding: .3rem .5rem !important;
         font-size: 14px !important;
-        min-width: 40px !important;
-        min-height: 40px !important;
+        min-width: 36px !important;
+        min-height: 36px !important;
         border-radius: 6px !important;
       }
       
       .slide-counter {
-        font-size: 12px !important;
-      }
-      
-      .nav {
-        gap: .2rem !important;
+        font-size: 11px !important;
       }
       
       .footer-actions {
-        gap: .2rem !important;
+        flex-shrink: 0;
       }
       
       /* Adjust main content to account for fixed footer */
       main {
-        padding-bottom: 70px !important;
+        padding-bottom: 55px !important;
       }
       
       .audio-controls .btn {
@@ -1375,13 +1365,9 @@
 
   </div>
 
-  <!-- Footer Navigation -->
+  <!-- Footer Info -->
   <footer class="app-footer" role="contentinfo">
     <div class="footer-inner">
-      <div class="nav">
-        <button class="btn" id="btn-prev-footer" title="Slide Sebelumnya" disabled>‹</button>
-        <button class="btn" id="btn-next-footer" title="Slide Selanjutnya">›</button>
-      </div>
       <div class="footer-info">
         <span id="slide-counter" class="slide-counter">1 / 21</span>
       </div>
@@ -3022,20 +3008,10 @@
         });
       }
 
-      // Footer Navigation Setup
-      function setupFooterNavigation() {
-        const btnPrevFooter = document.getElementById('btn-prev-footer');
-        const btnNextFooter = document.getElementById('btn-next-footer');
+      // Footer Setup (Info only)
+      function setupFooter() {
         const btnAudioToggleFooter = document.getElementById('btn-audio-toggle-footer');
         const slideCounter = document.getElementById('slide-counter');
-        
-        if (btnPrevFooter) {
-          btnPrevFooter.addEventListener('click', prev);
-        }
-        
-        if (btnNextFooter) {
-          btnNextFooter.addEventListener('click', next);
-        }
         
         if (btnAudioToggleFooter) {
           btnAudioToggleFooter.addEventListener('click', () => {
@@ -3054,14 +3030,6 @@
         
         // Update footer when slide changes
         function updateFooter() {
-          // Update navigation buttons
-          if (btnPrevFooter) {
-            btnPrevFooter.disabled = index === 0;
-          }
-          if (btnNextFooter) {
-            btnNextFooter.disabled = index === maxIndex;
-          }
-          
           // Update slide counter
           if (slideCounter) {
             slideCounter.textContent = `${index + 1} / ${slides.length}`;
@@ -3096,7 +3064,7 @@
       addAudioControlsToSlides();
       setupPlayButtons();
       updateAutoplayIndicators();
-      setupFooterNavigation();
+      setupFooter();
       setupRestartButtons(); // Setup restart buttons for both endings
       activateSlide(index);
       
