@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no, maximum-scale=1" />
   <meta name="color-scheme" content="dark light">
   <title>Sang Alkemis Muda dan Hutan Harmoni</title>
   <meta name="description" content="Media interaktif edukatif berbasis slide dan mobile friendly: Berpikir Komputasional – Himpunan.">
@@ -21,8 +21,20 @@
       --shadow: 0 10px 30px rgba(0,0,0,.45);
     }
 
-    * { box-sizing: border-box; }
-    html, body { height: 100%; max-width: 100%; overflow-x: hidden; }
+    * { 
+      box-sizing: border-box;
+      /* Global overscroll prevention */
+      -webkit-overscroll-behavior: none;
+      overscroll-behavior: none;
+    }
+    html, body { 
+      height: 100%; 
+      max-width: 100%; 
+      overflow-x: hidden;
+      /* Prevent overscroll bounce on mobile */
+      overscroll-behavior: none;
+      -webkit-overflow-scrolling: touch;
+    }
     body {
       margin: 0;
       padding: 0;
@@ -33,6 +45,9 @@
                   linear-gradient(180deg, var(--bg) 0%, var(--bg2) 100%);
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
+      /* Prevent pull-to-refresh and overscroll */
+      overscroll-behavior-y: none;
+      -webkit-overscroll-behavior-y: none;
     }
 
     /* App Shell */
@@ -128,6 +143,10 @@
       margin: 0; 
       padding: 0;
       height: 100%;
+      /* Prevent overscroll bounce */
+      overscroll-behavior: none;
+      overscroll-behavior-y: none;
+      -webkit-overscroll-behavior-y: none;
     }
     .slides {
       height: 100%; 
@@ -245,6 +264,12 @@
       body {
         margin: 0;
         padding: 0;
+        /* Enhanced overscroll prevention for mobile */
+        overscroll-behavior: none;
+        overscroll-behavior-y: none;
+        -webkit-overscroll-behavior-y: none;
+        /* Prevent pull-to-refresh */
+        touch-action: manipulation;
       }
       .slides {
         margin-bottom: 0;
@@ -254,6 +279,10 @@
         min-height: 100vh;
         padding: 0;
         margin: 0;
+        /* Mobile-specific overscroll prevention */
+        overscroll-behavior: none;
+        overscroll-behavior-y: none;
+        -webkit-overscroll-behavior-y: none;
       }
       .app-header { 
         padding: 0.5rem 1rem; 
