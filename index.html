@@ -1626,7 +1626,10 @@
         }
         if (i === 9) {
           // Initialize drag & drop game when entering drag & drop slide
-          setTimeout(() => initDragDrop(), 100);
+          setTimeout(() => {
+            console.log('Initializing drag & drop for slide:', index);
+            initDragDrop();
+          }, 200);
         }
         if (i === 13) {
           // Initialize union simulation when entering union slide
@@ -1814,64 +1817,113 @@
       function initDragDrop() {
         console.log('initDragDrop called');
         correctPlacements = 0;
-        const draggableItems = document.querySelectorAll('.draggable-item');
-        console.log('Found draggable items:', draggableItems.length);
-        draggableItems.forEach(item => {
-          item.draggable = true;
-          item.addEventListener('dragstart', handleDragStart);
-          item.addEventListener('dragend', handleDragEnd);
-          
-          // Touch events for mobile
-          item.addEventListener('touchstart', handleTouchStart, { passive: false });
-          item.addEventListener('touchmove', handleTouchMove, { passive: false });
-          item.addEventListener('touchend', handleTouchEnd, { passive: false });
-          
-          console.log('Touch events registered for item:', { item, category: item.dataset.category });
-        });
-
-        const dropZones = document.querySelectorAll('.drop-zone');
-        console.log('Found drop zones:', dropZones.length);
-        dropZones.forEach(zone => {
-          zone.addEventListener('dragover', handleDragOver);
-          zone.addEventListener('drop', handleDrop);
-          zone.addEventListener('dragenter', handleDragEnter);
-          zone.addEventListener('dragleave', handleDragLeave);
-          
-          // Touch events for mobile
-          zone.addEventListener('touchmove', handleTouchMove, { passive: false });
-          zone.addEventListener('touchend', handleTouchEnd, { passive: false });
-          
-          console.log('Touch events registered for drop zone:', { zone, set: zone.dataset.set });
-        });
-
-        // Clear any existing items in drop areas
-        const dropAreas = document.querySelectorAll('.drop-area');
-        console.log('Found drop areas:', dropAreas.length);
-        dropAreas.forEach(area => {
-          area.innerHTML = '';
-        });
-
-        // Reset result display
-        document.getElementById('drag-drop-result').style.display = 'none';
-        document.getElementById('btn-next-bab2').style.display = 'none';
+        draggedElement = null;
         
-        // Add reset button event listener
-        const btnReset = document.getElementById('btn-reset-dragdrop');
-        if (btnReset) {
-          btnReset.addEventListener('click', resetDragDropGame);
-        }
+        // Wait a bit more to ensure DOM is ready
+        setTimeout(() => {
+          const draggableItems = document.querySelectorAll('.draggable-item');
+          console.log('Found draggable items:', draggableItems.length);
+          
+          if (draggableItems.length === 0) {
+            console.warn('No draggable items found, retrying...');
+            setTimeout(() => initDragDrop(), 300);
+            return;
+          }
+          
+          draggableItems.forEach(item => {
+            item.draggable = true;
+            item.style.cursor = 'grab';
+            
+            // Remove existing event listeners by cloning
+            const newItem = item.cloneNode(true);
+            item.parentNode.replaceChild(newItem, item);
+            
+            // Add fresh event listeners
+            newItem.addEventListener('dragstart', handleDragStart);
+            newItem.addEventListener('dragend', handleDragEnd);
+            
+            // Touch events for mobile
+            newItem.addEventListener('touchstart', handleTouchStart, { passive: false });
+            newItem.addEventListener('touchmove', handleTouchMove, { passive: false });
+            newItem.addEventListener('touchend', handleTouchEnd, { passive: false });
+            
+            console.log('Events registered for item:', { item: newItem, category: newItem.dataset.category });
+          });
+
+          const dropZones = document.querySelectorAll('.drop-zone');
+          console.log('Found drop zones:', dropZones.length);
+          
+          if (dropZones.length === 0) {
+            console.warn('No drop zones found');
+            return;
+          }
+          
+          dropZones.forEach(zone => {
+            // Remove existing event listeners by cloning
+            const newZone = zone.cloneNode(true);
+            zone.parentNode.replaceChild(newZone, zone);
+            
+            // Add fresh event listeners
+            newZone.addEventListener('dragover', handleDragOver);
+            newZone.addEventListener('drop', handleDrop);
+            newZone.addEventListener('dragenter', handleDragEnter);
+            newZone.addEventListener('dragleave', handleDragLeave);
+            
+            console.log('Events registered for drop zone:', { zone: newZone, set: newZone.dataset.set });
+          });
+
+          // Clear any existing items in drop areas
+          const dropAreas = document.querySelectorAll('.drop-area');
+          console.log('Found drop areas:', dropAreas.length);
+          dropAreas.forEach(area => {
+            area.innerHTML = '';
+          });
+
+          // Reset result display
+          const resultDiv = document.getElementById('drag-drop-result');
+          const nextBtn = document.getElementById('btn-next-bab2');
+          if (resultDiv) resultDiv.style.display = 'none';
+          if (nextBtn) nextBtn.style.display = 'none';
+          
+          // Add reset button event listener
+          const btnReset = document.getElementById('btn-reset-dragdrop');
+          if (btnReset) {
+            // Remove existing listeners
+            const newBtnReset = btnReset.cloneNode(true);
+            btnReset.parentNode.replaceChild(newBtnReset, btnReset);
+            newBtnReset.addEventListener('click', resetDragDropGame);
+          }
+          
+          console.log('Drag & Drop initialization complete');
+        }, 50);
       }
 
       function handleDragStart(e) {
+        console.log('handleDragStart called', { target: e.target });
         draggedElement = e.target;
         e.target.style.opacity = '0.5';
-        e.dataTransfer.effectAllowed = 'move';
-        e.dataTransfer.setData('text/html', e.target.outerHTML);
+        e.target.classList.add('dragging');
+        
+        if (e.dataTransfer) {
+          e.dataTransfer.effectAllowed = 'move';
+          e.dataTransfer.setData('text/html', e.target.outerHTML);
+          e.dataTransfer.setData('text/plain', e.target.dataset.category);
+        }
+        
+        console.log('Dragged element set:', { draggedElement, category: draggedElement.dataset.category });
       }
 
       function handleDragEnd(e) {
+        console.log('handleDragEnd called', { target: e.target });
         e.target.style.opacity = '1';
-        draggedElement = null;
+        e.target.classList.remove('dragging');
+        
+        // Don't reset draggedElement here - let handleDrop handle it
+        setTimeout(() => {
+          if (draggedElement === e.target) {
+            draggedElement = null;
+          }
+        }, 100);
       }
 
       // Touch event handlers for mobile
@@ -2037,66 +2089,135 @@
 
       function handleDragOver(e) {
         e.preventDefault();
-        e.dataTransfer.dropEffect = 'move';
+        e.stopPropagation();
+        if (e.dataTransfer) {
+          e.dataTransfer.dropEffect = 'move';
+        }
       }
 
       function handleDragEnter(e) {
         e.preventDefault();
-        e.target.style.borderColor = 'rgba(122,227,255,0.8)';
-        e.target.style.backgroundColor = 'rgba(122,227,255,0.2)';
+        e.stopPropagation();
+        const dropZone = e.target.closest('.drop-zone');
+        if (dropZone && draggedElement) {
+          const itemCategory = draggedElement.dataset.category;
+          const zoneCategory = dropZone.dataset.set;
+          
+          if (itemCategory === zoneCategory) {
+            dropZone.style.borderColor = 'rgba(81,216,138,0.8)';
+            dropZone.style.backgroundColor = 'rgba(81,216,138,0.2)';
+          } else {
+            dropZone.style.borderColor = 'rgba(248,113,113,0.8)';
+            dropZone.style.backgroundColor = 'rgba(248,113,113,0.2)';
+          }
+        }
       }
 
       function handleDragLeave(e) {
-        e.target.style.borderColor = 'rgba(122,227,255,0.5)';
-        e.target.style.backgroundColor = 'rgba(122,227,255,0.1)';
+        e.preventDefault();
+        e.stopPropagation();
+        const dropZone = e.target.closest('.drop-zone');
+        if (dropZone) {
+          const zoneCategory = dropZone.dataset.set;
+          if (zoneCategory === 'hewan-bersayap') {
+            dropZone.style.borderColor = 'rgba(122,227,255,0.5)';
+            dropZone.style.backgroundColor = 'rgba(122,227,255,0.1)';
+          } else if (zoneCategory === 'buah-buahan') {
+            dropZone.style.borderColor = 'rgba(255,200,87,0.5)';
+            dropZone.style.backgroundColor = 'rgba(255,200,87,0.1)';
+          }
+        }
       }
 
       function handleDrop(e) {
         e.preventDefault();
-        e.target.style.borderColor = 'rgba(122,227,255,0.5)';
-        e.target.style.backgroundColor = 'rgba(122,227,255,0.1)';
+        e.stopPropagation();
+        
+        console.log('handleDrop called', { target: e.target, draggedElement });
+        
+        const elementToDrop = draggedElement;
+        if (!elementToDrop) {
+          console.log('No dragged element found');
+          return;
+        }
 
-        const elementToDrop = draggedElement || touchElement;
-        if (elementToDrop) {
-          const dropZone = e.target.closest('.drop-zone');
-          const dropArea = dropZone.querySelector('.drop-area');
-          const itemCategory = elementToDrop.dataset.category;
-          const zoneCategory = dropZone.dataset.set;
+        const dropZone = e.target.closest('.drop-zone');
+        if (!dropZone) {
+          console.log('No drop zone found');
+          return;
+        }
 
-          // Check if the item is being dropped in the correct zone
-          if (itemCategory === zoneCategory) {
-            // Correct placement
-            const clonedItem = draggedElement.cloneNode(true);
-            clonedItem.style.opacity = '1';
-            clonedItem.style.cursor = 'default';
-            clonedItem.draggable = false;
-            dropArea.appendChild(clonedItem);
-            
-            // Remove original item
-            elementToDrop.remove();
-            correctPlacements++;
-            
-            // Visual feedback
-            dropZone.style.borderColor = 'rgba(81,216,138,0.8)';
-            dropZone.style.backgroundColor = 'rgba(81,216,138,0.2)';
-            
-            showToast('✅ Benar! Item ditempatkan dengan tepat.');
-          } else {
-            // Wrong placement
-            showToast('❌ Salah zona! Coba tempatkan di zona yang benar.');
-            elementToDrop.style.opacity = '1';
-            addMistake(); // Add mistake for wrong placement
-          }
+        const dropArea = dropZone.querySelector('.drop-area');
+        if (!dropArea) {
+          console.log('No drop area found');
+          return;
+        }
 
-          // Check if all items are placed correctly
-          if (correctPlacements >= totalItems) {
-            setTimeout(() => {
-              const resultDiv = document.getElementById('drag-drop-result');
-              resultDiv.style.display = 'block';
-              document.getElementById('btn-next-bab2').style.display = 'inline-block';
-              addNoteOnce('Keanggotaan Himpunan', 'Keanggotaan (∈) menentukan apakah objek termasuk dalam himpunan. Himpunan kosong (∅) tidak memiliki anggota, sedangkan himpunan universal (U) berisi semua objek yang dibicarakan.');
-            }, 1000);
-          }
+        const itemCategory = elementToDrop.dataset.category;
+        const zoneCategory = dropZone.dataset.set;
+        
+        console.log('Drop attempt:', { itemCategory, zoneCategory, dropArea });
+
+        // Reset drop zone styles first
+        const zoneStyleCategory = dropZone.dataset.set;
+        if (zoneStyleCategory === 'hewan-bersayap') {
+          dropZone.style.borderColor = 'rgba(122,227,255,0.5)';
+          dropZone.style.backgroundColor = 'rgba(122,227,255,0.1)';
+        } else if (zoneStyleCategory === 'buah-buahan') {
+          dropZone.style.borderColor = 'rgba(255,200,87,0.5)';
+          dropZone.style.backgroundColor = 'rgba(255,200,87,0.1)';
+        }
+
+        // Check if the item is being dropped in the correct zone
+        if (itemCategory === zoneCategory) {
+          // Correct placement
+          const clonedItem = elementToDrop.cloneNode(true);
+          clonedItem.style.opacity = '1';
+          clonedItem.style.cursor = 'default';
+          clonedItem.style.transform = '';
+          clonedItem.style.position = '';
+          clonedItem.style.zIndex = '';
+          clonedItem.draggable = false;
+          clonedItem.classList.remove('dragging');
+          
+          // Remove all event listeners from cloned item
+          const cleanClone = clonedItem.cloneNode(true);
+          dropArea.appendChild(cleanClone);
+          
+          console.log('Item successfully dropped:', { cleanClone, dropArea });
+          
+          // Remove original item
+          elementToDrop.remove();
+          correctPlacements++;
+          
+          console.log('correctPlacements:', correctPlacements, 'totalItems:', totalItems);
+          
+          // Visual feedback for successful drop
+          dropZone.style.borderColor = 'rgba(81,216,138,0.8)';
+          dropZone.style.backgroundColor = 'rgba(81,216,138,0.2)';
+          
+          showToast('✅ Benar! Item ditempatkan dengan tepat.');
+        } else {
+          // Wrong placement
+          showToast('❌ Salah zona! Coba tempatkan di zona yang benar.');
+          elementToDrop.style.opacity = '1';
+          elementToDrop.style.transform = '';
+          elementToDrop.style.position = '';
+          elementToDrop.style.zIndex = '';
+          elementToDrop.classList.remove('dragging');
+          addMistake(); // Add mistake for wrong placement
+        }
+
+        // Check if all items are placed correctly
+        if (correctPlacements >= totalItems) {
+          setTimeout(() => {
+            const resultDiv = document.getElementById('drag-drop-result');
+            const nextBtn = document.getElementById('btn-next-bab2');
+            if (resultDiv) resultDiv.style.display = 'block';
+            if (nextBtn) nextBtn.style.display = 'inline-block';
+            showToast('🎉 Selamat! Semua item berhasil ditempatkan dengan benar!');
+            addNoteOnce('Keanggotaan Himpunan', 'Keanggotaan (∈) menentukan apakah objek termasuk dalam himpunan. Himpunan kosong (∅) tidak memiliki anggota, sedangkan himpunan universal (U) berisi semua objek yang dibicarakan.');
+          }, 1000);
         }
       }
 
@@ -2113,8 +2234,14 @@
         const dropZones = document.querySelectorAll('.drop-zone');
         console.log('Found drop zones:', dropZones.length);
         dropZones.forEach(zone => {
-          zone.style.borderColor = 'rgba(122,227,255,0.5)';
-          zone.style.backgroundColor = 'rgba(122,227,255,0.1)';
+          const zoneCategory = zone.dataset.set;
+          if (zoneCategory === 'hewan-bersayap') {
+            zone.style.borderColor = 'rgba(122,227,255,0.5)';
+            zone.style.backgroundColor = 'rgba(122,227,255,0.1)';
+          } else if (zoneCategory === 'buah-buahan') {
+            zone.style.borderColor = 'rgba(255,200,87,0.5)';
+            zone.style.backgroundColor = 'rgba(255,200,87,0.1)';
+          }
         });
         
         // Recreate draggable items (they were removed when dropped)
