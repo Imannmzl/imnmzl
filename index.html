@@ -3612,38 +3612,57 @@
           // Setup event listener for "Selesaikan Misi" button when it appears
           setTimeout(() => {
             const btnNextFinal = document.getElementById('btn-next-final');
+            console.log('Looking for btn-next-final:', btnNextFinal);
+            console.log('Button display style:', btnNextFinal ? btnNextFinal.style.display : 'button not found');
+            
             if (btnNextFinal) {
               console.log('Setting up Selesaikan Misi button after puzzle completion');
-              // Remove any existing listeners
+              console.log('Button text content:', btnNextFinal.textContent);
+              console.log('Button disabled:', btnNextFinal.disabled);
+              
+              // Remove any existing listeners by cloning
               const newBtnNextFinal = btnNextFinal.cloneNode(true);
               btnNextFinal.parentNode.replaceChild(newBtnNextFinal, btnNextFinal);
               
-              newBtnNextFinal.addEventListener('click', async (e) => {
+              // Test simple click first
+              newBtnNextFinal.addEventListener('click', (e) => {
+                console.log('🔥 BUTTON CLICKED! Event triggered');
+                console.log('Event details:', e);
+                console.log('Button that was clicked:', e.target);
+                
                 e.preventDefault();
                 e.stopPropagation();
+                
                 console.log('🚀 Selesaikan Misi button clicked - completing game now!');
                 console.log('Current slide index:', index);
                 
-                // Complete game on backend when user clicks Selesaikan Misi
-                try {
-                  console.log('📤 Completing game on backend...');
-                  await updateBackendProgress();
-                  await completeGameOnBackend();
-                  console.log('✅ Game completion successful');
-                } catch (error) {
-                  console.error('❌ Failed to complete game on backend:', error);
-                  showToast('❌ Gagal menyimpan data. Mode offline.');
-                }
+                // Show immediate feedback
+                showToast('🔄 Menyelesaikan misi...');
                 
-                // Always navigate to epilog regardless of backend success/failure
-                console.log('🏠 Navigating to epilog slide...');
-                goTo(19);
+                // Complete game on backend
+                setTimeout(async () => {
+                  try {
+                    console.log('📤 Completing game on backend...');
+                    await updateBackendProgress();
+                    await completeGameOnBackend();
+                    console.log('✅ Game completion successful');
+                  } catch (error) {
+                    console.error('❌ Failed to complete game on backend:', error);
+                    showToast('❌ Gagal menyimpan data. Mode offline.');
+                  }
+                  
+                  // Navigate to epilog
+                  console.log('🏠 Navigating to epilog slide...');
+                  goTo(19);
+                }, 100);
               });
+              
               console.log('✅ Selesaikan Misi button event listener added');
+              console.log('Button is now clickable');
             } else {
-              console.error('btn-next-final not found after puzzle completion');
+              console.error('❌ btn-next-final not found after puzzle completion');
             }
-          }, 100);
+          }, 200);
           
           // Scroll to show navigation buttons
           setTimeout(() => {
