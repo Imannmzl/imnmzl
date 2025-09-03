@@ -3614,21 +3614,29 @@
               await completeGameOnBackend();
               console.log('✅ Game completion successful');
               
-              // Auto-navigate to epilog after completion
+              // Auto-navigate to epilog after completion (only if still in final puzzle)
               showToast('🎉 Misi berhasil diselesaikan! Menuju epilog...');
               setTimeout(() => {
-                console.log('🏠 Auto-navigating to epilog slide...');
-                goTo(19);
+                if (index === 18) {
+                  console.log('🏠 Auto-navigating to epilog slide...');
+                  goTo(19);
+                } else {
+                  console.log('⚠️ User already navigated away from final puzzle, skipping auto-navigation');
+                }
               }, 1500);
               
             } catch (error) {
               console.error('❌ Failed to complete game on backend:', error);
               showToast('❌ Gagal menyimpan data. Mode offline.');
               
-              // Still navigate to epilog
+              // Still navigate to epilog (only if still in final puzzle)
               setTimeout(() => {
-                console.log('🏠 Navigating to epilog slide (offline mode)...');
-                goTo(19);
+                if (index === 18) {
+                  console.log('🏠 Navigating to epilog slide (offline mode)...');
+                  goTo(19);
+                } else {
+                  console.log('⚠️ User already navigated away, skipping navigation');
+                }
               }, 1500);
             }
           }, 1000);
