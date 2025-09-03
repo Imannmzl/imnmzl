@@ -1727,6 +1727,17 @@
       }
 
       function showGameOver() {
+        console.log('🚨 Game Over triggered - user failed');
+        console.log('Total mistakes at failure:', totalMistakes);
+        console.log('Session ID:', sessionId);
+        console.log('User will NOT be marked as completed');
+        
+        // Update backend with failure status (but do NOT complete game)
+        setTimeout(async () => {
+          await updateBackendProgress(); // Only update mistakes, keep status = 'belum_selesai'
+          console.log('Backend updated with failure progress (status remains belum_selesai)');
+        }, 500);
+        
         // Navigate to Game Over slide
         goTo(21); // Game Over slide index
         
