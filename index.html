@@ -347,19 +347,19 @@
         justify-content: flex-start !important;
       }
       
-      /* Mobile slide isolation */
+      /* Mobile slide isolation - more gentle approach */
       .slide:not(.active) {
-        display: none !important;
-        visibility: hidden !important;
         pointer-events: none !important;
         z-index: -1 !important;
+        opacity: 0 !important;
+        transform: translateX(-100vw) !important;
       }
       
       .slide.active {
-        display: flex !important;
-        visibility: visible !important;
         pointer-events: auto !important;
         z-index: 10 !important;
+        opacity: 1 !important;
+        transform: translateX(0) !important;
       }
       .card .title { 
         font-size: 1.2rem; 
@@ -1830,19 +1830,19 @@
             el.classList.add('active');
             el.style.pointerEvents = 'auto';
             el.style.zIndex = '10';
-            el.style.visibility = 'visible';
-            el.style.display = 'flex';
+            el.style.opacity = '1';
+            el.style.transform = 'translateX(0)';
             el.style.touchAction = 'auto';
             console.log(`✅ Slide ${idx} activated with pointer-events: auto`);
           } else {
             el.classList.remove('active');
             el.style.pointerEvents = 'none';
             el.style.zIndex = '-1';
-            el.style.visibility = 'hidden';
-            el.style.display = 'none';
+            el.style.opacity = '0';
+            el.style.transform = 'translateX(-100vw)';
             el.style.touchAction = 'none';
             if (idx >= 17 && idx <= 22) {
-              console.log(`❌ Slide ${idx} deactivated with pointer-events: none, visibility: hidden`);
+              console.log(`❌ Slide ${idx} deactivated with transform: translateX(-100vw)`);
             }
           }
         });
@@ -1872,6 +1872,8 @@
         if (i === 6) {
           // Initialize quiz when entering quiz slide
           setTimeout(() => initQuiz(), 100);
+          // Update progress at quiz start
+          setTimeout(() => updateBackendProgress(), 500);
         }
         if (i === 10) {
           // Initialize drag & drop game when entering drag & drop slide
@@ -1879,6 +1881,8 @@
             console.log('Initializing drag & drop for slide:', index);
             initDragDrop();
           }, 200);
+          // Update progress at drag & drop start
+          setTimeout(() => updateBackendProgress(), 500);
         }
         if (i === 14) {
           // Initialize union simulation when entering union slide
@@ -1899,6 +1903,8 @@
             console.log('About to initialize final puzzle');
             initFinalPuzzle();
           }, 100);
+          // Update progress at final puzzle start
+          setTimeout(() => updateBackendProgress(), 500);
         }
         if (i === 19) {
           // Game completed! Update backend
@@ -2185,6 +2191,13 @@
           const registerResult = await registerPlayer();
           if (registerResult.success) {
             showToast(`🎉 Selamat datang, ${userInfo.name}! Petualangan dimulai!`);
+            
+            // Initial progress update to register player as active
+            setTimeout(async () => {
+              await updateBackendProgress();
+              console.log('Initial progress update sent');
+            }, 1000);
+            
             goTo(1); // Go to prolog slide
           } else {
             showToast('❌ Gagal mendaftar. Coba lagi.');
