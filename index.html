@@ -3689,9 +3689,15 @@
         
         if (btnViewLeaderboard) {
           btnViewLeaderboard.addEventListener('click', () => {
+            console.log('View leaderboard button clicked');
             goTo(21); // Go to leaderboard slide
-            setTimeout(() => loadLeaderboard(), 200);
+            setTimeout(() => {
+              console.log('Loading leaderboard data...');
+              loadLeaderboard();
+            }, 200);
           });
+        } else {
+          console.error('btn-view-leaderboard not found');
         }
         
         if (btnRefreshLeaderboard) {
@@ -3702,8 +3708,12 @@
         
         if (btnBackToEnding) {
           btnBackToEnding.addEventListener('click', () => {
-            goTo(19); // Back to epilog slide
+            console.log('Back to ending button clicked');
+            goTo(19); // Back to epilog slide (success ending)
+            showToast('Kembali ke slide selamat');
           });
+        } else {
+          console.error('btn-back-to-ending not found');
         }
       }
 
