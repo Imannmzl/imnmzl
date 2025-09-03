@@ -1794,6 +1794,12 @@
       function activateSlide(i) {
         console.log('activateSlide called with index:', i);
         
+        // Reset final puzzle variables when leaving final puzzle slide
+        if (i !== 18 && typeof selectedIngredients !== 'undefined') {
+          selectedIngredients = [];
+          console.log('selectedIngredients reset on slide change');
+        }
+        
         // Stop current audio when changing slides
         stopCurrentAudio();
         
@@ -3133,7 +3139,10 @@
 
       function initFinalPuzzle() {
         console.log('initFinalPuzzle called');
+        
+        // Force reset selectedIngredients
         selectedIngredients = [];
+        console.log('selectedIngredients reset to:', selectedIngredients);
         
         // Wait a bit to ensure DOM is ready
         setTimeout(() => {
@@ -3209,6 +3218,15 @@
         
         console.log('Ingredient concept:', concept);
         console.log('Current selected ingredients:', selectedIngredients);
+        console.log('Required ingredients:', requiredIngredients);
+        console.log('selectedIngredients.length:', selectedIngredients.length);
+        console.log('selectedIngredients.includes(concept):', selectedIngredients.includes(concept));
+        
+        // Ensure we're in the final puzzle context
+        if (!ingredient.closest('#final-puzzle')) {
+          console.log('Ingredient not in final puzzle, ignoring');
+          return;
+        }
         
         if (selectedIngredients.length < requiredIngredients && !selectedIngredients.includes(concept)) {
           // Add to potion
@@ -3248,10 +3266,12 @@
         selectedIngredients = selectedIngredients.filter(c => c !== concept);
         element.remove();
         
-        // Re-enable ingredient
-        const originalIngredient = document.querySelector(`[data-concept="${concept}"]`);
-        originalIngredient.style.opacity = '1';
-        originalIngredient.style.cursor = 'pointer';
+        // Re-enable ingredient (only in final puzzle)
+        const originalIngredient = document.querySelector(`#final-puzzle [data-concept="${concept}"]`);
+        if (originalIngredient) {
+          originalIngredient.style.opacity = '1';
+          originalIngredient.style.cursor = 'pointer';
+        }
         
         showToast('🗑️ Bahan dihapus dari ramuan!');
       }
