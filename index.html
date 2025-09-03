@@ -3629,14 +3629,15 @@
                   console.log('📤 Completing game on backend...');
                   await updateBackendProgress();
                   await completeGameOnBackend();
-                  console.log('✅ Game completion successful - now navigating to epilog');
-                  
-                  // Navigate to epilog after successful completion
-                  goTo(19);
+                  console.log('✅ Game completion successful');
                 } catch (error) {
                   console.error('❌ Failed to complete game on backend:', error);
-                  showToast('❌ Gagal menyimpan data. Coba lagi.');
+                  showToast('❌ Gagal menyimpan data. Mode offline.');
                 }
+                
+                // Always navigate to epilog regardless of backend success/failure
+                console.log('🏠 Navigating to epilog slide...');
+                goTo(19);
               });
               console.log('✅ Selesaikan Misi button event listener added');
             } else {
