@@ -1890,7 +1890,7 @@
             await completeGameOnBackend();
           }, 500);
         }
-        if (i === 20) {
+        if (i === 18) {
           // Initialize final puzzle when entering final puzzle slide
           setTimeout(() => initFinalPuzzle(), 100);
         }
@@ -3132,23 +3132,43 @@
       const requiredIngredients = 3;
 
       function initFinalPuzzle() {
+        console.log('initFinalPuzzle called');
         selectedIngredients = [];
         
-        // Clear any existing event listeners by cloning elements
-        document.querySelectorAll('.ingredient').forEach(ingredient => {
-          const newIngredient = ingredient.cloneNode(true);
-          ingredient.parentNode.replaceChild(newIngredient, ingredient);
-        });
-        
-        // Add fresh event listeners
-        document.querySelectorAll('.ingredient').forEach(ingredient => {
-          ingredient.addEventListener('click', handleIngredientClick);
-          ingredient.style.opacity = '1';
-          ingredient.style.cursor = 'pointer';
-          ingredient.style.userSelect = 'none';
+        // Wait a bit to ensure DOM is ready
+        setTimeout(() => {
+          const ingredients = document.querySelectorAll('.ingredient');
+          console.log('Found ingredients:', ingredients.length);
           
-          console.log('Event listener added to ingredient:', ingredient.dataset.concept);
-        });
+          if (ingredients.length === 0) {
+            console.warn('No ingredients found, retrying...');
+            setTimeout(() => initFinalPuzzle(), 300);
+            return;
+          }
+          
+          // Clear any existing event listeners by cloning elements
+          ingredients.forEach(ingredient => {
+            const newIngredient = ingredient.cloneNode(true);
+            ingredient.parentNode.replaceChild(newIngredient, ingredient);
+          });
+          
+          // Re-select after cloning
+          const newIngredients = document.querySelectorAll('.ingredient');
+          console.log('After cloning, found ingredients:', newIngredients.length);
+          
+          // Add fresh event listeners
+          newIngredients.forEach(ingredient => {
+            ingredient.addEventListener('click', handleIngredientClick);
+            ingredient.style.opacity = '1';
+            ingredient.style.cursor = 'pointer';
+            ingredient.style.userSelect = 'none';
+            ingredient.style.pointerEvents = 'auto';
+            
+            console.log('Event listener added to ingredient:', ingredient.dataset.concept, ingredient.textContent);
+          });
+          
+          console.log('Final puzzle initialization complete');
+        }, 100);
         
         // Clear potion container
         const potionContainer = document.querySelector('.potion-container');
