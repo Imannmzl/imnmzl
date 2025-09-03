@@ -604,6 +604,7 @@
           </div>
         </div>
         <div class="header-actions">
+          <button class="btn" id="btn-slide-menu" title="Menu Slide">📋 Menu</button>
           <button class="btn" id="btn-resep" aria-haspopup="dialog" aria-controls="modal-resep" title="Buka Buku Resep Kuno">📜 Buku Resep</button>
         </div>
       </div>
@@ -1493,6 +1494,47 @@
     </div>
   </div>
 
+  <!-- Modal Slide Navigation Menu -->
+  <div class="modal" id="modal-slide-menu" role="dialog" aria-modal="true" aria-labelledby="slide-menu-title" aria-hidden="true">
+    <div class="sheet">
+      <div style="display:flex; align-items:center; justify-content: space-between; gap:.5rem; margin-bottom:.5rem;">
+        <h3 id="slide-menu-title">📋 Menu Navigasi Slide</h3>
+        <button class="btn primary" id="btn-close-slide-menu">Tutup</button>
+      </div>
+      <div style="display: grid; gap: 0.5rem; max-height: 60vh; overflow-y: auto;">
+        <button class="btn slide-nav-btn" data-slide="0">0. User Input</button>
+        <button class="btn slide-nav-btn" data-slide="1">1. Prolog</button>
+        <button class="btn slide-nav-btn" data-slide="2">2. Mission</button>
+        <button class="btn slide-nav-btn" data-slide="3">3. Buku Resep</button>
+        <button class="btn slide-nav-btn" data-slide="4">4. Bab 1 - Gerbang</button>
+        <button class="btn slide-nav-btn" data-slide="5">5. Definisi Himpunan</button>
+        <button class="btn slide-nav-btn" data-slide="6">6. Quiz Identifikasi</button>
+        <button class="btn slide-nav-btn" data-slide="7">7. Notasi Himpunan</button>
+        <button class="btn slide-nav-btn" data-slide="8">8. Bab 2 - Taman</button>
+        <button class="btn slide-nav-btn" data-slide="9">9. Keanggotaan</button>
+        <button class="btn slide-nav-btn" data-slide="10">10. Drag & Drop</button>
+        <button class="btn slide-nav-btn" data-slide="11">11. Kosong & Universal</button>
+        <button class="btn slide-nav-btn" data-slide="12">12. Bab 3 - Sungai</button>
+        <button class="btn slide-nav-btn" data-slide="13">13. Operasi Gabungan</button>
+        <button class="btn slide-nav-btn" data-slide="14">14. Simulasi Gabungan</button>
+        <button class="btn slide-nav-btn" data-slide="15">15. Operasi Irisan</button>
+        <button class="btn slide-nav-btn" data-slide="16">16. Simulasi Irisan</button>
+        <button class="btn slide-nav-btn" data-slide="17">17. Bab 4 - Altar</button>
+        <button class="btn slide-nav-btn" data-slide="18">18. Puzzle Kompleks</button>
+        <button class="btn slide-nav-btn" data-slide="19">19. 🧪 Puzzle Final</button>
+        <button class="btn slide-nav-btn" data-slide="20">20. 🎉 Epilog</button>
+        <button class="btn slide-nav-btn" data-slide="22">22. 💥 Game Over</button>
+      </div>
+      <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1);">
+        <p style="font-size: 12px; color: var(--muted); margin: 0;">
+          <strong>Current Slide:</strong> <span id="current-slide-info">-</span><br>
+          <strong>Total Mistakes:</strong> <span id="current-mistakes">0</span><br>
+          <strong>Session ID:</strong> <span id="current-session">-</span>
+        </p>
+      </div>
+    </div>
+  </div>
+
   <!-- Toast -->
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
@@ -1576,6 +1618,11 @@
       const modalResep = document.getElementById('modal-resep');
       const btnCloseResep = document.getElementById('btn-close-resep');
       const btnClearNotes = document.getElementById('btn-clear-notes');
+      
+      // Slide navigation menu elements
+      const btnSlideMenu = document.getElementById('btn-slide-menu');
+      const modalSlideMenu = document.getElementById('modal-slide-menu');
+      const btnCloseSlideMenu = document.getElementById('btn-close-slide-menu');
       const toastEl = document.getElementById('toast');
 
       const STORAGE_KEY = 'hh-progress-v1';
@@ -2043,6 +2090,35 @@
       function closeResep() {
         modalResep.classList.remove('open');
         modalResep.setAttribute('aria-hidden', 'true');
+      }
+      
+      // Slide menu functions
+      function openSlideMenu() {
+        modalSlideMenu.classList.add('open');
+        modalSlideMenu.setAttribute('aria-hidden', 'false');
+        updateSlideMenuInfo();
+      }
+      
+      function closeSlideMenu() {
+        modalSlideMenu.classList.remove('open');
+        modalSlideMenu.setAttribute('aria-hidden', 'true');
+      }
+      
+      function updateSlideMenuInfo() {
+        document.getElementById('current-slide-info').textContent = `Slide ${index}`;
+        document.getElementById('current-mistakes').textContent = totalMistakes;
+        document.getElementById('current-session').textContent = sessionId || 'No session';
+        
+        // Highlight current slide button
+        document.querySelectorAll('.slide-nav-btn').forEach(btn => {
+          if (parseInt(btn.dataset.slide) === index) {
+            btn.style.background = 'var(--accent)';
+            btn.style.color = 'var(--bg)';
+          } else {
+            btn.style.background = '';
+            btn.style.color = '';
+          }
+        });
       }
 
       // User info management
