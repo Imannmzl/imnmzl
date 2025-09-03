@@ -1918,24 +1918,11 @@
           setTimeout(() => updateBackendProgress(), 500);
         }
         if (i === 19) {
-          // Reached epilog slide - check how user got here
+          // Reached epilog slide - just display success message
           console.log('Reached epilog slide - displaying success message');
           console.log('Total mistakes at epilog:', totalMistakes);
           console.log('Session ID:', sessionId);
-          console.log('Previous slide was:', index - 1);
-          console.log('User reached epilog - completing game as fallback');
-          
-          // Fallback completion if user somehow reached epilog without proper completion
-          setTimeout(async () => {
-            try {
-              await updateBackendProgress();
-              await completeGameOnBackend();
-              console.log('✅ Fallback game completion from epilog slide');
-            } catch (error) {
-              console.error('Failed to complete game on backend:', error);
-              showToast('🎉 Petualangan selesai! (Mode offline)');
-            }
-          }, 500);
+          console.log('Game should already be completed by now');
         }
       }
 
@@ -3642,31 +3629,43 @@
                 console.log('🔥 BUTTON CLICKED! Event triggered');
                 console.log('Event details:', e);
                 console.log('Button that was clicked:', e.target);
+                console.log('Current slide when button clicked:', index);
                 
                 e.preventDefault();
                 e.stopPropagation();
                 
-                console.log('🚀 Selesaikan Misi button clicked - completing game now!');
-                console.log('Current slide index:', index);
+                // Validate that we're still in final puzzle slide
+                if (index !== 18) {
+                  console.warn('⚠️ Button clicked but not in final puzzle slide. Current:', index);
+                  showToast('⚠️ Navigasi error. Kembali ke puzzle final.');
+                  goTo(18); // Go back to final puzzle
+                  return;
+                }
+                
+                console.log('🚀 Selesaikan Misi button clicked from final puzzle - completing game now!');
                 
                 // Show immediate feedback
                 showToast('🔄 Menyelesaikan misi...');
                 
-                // Complete game on backend
+                // Complete game on backend first
                 setTimeout(async () => {
                   try {
                     console.log('📤 Completing game on backend...');
                     await updateBackendProgress();
                     await completeGameOnBackend();
                     console.log('✅ Game completion successful');
+                    
+                    // Navigate to epilog ONLY after successful completion
+                    console.log('🏠 Navigating to epilog slide...');
+                    goTo(19);
                   } catch (error) {
                     console.error('❌ Failed to complete game on backend:', error);
                     showToast('❌ Gagal menyimpan data. Mode offline.');
+                    
+                    // Still navigate to epilog even if backend fails
+                    console.log('🏠 Navigating to epilog slide (offline mode)...');
+                    goTo(19);
                   }
-                  
-                  // Navigate to epilog
-                  console.log('🏠 Navigating to epilog slide...');
-                  goTo(19);
                 }, 100);
               });
               
