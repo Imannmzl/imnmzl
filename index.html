@@ -1918,11 +1918,24 @@
           setTimeout(() => updateBackendProgress(), 500);
         }
         if (i === 19) {
-          // Reached epilog slide - display completion message only
+          // Reached epilog slide - check how user got here
           console.log('Reached epilog slide - displaying success message');
           console.log('Total mistakes at epilog:', totalMistakes);
           console.log('Session ID:', sessionId);
-          console.log('Game completion should have been triggered from final puzzle');
+          console.log('Previous slide was:', index - 1);
+          console.log('User reached epilog - completing game as fallback');
+          
+          // Fallback completion if user somehow reached epilog without proper completion
+          setTimeout(async () => {
+            try {
+              await updateBackendProgress();
+              await completeGameOnBackend();
+              console.log('✅ Fallback game completion from epilog slide');
+            } catch (error) {
+              console.error('Failed to complete game on backend:', error);
+              showToast('🎉 Petualangan selesai! (Mode offline)');
+            }
+          }, 500);
         }
       }
 
