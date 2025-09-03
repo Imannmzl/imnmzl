@@ -1660,24 +1660,32 @@
       }
 
       function persistIndex() {
-        try { localStorage.setItem(STORAGE_KEY, String(index)); } catch(e) {}
+        // Disabled - no progress persistence on refresh
+        // try { localStorage.setItem(STORAGE_KEY, String(index)); } catch(e) {}
       }
       function loadIndex() {
-        try {
-          const s = localStorage.getItem(STORAGE_KEY);
-          if (s != null && !Number.isNaN(+s)) index = clamp(+s, 0, maxIndex);
-        } catch(e) {}
+        // Disabled - always start from beginning on refresh
+        index = 0;
+        console.log('Progress persistence disabled - starting from slide 0');
+        // try {
+        //   const s = localStorage.getItem(STORAGE_KEY);
+        //   if (s != null && !Number.isNaN(+s)) index = clamp(+s, 0, maxIndex);
+        // } catch(e) {}
       }
 
       function loadMistakes() {
-        try {
-          const m = localStorage.getItem(MISTAKES_KEY);
-          if (m != null && !Number.isNaN(+m)) totalMistakes = Math.max(0, +m);
-        } catch(e) {}
+        // Disabled - always start with 0 mistakes on refresh
+        totalMistakes = 0;
+        console.log('Mistakes persistence disabled - starting with 0 mistakes');
+        // try {
+        //   const m = localStorage.getItem(MISTAKES_KEY);
+        //   if (m != null && !Number.isNaN(+m)) totalMistakes = Math.max(0, +m);
+        // } catch(e) {}
       }
 
       function saveMistakes() {
-        try { localStorage.setItem(MISTAKES_KEY, String(totalMistakes)); } catch(e) {}
+        // Disabled - no mistakes persistence
+        // try { localStorage.setItem(MISTAKES_KEY, String(totalMistakes)); } catch(e) {}
       }
 
       function addMistake() {
@@ -1926,10 +1934,13 @@
 
       // Notes (Buku Resep)
       function getNotes() {
-        try { return JSON.parse(localStorage.getItem(NOTES_KEY) || '[]'); } catch(e) { return []; }
+        // Disabled - no notes persistence on refresh
+        return [];
+        // try { return JSON.parse(localStorage.getItem(NOTES_KEY) || '[]'); } catch(e) { return []; }
       }
       function setNotes(arr) {
-        try { localStorage.setItem(NOTES_KEY, JSON.stringify(arr)); } catch(e) {}
+        // Disabled - no notes persistence
+        // try { localStorage.setItem(NOTES_KEY, JSON.stringify(arr)); } catch(e) {}
       }
       function renderNotes() {
         const notes = getNotes();
@@ -3761,7 +3772,22 @@
 
 
 
+      // Clear game progress on page load (keep user info & audio settings)
+      function clearGameProgress() {
+        try {
+          localStorage.removeItem(STORAGE_KEY);    // Clear slide progress
+          localStorage.removeItem(MISTAKES_KEY);   // Clear mistakes
+          localStorage.removeItem(NOTES_KEY);      // Clear notes
+          // Keep USER_INFO_KEY and SESSION_KEY for seamless experience
+          // Keep AUDIO_ENABLED_KEY and AUTOPLAY_ENABLED_KEY for user preferences
+          console.log('Game progress cleared - fresh start enforced (keeping user info & audio settings)');
+        } catch(e) {
+          console.warn('Failed to clear progress:', e);
+        }
+      }
+
       // Init
+      clearGameProgress(); // Force fresh start on every page load
       loadIndex();
       loadMistakes();
       loadAudioSettings();
