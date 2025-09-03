@@ -1805,7 +1805,11 @@
         }
         // Hook: when entering certain slides, add notes and initialize features
         if (i === 2) addNoteOnce('Prolog', 'Menerima misi menyeduh Ramuan Keseimbangan untuk memulihkan Kristal Logika.');
-        if (i === 3) addNoteOnce('Buku Resep Kuno', 'Buku Resep akan mencatat konsep himpunan yang dipelajari di tiap bab.');
+        if (i === 3) {
+          addNoteOnce('Buku Resep Kuno', 'Buku Resep akan mencatat konsep himpunan yang dipelajari di tiap bab.');
+          // Ensure btn-to-bab1 is set up when entering Buku Resep Kuno slide
+          setTimeout(() => setupToBab1Button(), 100);
+        }
         if (i === 6) {
           // Initialize quiz when entering quiz slide
           setTimeout(() => initQuiz(), 100);
@@ -1981,14 +1985,23 @@
         }
       }
 
-      if (btnToBab1) {
-        btnToBab1.addEventListener('click', () => {
-          console.log('btn-to-bab1 clicked');
-          showToast('Selamat datang di Bab 1: Gerbang Logika!');
-          goTo(4); // Correct index for Bab 1 slide (now slide 4)
-        });
-      } else {
-        console.error('btn-to-bab1 not found');
+      // Setup btn-to-bab1 with delay to ensure DOM is ready
+      function setupToBab1Button() {
+        const btnToBab1 = document.getElementById('btn-to-bab1');
+        if (btnToBab1) {
+          console.log('btn-to-bab1 found, setting up event listener');
+          btnToBab1.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('btn-to-bab1 clicked');
+            showToast('Selamat datang di Bab 1: Gerbang Logika!');
+            goTo(4); // Correct index for Bab 1 slide (now slide 4)
+          });
+        } else {
+          console.error('btn-to-bab1 not found');
+          // Retry after delay
+          setTimeout(() => setupToBab1Button(), 500);
+        }
       }
 
       // Quiz functionality for Bab 1
@@ -3175,6 +3188,7 @@
       updateAutoplayIndicators();
       setupUserInfoInputs(); // Setup user info form
       setupRestartButtons(); // Setup restart buttons for both endings
+      setupToBab1Button(); // Setup btn-to-bab1 button
       activateSlide(index);
       
       // Show mistake counter if there are any mistakes
