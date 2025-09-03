@@ -1918,24 +1918,11 @@
           setTimeout(() => updateBackendProgress(), 500);
         }
         if (i === 19) {
-          // Reached epilog slide - but don't auto-complete yet
-          console.log('Reached epilog slide - game completed successfully');
+          // Reached epilog slide - display completion message only
+          console.log('Reached epilog slide - displaying success message');
           console.log('Total mistakes at epilog:', totalMistakes);
           console.log('Session ID:', sessionId);
-          
-          // Complete game on backend now that user has truly finished
-          setTimeout(async () => {
-            try {
-              // Update progress one final time
-              await updateBackendProgress();
-              // Then complete the game
-              await completeGameOnBackend();
-              console.log('Game completion triggered from epilog slide');
-            } catch (error) {
-              console.error('Failed to complete game on backend:', error);
-              showToast('🎉 Petualangan selesai! (Mode offline)');
-            }
-          }, 500);
+          console.log('Game completion should have been triggered from final puzzle');
         }
       }
 
@@ -3622,12 +3609,29 @@
         });
         
         if (isValid) {
-          // Success!
+          // Success! Complete the game here
+          console.log('🎉 Final puzzle completed successfully!');
+          console.log('Completing game on backend...');
+          
           const resultDiv = document.getElementById('potion-result');
           resultDiv.style.display = 'block';
           document.getElementById('btn-next-final').style.display = 'inline-block';
           
           showToast('🎉 Ramuan Keseimbangan berhasil diseduh! Kristal Logika mulai pulih!');
+          
+          // Complete game on backend immediately after puzzle success
+          setTimeout(async () => {
+            try {
+              // Update progress one final time
+              await updateBackendProgress();
+              // Then complete the game
+              await completeGameOnBackend();
+              console.log('✅ Game completion triggered from final puzzle success');
+            } catch (error) {
+              console.error('Failed to complete game on backend:', error);
+              showToast('🎉 Petualangan selesai! (Mode offline)');
+            }
+          }, 1000);
           
           // Scroll to show navigation buttons
           setTimeout(() => {
