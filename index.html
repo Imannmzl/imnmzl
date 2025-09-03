@@ -3801,6 +3801,12 @@
 
       // Keyboard
       window.addEventListener('keydown', (e) => {
+        // Disable keyboard navigation on final puzzle to prevent accidental navigation
+        if (index === 18) {
+          console.log('Keyboard navigation disabled on final puzzle slide');
+          return;
+        }
+        
         if (e.key === 'ArrowRight') next();
         else if (e.key === 'ArrowLeft') prev();
         else if (e.key === 'Escape' && modalResep.classList.contains('open')) closeResep();
