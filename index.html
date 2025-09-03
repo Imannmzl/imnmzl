@@ -1333,7 +1333,6 @@
             </div>
 
             <div class="cta">
-              <button class="btn primary" id="btn-next-final" style="display: none;">Selesaikan Misi</button>
               <button class="btn" data-prev>Sebelumnya</button>
             </div>
           </div>
@@ -3228,7 +3227,6 @@
         
         // Reset result display
         document.getElementById('potion-result').style.display = 'none';
-        document.getElementById('btn-next-final').style.display = 'none';
         
         // Add event listeners for buttons (remove existing first)
         const btnBrew = document.getElementById('btn-brew-potion');
@@ -3599,82 +3597,43 @@
         });
         
         if (isValid) {
-          // Success! Show completion UI but don't complete game yet
+          // Success! Complete game immediately and navigate
           console.log('🎉 Final puzzle solved correctly!');
-          console.log('Showing completion UI - waiting for user to click Selesaikan Misi');
+          console.log('Completing game and navigating to epilog...');
           
           const resultDiv = document.getElementById('potion-result');
           resultDiv.style.display = 'block';
-          document.getElementById('btn-next-final').style.display = 'inline-block';
           
           showToast('🎉 Ramuan Keseimbangan berhasil diseduh! Kristal Logika mulai pulih!');
           
-          // Setup event listener for "Selesaikan Misi" button when it appears
-          setTimeout(() => {
-            const btnNextFinal = document.getElementById('btn-next-final');
-            console.log('Looking for btn-next-final:', btnNextFinal);
-            console.log('Button display style:', btnNextFinal ? btnNextFinal.style.display : 'button not found');
-            
-            if (btnNextFinal) {
-              console.log('Setting up Selesaikan Misi button after puzzle completion');
-              console.log('Button text content:', btnNextFinal.textContent);
-              console.log('Button disabled:', btnNextFinal.disabled);
+          // Complete game on backend immediately
+          setTimeout(async () => {
+            try {
+              console.log('📤 Completing game on backend...');
+              await updateBackendProgress();
+              await completeGameOnBackend();
+              console.log('✅ Game completion successful');
               
-              // Remove any existing listeners by cloning
-              const newBtnNextFinal = btnNextFinal.cloneNode(true);
-              btnNextFinal.parentNode.replaceChild(newBtnNextFinal, btnNextFinal);
+              // Auto-navigate to epilog after completion
+              showToast('🎉 Misi berhasil diselesaikan! Menuju epilog...');
+              setTimeout(() => {
+                console.log('🏠 Auto-navigating to epilog slide...');
+                goTo(19);
+              }, 1500);
               
-              // Test simple click first
-              newBtnNextFinal.addEventListener('click', (e) => {
-                console.log('🔥 BUTTON CLICKED! Event triggered');
-                console.log('Event details:', e);
-                console.log('Button that was clicked:', e.target);
-                console.log('Current slide when button clicked:', index);
-                
-                e.preventDefault();
-                e.stopPropagation();
-                
-                // Validate that we're still in final puzzle slide
-                if (index !== 18) {
-                  console.warn('⚠️ Button clicked but not in final puzzle slide. Current:', index);
-                  showToast('⚠️ Navigasi error. Kembali ke puzzle final.');
-                  goTo(18); // Go back to final puzzle
-                  return;
-                }
-                
-                console.log('🚀 Selesaikan Misi button clicked from final puzzle - completing game now!');
-                
-                // Show immediate feedback
-                showToast('🔄 Menyelesaikan misi...');
-                
-                // Complete game on backend first
-                setTimeout(async () => {
-                  try {
-                    console.log('📤 Completing game on backend...');
-                    await updateBackendProgress();
-                    await completeGameOnBackend();
-                    console.log('✅ Game completion successful');
-                    
-                    // Navigate to epilog ONLY after successful completion
-                    console.log('🏠 Navigating to epilog slide...');
-                    goTo(19);
-                  } catch (error) {
-                    console.error('❌ Failed to complete game on backend:', error);
-                    showToast('❌ Gagal menyimpan data. Mode offline.');
-                    
-                    // Still navigate to epilog even if backend fails
-                    console.log('🏠 Navigating to epilog slide (offline mode)...');
-                    goTo(19);
-                  }
-                }, 100);
-              });
+            } catch (error) {
+              console.error('❌ Failed to complete game on backend:', error);
+              showToast('❌ Gagal menyimpan data. Mode offline.');
               
-              console.log('✅ Selesaikan Misi button event listener added');
-              console.log('Button is now clickable');
-            } else {
-              console.error('❌ btn-next-final not found after puzzle completion');
+              // Still navigate to epilog
+              setTimeout(() => {
+                console.log('🏠 Navigating to epilog slide (offline mode)...');
+                goTo(19);
+              }, 1500);
             }
-          }, 200);
+          }, 1000);
+          
+
           
           // Scroll to show navigation buttons
           setTimeout(() => {
@@ -3723,7 +3682,6 @@
         setTimeout(() => initFinalPuzzle(), 100);
         
         document.getElementById('potion-result').style.display = 'none';
-        document.getElementById('btn-next-final').style.display = 'none';
         
         showToast('🔄 Ramuan direset! Coba lagi.');
       }
