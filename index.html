@@ -674,10 +674,10 @@
           </div>
         </section>
 
-        <!-- Slide 2: Buku Resep Kuno introduced & call to action -->
-        <section class="slide" data-slide="2" aria-labelledby="title-2">
+        <!-- Slide 3: Buku Resep Kuno introduced & call to action -->
+        <section class="slide" data-slide="3" aria-labelledby="title-3">
           <div class="card">
-            <h2 class="title" id="title-2">Buku Resep Kuno</h2>
+            <h2 class="title" id="title-3">Buku Resep Kuno</h2>
             <img class="illustration" src="images/Prolog-Panggilan-dari-Desa.png" alt="Buku Resep Kuno" loading="lazy">
             <p class="lead">
               Buku Resep Kuno akan mencatat konsep yang kamu pelajari sepanjang perjalanan.
@@ -703,9 +703,9 @@
         </section>
 
         <!-- Bab 1: Slide 1 - Gerbang Logika -->
-        <section class="slide" data-slide="3" aria-labelledby="title-3">
+        <section class="slide" data-slide="4" aria-labelledby="title-4">
           <div class="card">
-            <h2 class="title" id="title-3">Bab 1: Gerbang Logika & Definisi yang Jelas</h2>
+            <h2 class="title" id="title-4">Bab 1: Gerbang Logika & Definisi yang Jelas</h2>
             <img class="illustration" src="images/Babak-1-Gerbang-Logika-&amp;-Definisi-yang-Jelas.png" alt="Bab 1: Gerbang Logika &amp; Definisi yang Jelas" loading="lazy">
             <p class="lead">
               Kamu tiba di Gerbang Logika yang megah. Di atas gerbang tertulis: <em>"Hanya mereka yang memahami definisi yang jelas yang boleh masuk."</em>
@@ -1981,10 +1981,15 @@
         }
       }
 
-      btnToBab1.addEventListener('click', () => {
-        showToast('Selamat datang di Bab 1: Gerbang Logika!');
-        goTo(3); // Correct index for Bab 1 slide
-      });
+      if (btnToBab1) {
+        btnToBab1.addEventListener('click', () => {
+          console.log('btn-to-bab1 clicked');
+          showToast('Selamat datang di Bab 1: Gerbang Logika!');
+          goTo(4); // Correct index for Bab 1 slide (now slide 4)
+        });
+      } else {
+        console.error('btn-to-bab1 not found');
+      }
 
       // Quiz functionality for Bab 1
       let quizAnswers = [];
