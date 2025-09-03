@@ -3274,9 +3274,18 @@
           finalPuzzleSelectedIngredients.push(concept);
           const potionContainer = document.querySelector('.potion-container');
           
+          console.log('Potion container found:', potionContainer);
+          console.log('Potion container innerHTML before:', potionContainer ? potionContainer.innerHTML : 'null');
+          
+          if (!potionContainer) {
+            console.error('Potion container not found!');
+            return;
+          }
+          
           // Remove instruction text if first ingredient
           if (finalPuzzleSelectedIngredients.length === 1) {
             potionContainer.innerHTML = '';
+            console.log('Instruction text cleared');
           }
           
           // Create ingredient element in potion
@@ -3290,6 +3299,8 @@
           potionIngredient.addEventListener('click', () => removeIngredient(concept, potionIngredient));
           
           potionContainer.appendChild(potionIngredient);
+          console.log('Ingredient added to potion container');
+          console.log('Potion container innerHTML after:', potionContainer.innerHTML);
           
           // Visual feedback
           ingredient.style.opacity = '0.5';
