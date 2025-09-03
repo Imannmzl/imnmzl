@@ -1802,50 +1802,48 @@
         // Stop current audio when changing slides
         stopCurrentAudio();
         
-        // Scroll to top of the page immediately and smoothly
-        console.log('Scrolling to top...');
+        // Force scroll to top with multiple targets
+        console.log('🔝 Force scrolling to top...');
         
-        // Immediate scroll for instant feedback
-        try {
+        // Get main element (the actual scroll container)
+        const mainElement = document.querySelector('main');
+        
+        // Method 1: Immediate scroll on all possible targets
+        window.scrollTo(0, 0);
+        document.body.scrollTop = 0;
+        document.documentElement.scrollTop = 0;
+        if (mainElement) {
+          mainElement.scrollTop = 0;
+        }
+        
+        // Method 2: Force scroll with requestAnimationFrame
+        requestAnimationFrame(() => {
           window.scrollTo(0, 0);
           document.body.scrollTop = 0;
           document.documentElement.scrollTop = 0;
-        } catch (e) {
-          console.log('Immediate scroll fallback');
-        }
-        
-        // Add small delay for smooth scroll
-        setTimeout(() => {
-          try {
-            window.scrollTo({
-              top: 0,
-              behavior: 'smooth'
-            });
-          } catch (e) {
+          if (mainElement) {
+            mainElement.scrollTop = 0;
+          }
+          
+          // Method 3: Additional scroll after DOM update
+          setTimeout(() => {
             window.scrollTo(0, 0);
-          }
-          
-          // Also scroll body and document element for better compatibility
-          try {
-            document.body.scrollTo({
-              top: 0,
-              behavior: 'smooth'
-            });
-          } catch (e) {
             document.body.scrollTop = 0;
-          }
-          
-          try {
-            document.documentElement.scrollTo({
-              top: 0,
-              behavior: 'smooth'
-            });
-          } catch (e) {
             document.documentElement.scrollTop = 0;
-          }
-          
-          console.log('Scroll to top executed');
-        }, 10);
+            if (mainElement) {
+              mainElement.scrollTop = 0;
+              // Also try scrollTo method on main
+              try {
+                mainElement.scrollTo(0, 0);
+                mainElement.scrollTo({ top: 0, behavior: 'instant' });
+              } catch (e) {
+                mainElement.scrollTop = 0;
+              }
+            }
+            
+            console.log('✅ Scroll to top completed on all targets');
+          }, 100);
+        });
         
         slides.forEach((el, idx) => {
           if (idx === i) {
@@ -1949,6 +1947,12 @@
 
       function goTo(i) {
         console.log(`goTo called: from slide ${index} to slide ${i}`);
+        
+        // Force immediate scroll to top before slide change
+        window.scrollTo(0, 0);
+        document.body.scrollTop = 0;
+        document.documentElement.scrollTop = 0;
+        
         index = clamp(i, 0, maxIndex);
         console.log(`Actual slide index set to: ${index}`);
         activateSlide(index);
