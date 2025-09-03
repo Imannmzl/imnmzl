@@ -597,24 +597,19 @@
 
     <main role="main">
       <div class="slides" id="slides" aria-live="polite">
-        <!-- Slide 0: Title / Start -->
+        <!-- Slide 0: User Info Input -->
         <section class="slide active" data-slide="0" aria-labelledby="title-0">
           <div class="card">
             <div class="bg-ornament" aria-hidden="true"></div>
-            <h2 class="title" id="title-0">Prolog: Panggilan dari Desa</h2>
-            <img class="illustration" src="images/Prolog-Panggilan-dari-Desa.png" alt="Prolog: Panggilan dari Desa" loading="lazy">
+            <h2 class="title" id="title-0">🎓 Selamat Datang, Alkemis Muda!</h2>
             <p class="lead">
-              Hutan Harmoni dilanda kekacauan. Kristal Logika retak, membuat segala sesuatu menjadi tidak teratur.
-              Sebagai Alkemis Muda, kamu dipanggil oleh Tetua Desa untuk memulihkan keseimbangan.
+              Sebelum memulai petualangan di Hutan Harmoni, mari berkenalan terlebih dahulu. 
+              Isi data diri kamu untuk memulai pembelajaran Berpikir Komputasional - Himpunan.
             </p>
-            <div class="audio-controls" style="display: flex; align-items: center; gap: 0.5rem; margin: 1rem 0; justify-content: center;">
-              <button class="btn" id="btn-play-0" title="Putar Narasi">▶️</button>
-              <span class="audio-time" id="audio-time-0" style="font-size: 12px; color: var(--muted);">0:00 / 0:00</span>
-            </div>
             
             <!-- User Info Form -->
             <div class="user-info-form" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0;">
-              <h3 style="margin: 0 0 1rem 0; font-size: 18px; color: var(--accent); text-align: center;">✨ Perkenalkan Diri Alkemis Muda</h3>
+              <h3 style="margin: 0 0 1rem 0; font-size: 18px; color: var(--accent); text-align: center;">✨ Perkenalkan Diri</h3>
               <div style="display: grid; gap: 1rem;">
                 <div>
                   <label for="user-name" style="display: block; margin-bottom: 0.5rem; font-size: 14px; color: var(--muted); font-weight: 600;">Nama Lengkap:</label>
@@ -628,16 +623,37 @@
             </div>
             
             <div class="cta">
-              <button class="btn primary" id="btn-start" disabled>Mulai Petualangan</button>
+              <button class="btn primary" id="btn-start" disabled>Masuk ke Hutan Harmoni</button>
               <p style="font-size: 12px; color: var(--muted); margin: 0.5rem 0 0 0; text-align: center;">Isi nama dan kelas untuk memulai</p>
             </div>
           </div>
         </section>
 
-        <!-- Slide 1: Scene + Mission context -->
+        <!-- Slide 1: Prolog - Panggilan dari Desa -->
         <section class="slide" data-slide="1" aria-labelledby="title-1">
           <div class="card">
-            <h2 class="title" id="title-1">Tetua Desa: Misi Ramuan Keseimbangan</h2>
+            <div class="bg-ornament" aria-hidden="true"></div>
+            <h2 class="title" id="title-1">Prolog: Panggilan dari Desa</h2>
+            <img class="illustration" src="images/Prolog-Panggilan-dari-Desa.png" alt="Prolog: Panggilan dari Desa" loading="lazy">
+            <p class="lead">
+              Hutan Harmoni dilanda kekacauan. Kristal Logika retak, membuat segala sesuatu menjadi tidak teratur.
+              Sebagai Alkemis Muda, kamu dipanggil oleh Tetua Desa untuk memulihkan keseimbangan.
+            </p>
+            <div class="audio-controls" style="display: flex; align-items: center; gap: 0.5rem; margin: 1rem 0; justify-content: center;">
+              <button class="btn" id="btn-play-1" title="Putar Narasi">▶️</button>
+              <span class="audio-time" id="audio-time-1" style="font-size: 12px; color: var(--muted);">0:00 / 0:00</span>
+            </div>
+            
+            <div class="cta">
+              <button class="btn primary" data-next>Selanjutnya</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Slide 2: Scene + Mission context -->
+        <section class="slide" data-slide="2" aria-labelledby="title-2">
+          <div class="card">
+            <h2 class="title" id="title-2">Tetua Desa: Misi Ramuan Keseimbangan</h2>
             <img class="illustration" src="images/Prolog-Panggilan-dari-Desa.png" alt="Tetua Desa dan Kristal Logika" loading="lazy">
             <p class="lead">
               "Kristal Logika menjaga harmoni. Retaknya kristal menimbulkan keanehan: <em>kumpulan hewan bersayap yang tidak bisa terbang</em>,
@@ -1338,9 +1354,9 @@
         </section>
 
         <!-- Game Over Slide -->
-        <section class="slide" data-slide="20" aria-labelledby="title-20">
+        <section class="slide" data-slide="21" aria-labelledby="title-21">
           <div class="card">
-            <h2 class="title" id="title-20" style="color: var(--warn);">💥 Misi Gagal!</h2>
+            <h2 class="title" id="title-21" style="color: var(--warn);">💥 Misi Gagal!</h2>
             <img class="illustration" src="images/Babak-4-Altar-Keseimbangan-&-Pemecahan-Masalah.png" alt="Kristal Logika yang retak" loading="lazy">
             <p class="lead" style="color: var(--warn);">
               <strong>Kamu telah melakukan terlalu banyak kesalahan!</strong>
@@ -1401,13 +1417,16 @@
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <!-- Audio Elements -->
-  <audio id="audio-0" preload="metadata">
-    <source src="audio/prolog/slide1_welcome.wav" type="audio/wav">
+  <audio id="audio-0" preload="none">
+    <!-- No audio source for user input slide -->
   </audio>
   <audio id="audio-1" preload="metadata">
-    <source src="audio/prolog/slide2_mission.wav" type="audio/wav">
+    <source src="audio/prolog/slide1_welcome.wav" type="audio/wav">
   </audio>
   <audio id="audio-2" preload="metadata">
+    <source src="audio/prolog/slide2_mission.wav" type="audio/wav">
+  </audio>
+  <audio id="audio-3" preload="metadata">
     <source src="audio/prolog/slide3_recipe_book.wav" type="audio/wav">
   </audio>
   <audio id="audio-3" preload="metadata">
@@ -1672,7 +1691,7 @@
 
       function showGameOver() {
         // Navigate to Game Over slide
-        goTo(20); // Game Over slide index
+        goTo(21); // Game Over slide index
         
         // Disable navigation buttons
         document.querySelectorAll('.btn[data-next], .btn[data-prev]').forEach(btn => {
@@ -1776,32 +1795,32 @@
           if (h) h.focus && h.focus();
         }
         // Hook: when entering certain slides, add notes and initialize features
-        if (i === 1) addNoteOnce('Prolog', 'Menerima misi menyeduh Ramuan Keseimbangan untuk memulihkan Kristal Logika.');
-        if (i === 2) addNoteOnce('Buku Resep Kuno', 'Buku Resep akan mencatat konsep himpunan yang dipelajari di tiap bab.');
-        if (i === 5) {
+        if (i === 2) addNoteOnce('Prolog', 'Menerima misi menyeduh Ramuan Keseimbangan untuk memulihkan Kristal Logika.');
+        if (i === 3) addNoteOnce('Buku Resep Kuno', 'Buku Resep akan mencatat konsep himpunan yang dipelajari di tiap bab.');
+        if (i === 6) {
           // Initialize quiz when entering quiz slide
           setTimeout(() => initQuiz(), 100);
         }
-        if (i === 9) {
+        if (i === 10) {
           // Initialize drag & drop game when entering drag & drop slide
           setTimeout(() => {
             console.log('Initializing drag & drop for slide:', index);
             initDragDrop();
           }, 200);
         }
-        if (i === 13) {
+        if (i === 14) {
           // Initialize union simulation when entering union slide
           setTimeout(() => initUnionSimulation(), 100);
         }
-        if (i === 15) {
+        if (i === 16) {
           // Initialize intersection simulation when entering intersection slide
           setTimeout(() => initIntersectionSimulation(), 100);
         }
-        if (i === 17) {
+        if (i === 18) {
           // Initialize complex puzzle when entering puzzle slide
           setTimeout(() => initComplexPuzzle(), 100);
         }
-        if (i === 18) {
+        if (i === 19) {
           // Initialize final puzzle when entering final puzzle slide
           setTimeout(() => initFinalPuzzle(), 100);
         }
@@ -1927,7 +1946,7 @@
       btnStart && btnStart.addEventListener('click', () => {
         if (!btnStart.disabled) {
           showToast(`🎉 Selamat datang, ${userInfo.name}! Petualangan dimulai!`);
-          goTo(1);
+          goTo(1); // Go to prolog slide
         }
       });
 
