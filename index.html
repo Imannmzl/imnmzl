@@ -3167,6 +3167,8 @@
           
           // Add fresh event listeners only to final puzzle ingredients
           newIngredients.forEach(ingredient => {
+            console.log('Checking ingredient:', ingredient.textContent, 'classList:', ingredient.classList, 'data-concept:', ingredient.dataset.concept);
+            
             // Only add to ingredients in final puzzle container
             const finalPuzzleContainer = ingredient.closest('#final-puzzle');
             if (finalPuzzleContainer) {
@@ -3176,7 +3178,9 @@
               ingredient.style.userSelect = 'none';
               ingredient.style.pointerEvents = 'auto';
               
-              console.log('Event listener added to final puzzle ingredient:', ingredient.dataset.concept, ingredient.textContent);
+              console.log('✅ Event listener added to final puzzle ingredient:', ingredient.dataset.concept, ingredient.textContent);
+            } else {
+              console.log('❌ Ingredient not in final puzzle, skipping:', ingredient.textContent);
             }
           });
           
@@ -3209,24 +3213,33 @@
       }
 
       function handleIngredientClick(e) {
-        console.log('Ingredient clicked:', e.target);
+        console.log('handleIngredientClick called');
+        console.log('Event target:', e.target);
+        console.log('Event target classList:', e.target.classList);
+        console.log('Event target closest #final-puzzle:', e.target.closest('#final-puzzle'));
+        
         e.preventDefault();
         e.stopPropagation();
         
         const ingredient = e.target;
-        const concept = ingredient.dataset.concept;
         
-        console.log('Ingredient concept:', concept);
-        console.log('Current selected ingredients:', selectedIngredients);
-        console.log('Required ingredients:', requiredIngredients);
-        console.log('selectedIngredients.length:', selectedIngredients.length);
-        console.log('selectedIngredients.includes(concept):', selectedIngredients.includes(concept));
-        
-        // Ensure we're in the final puzzle context
-        if (!ingredient.closest('#final-puzzle')) {
-          console.log('Ingredient not in final puzzle, ignoring');
+        // STRICT VALIDATION: Must be in final puzzle AND have ingredient class
+        if (!ingredient.closest('#final-puzzle') || !ingredient.classList.contains('ingredient')) {
+          console.log('Not a final puzzle ingredient, ignoring click');
           return;
         }
+        
+        const concept = ingredient.dataset.concept;
+        
+        // STRICT VALIDATION: Must have data-concept attribute
+        if (!concept) {
+          console.log('No data-concept attribute, ignoring click');
+          return;
+        }
+        
+        console.log('Valid final puzzle ingredient concept:', concept);
+        console.log('Current selected ingredients:', selectedIngredients);
+        console.log('Required ingredients:', requiredIngredients);
         
         if (selectedIngredients.length < requiredIngredients && !selectedIngredients.includes(concept)) {
           // Add to potion
