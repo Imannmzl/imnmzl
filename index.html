@@ -1917,11 +1917,21 @@
           setTimeout(() => updateBackendProgress(), 500);
         }
         if (i === 19) {
-          // Reached epilog slide - just display success message
+          // Reached epilog slide - display success message
           console.log('Reached epilog slide - displaying success message');
           console.log('Total mistakes at epilog:', totalMistakes);
           console.log('Session ID:', sessionId);
+          console.log('User info:', userInfo);
           console.log('Game should already be completed by now');
+          
+          // Show completion toast with user name
+          setTimeout(() => {
+            if (userInfo.name) {
+              showToast(`🎉 Selamat ${userInfo.name}! Petualangan berhasil diselesaikan!`);
+            } else {
+              showToast('🎉 Petualangan berhasil diselesaikan!');
+            }
+          }, 500);
         }
       }
 
