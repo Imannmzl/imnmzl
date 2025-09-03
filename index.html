@@ -1494,44 +1494,42 @@
     </div>
   </div>
 
-  <!-- Modal Slide Navigation Menu -->
-  <div class="modal" id="modal-slide-menu" role="dialog" aria-modal="true" aria-labelledby="slide-menu-title" aria-hidden="true">
-    <div class="sheet">
-      <div style="display:flex; align-items:center; justify-content: space-between; gap:.5rem; margin-bottom:.5rem;">
-        <h3 id="slide-menu-title">📋 Menu Navigasi Slide</h3>
-        <button class="btn primary" id="btn-close-slide-menu">Tutup</button>
-      </div>
-      <div style="display: grid; gap: 0.5rem; max-height: 60vh; overflow-y: auto;">
-        <button class="btn slide-nav-btn" data-slide="0">0. User Input</button>
-        <button class="btn slide-nav-btn" data-slide="1">1. Prolog</button>
-        <button class="btn slide-nav-btn" data-slide="2">2. Mission</button>
-        <button class="btn slide-nav-btn" data-slide="3">3. Buku Resep</button>
-        <button class="btn slide-nav-btn" data-slide="4">4. Bab 1 - Gerbang</button>
-        <button class="btn slide-nav-btn" data-slide="5">5. Definisi Himpunan</button>
-        <button class="btn slide-nav-btn" data-slide="6">6. Quiz Identifikasi</button>
-        <button class="btn slide-nav-btn" data-slide="7">7. Notasi Himpunan</button>
-        <button class="btn slide-nav-btn" data-slide="8">8. Bab 2 - Taman</button>
-        <button class="btn slide-nav-btn" data-slide="9">9. Keanggotaan</button>
-        <button class="btn slide-nav-btn" data-slide="10">10. Drag & Drop</button>
-        <button class="btn slide-nav-btn" data-slide="11">11. Kosong & Universal</button>
-        <button class="btn slide-nav-btn" data-slide="12">12. Bab 3 - Sungai</button>
-        <button class="btn slide-nav-btn" data-slide="13">13. Operasi Gabungan</button>
-        <button class="btn slide-nav-btn" data-slide="14">14. Simulasi Gabungan</button>
-        <button class="btn slide-nav-btn" data-slide="15">15. Operasi Irisan</button>
-        <button class="btn slide-nav-btn" data-slide="16">16. Simulasi Irisan</button>
-        <button class="btn slide-nav-btn" data-slide="17">17. Bab 4 - Altar</button>
-        <button class="btn slide-nav-btn" data-slide="18">18. Puzzle Kompleks</button>
-        <button class="btn slide-nav-btn" data-slide="19">19. 🧪 Puzzle Final</button>
-        <button class="btn slide-nav-btn" data-slide="20">20. 🎉 Epilog</button>
-        <button class="btn slide-nav-btn" data-slide="22">22. 💥 Game Over</button>
-      </div>
-      <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1);">
-        <p style="font-size: 12px; color: var(--muted); margin: 0;">
-          <strong>Current Slide:</strong> <span id="current-slide-info">-</span><br>
-          <strong>Total Mistakes:</strong> <span id="current-mistakes">0</span><br>
-          <strong>Session ID:</strong> <span id="current-session">-</span>
-        </p>
-      </div>
+  <!-- Floating Slide Navigation Menu -->
+  <div id="floating-slide-menu" style="position: fixed; top: 80px; right: 20px; z-index: 100; background: linear-gradient(180deg, rgba(18,26,42,.95) 0%, rgba(18,26,42,.98) 100%); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,.08); border-radius: 12px; padding: 1rem; width: 280px; max-height: 70vh; overflow-y: auto; display: none; box-shadow: var(--shadow); opacity: 0; transform: translateY(-10px); transition: opacity 0.2s ease, transform 0.2s ease;">
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem;">
+      <h4 style="margin: 0; color: var(--accent); font-size: 14px;">📋 Menu Navigasi</h4>
+      <button id="btn-close-floating-menu" style="background: none; border: none; color: var(--muted); cursor: pointer; font-size: 16px;">✕</button>
+    </div>
+    
+    <div style="display: grid; gap: 0.25rem; margin-bottom: 0.75rem;">
+      <button class="btn slide-nav-btn" data-slide="0" style="padding: 0.4rem 0.6rem; font-size: 12px;">0. User Input</button>
+      <button class="btn slide-nav-btn" data-slide="1" style="padding: 0.4rem 0.6rem; font-size: 12px;">1. Prolog</button>
+      <button class="btn slide-nav-btn" data-slide="2" style="padding: 0.4rem 0.6rem; font-size: 12px;">2. Mission</button>
+      <button class="btn slide-nav-btn" data-slide="3" style="padding: 0.4rem 0.6rem; font-size: 12px;">3. Buku Resep</button>
+      <button class="btn slide-nav-btn" data-slide="4" style="padding: 0.4rem 0.6rem; font-size: 12px;">4. Bab 1 - Gerbang</button>
+      <button class="btn slide-nav-btn" data-slide="5" style="padding: 0.4rem 0.6rem; font-size: 12px;">5. Definisi</button>
+      <button class="btn slide-nav-btn" data-slide="6" style="padding: 0.4rem 0.6rem; font-size: 12px;">6. Quiz</button>
+      <button class="btn slide-nav-btn" data-slide="7" style="padding: 0.4rem 0.6rem; font-size: 12px;">7. Notasi</button>
+      <button class="btn slide-nav-btn" data-slide="8" style="padding: 0.4rem 0.6rem; font-size: 12px;">8. Bab 2 - Taman</button>
+      <button class="btn slide-nav-btn" data-slide="9" style="padding: 0.4rem 0.6rem; font-size: 12px;">9. Keanggotaan</button>
+      <button class="btn slide-nav-btn" data-slide="10" style="padding: 0.4rem 0.6rem; font-size: 12px;">10. Drag & Drop</button>
+      <button class="btn slide-nav-btn" data-slide="11" style="padding: 0.4rem 0.6rem; font-size: 12px;">11. Kosong & Universal</button>
+      <button class="btn slide-nav-btn" data-slide="12" style="padding: 0.4rem 0.6rem; font-size: 12px;">12. Bab 3 - Sungai</button>
+      <button class="btn slide-nav-btn" data-slide="13" style="padding: 0.4rem 0.6rem; font-size: 12px;">13. Gabungan</button>
+      <button class="btn slide-nav-btn" data-slide="14" style="padding: 0.4rem 0.6rem; font-size: 12px;">14. Sim. Gabungan</button>
+      <button class="btn slide-nav-btn" data-slide="15" style="padding: 0.4rem 0.6rem; font-size: 12px;">15. Irisan</button>
+      <button class="btn slide-nav-btn" data-slide="16" style="padding: 0.4rem 0.6rem; font-size: 12px;">16. Sim. Irisan</button>
+      <button class="btn slide-nav-btn" data-slide="17" style="padding: 0.4rem 0.6rem; font-size: 12px;">17. Bab 4 - Altar</button>
+      <button class="btn slide-nav-btn" data-slide="18" style="padding: 0.4rem 0.6rem; font-size: 12px;">18. Puzzle Kompleks</button>
+      <button class="btn slide-nav-btn" data-slide="19" style="padding: 0.4rem 0.6rem; font-size: 12px; background: rgba(255,200,87,0.2);">19. 🧪 Final Puzzle</button>
+      <button class="btn slide-nav-btn" data-slide="20" style="padding: 0.4rem 0.6rem; font-size: 12px; background: rgba(81,216,138,0.2);">20. 🎉 Epilog</button>
+      <button class="btn slide-nav-btn" data-slide="22" style="padding: 0.4rem 0.6rem; font-size: 12px; background: rgba(255,138,101,0.2);">22. 💥 Game Over</button>
+    </div>
+    
+    <div style="padding-top: 0.75rem; border-top: 1px solid rgba(255,255,255,0.1); font-size: 11px; color: var(--muted);">
+      <div><strong>Slide:</strong> <span id="current-slide-info">-</span></div>
+      <div><strong>Mistakes:</strong> <span id="current-mistakes">0</span></div>
+      <div><strong>Session:</strong> <span id="current-session" style="font-family: monospace;">-</span></div>
     </div>
   </div>
 
@@ -1619,10 +1617,10 @@
       const btnCloseResep = document.getElementById('btn-close-resep');
       const btnClearNotes = document.getElementById('btn-clear-notes');
       
-      // Slide navigation menu elements
+      // Floating slide navigation menu elements
       const btnSlideMenu = document.getElementById('btn-slide-menu');
-      const modalSlideMenu = document.getElementById('modal-slide-menu');
-      const btnCloseSlideMenu = document.getElementById('btn-close-slide-menu');
+      const floatingSlideMenu = document.getElementById('floating-slide-menu');
+      const btnCloseFloatingMenu = document.getElementById('btn-close-floating-menu');
       const toastEl = document.getElementById('toast');
 
       const STORAGE_KEY = 'hh-progress-v1';
@@ -2092,31 +2090,39 @@
         modalResep.setAttribute('aria-hidden', 'true');
       }
       
-      // Slide menu functions
+      // Floating slide menu functions
       function openSlideMenu() {
-        modalSlideMenu.classList.add('open');
-        modalSlideMenu.setAttribute('aria-hidden', 'false');
+        floatingSlideMenu.style.display = 'block';
         updateSlideMenuInfo();
+        setTimeout(() => {
+          floatingSlideMenu.style.opacity = '1';
+          floatingSlideMenu.style.transform = 'translateY(0)';
+        }, 10);
       }
       
       function closeSlideMenu() {
-        modalSlideMenu.classList.remove('open');
-        modalSlideMenu.setAttribute('aria-hidden', 'true');
+        floatingSlideMenu.style.opacity = '0';
+        floatingSlideMenu.style.transform = 'translateY(-10px)';
+        setTimeout(() => {
+          floatingSlideMenu.style.display = 'none';
+        }, 200);
       }
       
       function updateSlideMenuInfo() {
-        document.getElementById('current-slide-info').textContent = `Slide ${index}`;
+        document.getElementById('current-slide-info').textContent = `${index}`;
         document.getElementById('current-mistakes').textContent = totalMistakes;
-        document.getElementById('current-session').textContent = sessionId || 'No session';
+        document.getElementById('current-session').textContent = sessionId ? sessionId.substring(0, 12) + '...' : 'No session';
         
         // Highlight current slide button
         document.querySelectorAll('.slide-nav-btn').forEach(btn => {
           if (parseInt(btn.dataset.slide) === index) {
             btn.style.background = 'var(--accent)';
             btn.style.color = 'var(--bg)';
+            btn.style.fontWeight = 'bold';
           } else {
             btn.style.background = '';
             btn.style.color = '';
+            btn.style.fontWeight = '';
           }
         });
       }
@@ -2359,6 +2365,21 @@
       btnResep.addEventListener('click', openResep);
       btnCloseResep.addEventListener('click', closeResep);
       btnClearNotes.addEventListener('click', () => { setNotes([]); renderNotes(); showToast('Catatan direset.'); });
+      
+      // Floating slide menu event listeners
+      btnSlideMenu.addEventListener('click', openSlideMenu);
+      btnCloseFloatingMenu.addEventListener('click', closeSlideMenu);
+      
+      // Setup slide navigation buttons
+      document.querySelectorAll('.slide-nav-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const targetSlide = parseInt(btn.dataset.slide);
+          console.log(`Manual navigation to slide ${targetSlide}`);
+          goTo(targetSlide);
+          closeSlideMenu();
+          showToast(`Navigasi ke slide ${targetSlide}`);
+        });
+      });
 
 
 
