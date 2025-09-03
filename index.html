@@ -186,13 +186,13 @@
       align-items: center;
       justify-content: flex-start;
       opacity: 0; 
-      transform: translateX(30px) scale(.98);
-      transition: opacity .35s ease, transform .35s ease;
+      transform: translateX(0);
+      transition: opacity .35s ease;
       pointer-events: none;
       overflow-y: visible;
       overflow-x: hidden;
     }
-    .slide.active { opacity: 1; transform: translateX(0) scale(1); pointer-events: auto; }
+    .slide.active { opacity: 1; transform: translateX(0); pointer-events: auto; }
 
     .card {
       width: min(880px, 92vw);
@@ -347,12 +347,12 @@
         justify-content: flex-start !important;
       }
       
-      /* Mobile slide isolation - more gentle approach */
+      /* Mobile slide isolation - fade only */
       .slide:not(.active) {
         pointer-events: none !important;
         z-index: -1 !important;
         opacity: 0 !important;
-        transform: translateX(-100vw) !important;
+        transform: translateX(0) !important;
       }
       
       .slide.active {
@@ -1833,16 +1833,16 @@
             el.style.opacity = '1';
             el.style.transform = 'translateX(0)';
             el.style.touchAction = 'auto';
-            console.log(`✅ Slide ${idx} activated with pointer-events: auto`);
+            console.log(`✅ Slide ${idx} activated with fade-in`);
           } else {
             el.classList.remove('active');
             el.style.pointerEvents = 'none';
             el.style.zIndex = '-1';
             el.style.opacity = '0';
-            el.style.transform = 'translateX(-100vw)';
+            el.style.transform = 'translateX(0)';
             el.style.touchAction = 'none';
             if (idx >= 17 && idx <= 22) {
-              console.log(`❌ Slide ${idx} deactivated with transform: translateX(-100vw)`);
+              console.log(`❌ Slide ${idx} deactivated with fade-out`);
             }
           }
         });
