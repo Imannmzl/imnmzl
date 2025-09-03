@@ -1333,7 +1333,7 @@
             </div>
 
             <div class="cta">
-              <button class="btn primary" id="btn-next-final" data-next style="display: none;">Selesaikan Misi</button>
+              <button class="btn primary" id="btn-next-final" style="display: none;">Selesaikan Misi</button>
               <button class="btn" data-prev>Sebelumnya</button>
             </div>
           </div>
@@ -1918,18 +1918,19 @@
           setTimeout(() => updateBackendProgress(), 500);
         }
         if (i === 19) {
-          // Game completed! Update backend
-          console.log('Reached epilog slide - completing game');
-          console.log('Total mistakes at completion:', totalMistakes);
-          console.log('Session ID at completion:', sessionId);
+          // Reached epilog slide - but don't auto-complete yet
+          console.log('Reached epilog slide - game completed successfully');
+          console.log('Total mistakes at epilog:', totalMistakes);
+          console.log('Session ID:', sessionId);
           
-          // Force update progress first, then complete game
+          // Complete game on backend now that user has truly finished
           setTimeout(async () => {
             try {
               // Update progress one final time
               await updateBackendProgress();
               // Then complete the game
               await completeGameOnBackend();
+              console.log('Game completion triggered from epilog slide');
             } catch (error) {
               console.error('Failed to complete game on backend:', error);
               showToast('🎉 Petualangan selesai! (Mode offline)');
@@ -3256,6 +3257,18 @@
           const newBtnReset = btnReset.cloneNode(true);
           btnReset.parentNode.replaceChild(newBtnReset, btnReset);
           newBtnReset.addEventListener('click', resetFinalPuzzle);
+        }
+        
+        // Setup "Selesaikan Misi" button (only works after puzzle completion)
+        const btnNextFinal = document.getElementById('btn-next-final');
+        if (btnNextFinal) {
+          const newBtnNextFinal = btnNextFinal.cloneNode(true);
+          btnNextFinal.parentNode.replaceChild(newBtnNextFinal, btnNextFinal);
+          newBtnNextFinal.addEventListener('click', () => {
+            console.log('Selesaikan Misi button clicked');
+            console.log('User has completed final puzzle - proceeding to epilog');
+            goTo(19); // Go to epilog slide
+          });
         }
       }
 
