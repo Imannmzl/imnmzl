@@ -3599,13 +3599,15 @@
         });
         
         if (isValid) {
-          // Success! Complete the game here
-          console.log('🎉 Final puzzle completed successfully!');
-          console.log('Completing game on backend...');
+          // Success! Show completion UI but don't complete game yet
+          console.log('🎉 Final puzzle solved correctly!');
+          console.log('Showing completion UI - waiting for user to click Selesaikan Misi');
           
           const resultDiv = document.getElementById('potion-result');
           resultDiv.style.display = 'block';
           document.getElementById('btn-next-final').style.display = 'inline-block';
+          
+          showToast('🎉 Ramuan Keseimbangan berhasil diseduh! Kristal Logika mulai pulih!');
           
           // Setup event listener for "Selesaikan Misi" button when it appears
           setTimeout(() => {
@@ -3616,34 +3618,31 @@
               const newBtnNextFinal = btnNextFinal.cloneNode(true);
               btnNextFinal.parentNode.replaceChild(newBtnNextFinal, btnNextFinal);
               
-              newBtnNextFinal.addEventListener('click', (e) => {
+              newBtnNextFinal.addEventListener('click', async (e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                console.log('🚀 Selesaikan Misi button clicked - navigating to epilog');
+                console.log('🚀 Selesaikan Misi button clicked - completing game now!');
                 console.log('Current slide index:', index);
-                goTo(19); // Go to epilog slide
+                
+                // Complete game on backend when user clicks Selesaikan Misi
+                try {
+                  console.log('📤 Completing game on backend...');
+                  await updateBackendProgress();
+                  await completeGameOnBackend();
+                  console.log('✅ Game completion successful - now navigating to epilog');
+                  
+                  // Navigate to epilog after successful completion
+                  goTo(19);
+                } catch (error) {
+                  console.error('❌ Failed to complete game on backend:', error);
+                  showToast('❌ Gagal menyimpan data. Coba lagi.');
+                }
               });
               console.log('✅ Selesaikan Misi button event listener added');
             } else {
               console.error('btn-next-final not found after puzzle completion');
             }
           }, 100);
-          
-          showToast('🎉 Ramuan Keseimbangan berhasil diseduh! Kristal Logika mulai pulih!');
-          
-          // Complete game on backend immediately after puzzle success
-          setTimeout(async () => {
-            try {
-              // Update progress one final time
-              await updateBackendProgress();
-              // Then complete the game
-              await completeGameOnBackend();
-              console.log('✅ Game completion triggered from final puzzle success');
-            } catch (error) {
-              console.error('Failed to complete game on backend:', error);
-              showToast('🎉 Petualangan selesai! (Mode offline)');
-            }
-          }, 1000);
           
           // Scroll to show navigation buttons
           setTimeout(() => {
