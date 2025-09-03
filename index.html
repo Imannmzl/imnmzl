@@ -1904,15 +1904,9 @@
           // Initialize intersection simulation when entering intersection slide
           setTimeout(() => initIntersectionSimulation(), 100);
         }
-        if (i === 18) {
+        if (i === 17) {
           // Initialize complex puzzle when entering puzzle slide
           setTimeout(() => initComplexPuzzle(), 100);
-        }
-        if (i === 19) {
-          // Game completed! Update backend
-          setTimeout(async () => {
-            await completeGameOnBackend();
-          }, 500);
         }
         if (i === 18) {
           // Initialize final puzzle when entering final puzzle slide
@@ -1921,6 +1915,18 @@
             console.log('About to initialize final puzzle');
             initFinalPuzzle();
           }, 100);
+        }
+        if (i === 19) {
+          // Game completed! Update backend
+          console.log('Reached epilog slide - completing game');
+          setTimeout(async () => {
+            try {
+              await completeGameOnBackend();
+            } catch (error) {
+              console.error('Failed to complete game on backend:', error);
+              showToast('🎉 Petualangan selesai! (Mode offline)');
+            }
+          }, 500);
         }
       }
 
@@ -2016,16 +2022,20 @@
       
       // Register player to backend
       async function registerPlayer() {
+        console.log('Registering player:', { nama: userInfo.name, kelas: userInfo.class });
+        
         const result = await apiCall(API_BASE_URL, {
           action: 'register',
           nama: userInfo.name,
           kelas: userInfo.class
         }, 'POST');
         
+        console.log('Registration API result:', result);
+        
         if (result.success) {
           sessionId = result.session_id;
           localStorage.setItem(SESSION_KEY, sessionId);
-          console.log('Player registered:', result);
+          console.log('Player registered successfully:', { sessionId, result });
         } else {
           console.error('Registration failed:', result.message);
         }
@@ -2046,16 +2056,31 @@
       
       // Complete game on backend
       async function completeGameOnBackend() {
-        if (!sessionId) return;
+        console.log('completeGameOnBackend called');
+        console.log('sessionId:', sessionId);
+        console.log('totalMistakes:', totalMistakes);
         
+        if (!sessionId) {
+          console.error('No session ID found - cannot complete game on backend');
+          showToast('⚠️ Sesi tidak ditemukan. Data tidak tersimpan.');
+          return;
+        }
+        
+        console.log('Sending completion data to backend...');
         const result = await apiCall(API_BASE_URL, {
           action: 'complete_game',
           session_id: sessionId,
           total_mistakes: totalMistakes
         }, 'POST');
         
+        console.log('Backend completion result:', result);
+        
         if (result.success) {
           showToast(`🎉 Skor: ${result.score}! Ranking: #${result.rank}`);
+          console.log('Game completion successful:', result);
+        } else {
+          console.error('Game completion failed:', result.message);
+          showToast('❌ Gagal menyimpan data ke leaderboard');
         }
         
         return result;
