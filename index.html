@@ -3211,8 +3211,13 @@
         }, 100);
         
         // Clear potion container
-        const potionContainer = document.querySelector('.potion-container');
-        potionContainer.innerHTML = '<p style="margin: 0; color: var(--muted); font-size: 14px; width: 100%;">Seret 3 bahan ke sini...</p>';
+        const potionContainer = document.querySelector('#final-puzzle .potion-container');
+        if (potionContainer) {
+          potionContainer.innerHTML = '<p style="margin: 0; color: var(--muted); font-size: 14px; width: 100%;">Seret 3 bahan ke sini...</p>';
+          console.log('Potion container cleared and reset');
+        } else {
+          console.error('Potion container not found during initialization');
+        }
         
         // Reset result display
         document.getElementById('potion-result').style.display = 'none';
@@ -3272,7 +3277,7 @@
         if (finalPuzzleSelectedIngredients.length < finalPuzzleRequiredIngredients && !finalPuzzleSelectedIngredients.includes(concept)) {
           // Add to potion
           finalPuzzleSelectedIngredients.push(concept);
-          const potionContainer = document.querySelector('.potion-container');
+          const potionContainer = document.querySelector('#final-puzzle .potion-container');
           
           console.log('Potion container found:', potionContainer);
           console.log('Potion container innerHTML before:', potionContainer ? potionContainer.innerHTML : 'null');
@@ -3380,13 +3385,15 @@
 
       function resetPotion() {
         finalPuzzleSelectedIngredients = [];
-        document.querySelectorAll('.ingredient').forEach(ingredient => {
+        document.querySelectorAll('#final-puzzle .ingredient').forEach(ingredient => {
           ingredient.style.opacity = '1';
           ingredient.style.cursor = 'pointer';
         });
         
-        const potionContainer = document.querySelector('.potion-container');
-        potionContainer.innerHTML = '<p style="margin: 0; color: var(--muted); font-size: 14px; width: 100%;">Seret 3 bahan ke sini...</p>';
+        const potionContainer = document.querySelector('#final-puzzle .potion-container');
+        if (potionContainer) {
+          potionContainer.innerHTML = '<p style="margin: 0; color: var(--muted); font-size: 14px; width: 100%;">Seret 3 bahan ke sini...</p>';
+        }
         
         document.getElementById('potion-result').style.display = 'none';
         document.getElementById('btn-next-final').style.display = 'none';
