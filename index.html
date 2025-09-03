@@ -1802,11 +1802,19 @@
         // Stop current audio when changing slides
         stopCurrentAudio();
         
-        // Scroll to top of the page smoothly
-        // Use both methods for better browser compatibility
+        // Scroll to top of the page immediately and smoothly
         console.log('Scrolling to top...');
         
-        // Add small delay to ensure DOM is ready
+        // Immediate scroll for instant feedback
+        try {
+          window.scrollTo(0, 0);
+          document.body.scrollTop = 0;
+          document.documentElement.scrollTop = 0;
+        } catch (e) {
+          console.log('Immediate scroll fallback');
+        }
+        
+        // Add small delay for smooth scroll
         setTimeout(() => {
           try {
             window.scrollTo({
@@ -1814,7 +1822,6 @@
               behavior: 'smooth'
             });
           } catch (e) {
-            // Fallback for older browsers
             window.scrollTo(0, 0);
           }
           
@@ -1838,7 +1845,7 @@
           }
           
           console.log('Scroll to top executed');
-        }, 50);
+        }, 10);
         
         slides.forEach((el, idx) => {
           if (idx === i) {
