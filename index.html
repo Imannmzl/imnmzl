@@ -1798,6 +1798,13 @@
         if (i !== 18 && typeof finalPuzzleSelectedIngredients !== 'undefined') {
           finalPuzzleSelectedIngredients = [];
           console.log('finalPuzzleSelectedIngredients reset on slide change');
+          
+          // Clean up any final puzzle event listeners
+          document.querySelectorAll('#final-puzzle .ingredient').forEach(ingredient => {
+            const cleanIngredient = ingredient.cloneNode(true);
+            ingredient.parentNode.replaceChild(cleanIngredient, ingredient);
+          });
+          console.log('Final puzzle event listeners cleaned up');
         }
         
         // Stop current audio when changing slides
@@ -1898,7 +1905,11 @@
         }
         if (i === 18) {
           // Initialize final puzzle when entering final puzzle slide
-          setTimeout(() => initFinalPuzzle(), 100);
+          console.log('Entering slide 18 - Final Puzzle');
+          setTimeout(() => {
+            console.log('About to initialize final puzzle');
+            initFinalPuzzle();
+          }, 100);
         }
       }
 
@@ -3213,10 +3224,15 @@
       }
 
       function handleIngredientClick(e) {
-        console.log('handleIngredientClick called');
+        console.log('🚨 handleIngredientClick called');
         console.log('Event target:', e.target);
-        console.log('Event target classList:', e.target.classList);
+        console.log('Event target innerHTML:', e.target.innerHTML);
+        console.log('Event target classList:', e.target.classList.toString());
+        console.log('Event target data-concept:', e.target.dataset.concept);
+        console.log('Event target data-answer:', e.target.dataset.answer);
         console.log('Event target closest #final-puzzle:', e.target.closest('#final-puzzle'));
+        console.log('Event target closest #complex-puzzle:', e.target.closest('#complex-puzzle'));
+        console.log('Current slide index:', index);
         
         e.preventDefault();
         e.stopPropagation();
