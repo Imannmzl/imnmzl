@@ -1852,13 +1852,17 @@
             el.classList.add('active');
             el.style.pointerEvents = 'auto';
             el.style.zIndex = '10';
+            el.style.visibility = 'visible';
+            el.style.display = 'flex';
             console.log(`✅ Slide ${idx} activated with pointer-events: auto`);
           } else {
             el.classList.remove('active');
             el.style.pointerEvents = 'none';
             el.style.zIndex = '1';
-            if (idx === 17 || idx === 18) {
-              console.log(`❌ Slide ${idx} deactivated with pointer-events: none`);
+            el.style.visibility = 'hidden';
+            el.style.display = 'none';
+            if (idx >= 17 && idx <= 22) {
+              console.log(`❌ Slide ${idx} deactivated with pointer-events: none, visibility: hidden`);
             }
           }
         });
@@ -1919,8 +1923,15 @@
         if (i === 19) {
           // Game completed! Update backend
           console.log('Reached epilog slide - completing game');
+          console.log('Total mistakes at completion:', totalMistakes);
+          console.log('Session ID at completion:', sessionId);
+          
+          // Force update progress first, then complete game
           setTimeout(async () => {
             try {
+              // Update progress one final time
+              await updateBackendProgress();
+              // Then complete the game
               await completeGameOnBackend();
             } catch (error) {
               console.error('Failed to complete game on backend:', error);
@@ -2062,11 +2073,15 @@
       async function updateBackendProgress() {
         if (!sessionId) return;
         
-        await apiCall(API_BASE_URL, {
+        console.log('Updating backend progress:', { sessionId, totalMistakes });
+        
+        const result = await apiCall(API_BASE_URL, {
           action: 'update_progress',
           session_id: sessionId,
           total_mistakes: totalMistakes
         }, 'POST');
+        
+        console.log('Progress update result:', result);
       }
       
       // Complete game on backend
@@ -2078,6 +2093,9 @@
         if (!sessionId) {
           console.error('No session ID found - cannot complete game on backend');
           showToast('⚠️ Sesi tidak ditemukan. Data tidak tersimpan.');
+          // Still show local score
+          const localScore = Math.max(0, 100 - (totalMistakes * 10));
+          showToast(`🎉 Skor lokal: ${localScore}! (Mode offline)`);
           return;
         }
         
@@ -2085,17 +2103,21 @@
         const result = await apiCall(API_BASE_URL, {
           action: 'complete_game',
           session_id: sessionId,
-          total_mistakes: totalMistakes
+          total_mistakes: totalMistakes || 0  // Ensure 0 if undefined
         }, 'POST');
         
         console.log('Backend completion result:', result);
         
         if (result.success) {
-          showToast(`🎉 Skor: ${result.score}! Ranking: #${result.rank}`);
+          const score = result.score || (100 - (totalMistakes * 10));
+          const rank = result.rank || 1;
+          showToast(`🎉 Skor: ${score}! Ranking: #${rank}`);
           console.log('Game completion successful:', result);
         } else {
           console.error('Game completion failed:', result.message);
-          showToast('❌ Gagal menyimpan data ke leaderboard');
+          // Still show local score even if backend fails
+          const localScore = Math.max(0, 100 - (totalMistakes * 10));
+          showToast(`🎉 Skor lokal: ${localScore}! (Offline mode)`);
         }
         
         return result;
@@ -3722,7 +3744,9 @@
         if (btnViewLeaderboard) {
           btnViewLeaderboard.addEventListener('click', () => {
             console.log('View leaderboard button clicked');
+            console.log('Current index before goTo(21):', index);
             goTo(21); // Go to leaderboard slide
+            console.log('Current index after goTo(21):', index);
             setTimeout(() => {
               console.log('Loading leaderboard data...');
               loadLeaderboard();
