@@ -3137,11 +3137,11 @@
         
         // Wait a bit to ensure DOM is ready
         setTimeout(() => {
-          const ingredients = document.querySelectorAll('.ingredient');
-          console.log('Found ingredients:', ingredients.length);
+          const ingredients = document.querySelectorAll('#final-puzzle .ingredient');
+          console.log('Found final puzzle ingredients:', ingredients.length);
           
           if (ingredients.length === 0) {
-            console.warn('No ingredients found, retrying...');
+            console.warn('No final puzzle ingredients found, retrying...');
             setTimeout(() => initFinalPuzzle(), 300);
             return;
           }
@@ -3152,19 +3152,23 @@
             ingredient.parentNode.replaceChild(newIngredient, ingredient);
           });
           
-          // Re-select after cloning
-          const newIngredients = document.querySelectorAll('.ingredient');
+          // Re-select after cloning (specifically in final puzzle)
+          const newIngredients = document.querySelectorAll('#final-puzzle .ingredient');
           console.log('After cloning, found ingredients:', newIngredients.length);
           
-          // Add fresh event listeners
+          // Add fresh event listeners only to final puzzle ingredients
           newIngredients.forEach(ingredient => {
-            ingredient.addEventListener('click', handleIngredientClick);
-            ingredient.style.opacity = '1';
-            ingredient.style.cursor = 'pointer';
-            ingredient.style.userSelect = 'none';
-            ingredient.style.pointerEvents = 'auto';
-            
-            console.log('Event listener added to ingredient:', ingredient.dataset.concept, ingredient.textContent);
+            // Only add to ingredients in final puzzle container
+            const finalPuzzleContainer = ingredient.closest('#final-puzzle');
+            if (finalPuzzleContainer) {
+              ingredient.addEventListener('click', handleIngredientClick);
+              ingredient.style.opacity = '1';
+              ingredient.style.cursor = 'pointer';
+              ingredient.style.userSelect = 'none';
+              ingredient.style.pointerEvents = 'auto';
+              
+              console.log('Event listener added to final puzzle ingredient:', ingredient.dataset.concept, ingredient.textContent);
+            }
           });
           
           console.log('Final puzzle initialization complete');
