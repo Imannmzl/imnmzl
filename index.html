@@ -1370,64 +1370,19 @@
             </p>
 
             <div class="cta">
-              <button class="btn primary" id="btn-view-leaderboard">🏆 Lihat Leaderboard</button>
+              <a href="leaderboard.html" class="btn primary" id="btn-view-leaderboard">🏆 Lihat Leaderboard</a>
               <button class="btn" id="btn-restart">Mulai Petualangan Lagi</button>
               <button class="btn" id="btn-view-notes">Lihat Buku Resep</button>
             </div>
           </div>
         </section>
 
-        <!-- Leaderboard Slide -->
-        <section class="slide" data-slide="21" aria-labelledby="title-21">
-          <div class="card">
-            <h2 class="title" id="title-21">🏆 Leaderboard Alkemis Himpunan</h2>
-            <p class="lead">
-              Lihat pencapaian semua Alkemis Muda yang telah menyelesaikan petualangan di Hutan Harmoni!
-            </p>
-            
-            <!-- Stats Summary -->
-            <div id="leaderboard-stats" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 1rem; margin: 1rem 0;">
-              <div style="background: rgba(122,227,255,0.1); border: 1px solid rgba(122,227,255,0.3); border-radius: 8px; padding: 0.75rem; text-align: center;">
-                <div style="font-size: 24px; font-weight: bold; color: var(--accent);" id="total-players">-</div>
-                <div style="font-size: 12px; color: var(--muted);">Total Pemain</div>
-              </div>
-              <div style="background: rgba(81,216,138,0.1); border: 1px solid rgba(81,216,138,0.3); border-radius: 8px; padding: 0.75rem; text-align: center;">
-                <div style="font-size: 24px; font-weight: bold; color: var(--ok);" id="completed-players">-</div>
-                <div style="font-size: 12px; color: var(--muted);">Selesai</div>
-              </div>
-              <div style="background: rgba(255,200,87,0.1); border: 1px solid rgba(255,200,87,0.3); border-radius: 8px; padding: 0.75rem; text-align: center;">
-                <div style="font-size: 24px; font-weight: bold; color: var(--accent-2);" id="avg-score">-</div>
-                <div style="font-size: 12px; color: var(--muted);">Rata-rata Skor</div>
-              </div>
-            </div>
-            
-            <!-- Leaderboard Table -->
-            <div id="leaderboard-container" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 1rem; margin: 1rem 0; max-height: 400px; overflow-y: auto;">
-              <div style="display: grid; grid-template-columns: 50px 1fr 80px 80px; gap: 0.5rem; padding: 0.5rem; border-bottom: 1px solid rgba(255,255,255,0.2); font-weight: bold; font-size: 14px; color: var(--accent);">
-                <div>Rank</div>
-                <div>Nama (Kelas)</div>
-                <div>Skor</div>
-                <div>Status</div>
-              </div>
-              <div id="leaderboard-list">
-                <div style="text-align: center; padding: 2rem; color: var(--muted);">
-                  <div style="font-size: 18px;">⏳</div>
-                  <div>Memuat leaderboard...</div>
-                </div>
-              </div>
-            </div>
-            
-            <div class="cta">
-              <button class="btn" id="btn-refresh-leaderboard">🔄 Refresh</button>
-              <button class="btn primary" id="btn-back-to-ending">Kembali</button>
-            </div>
-          </div>
-        </section>
+
 
         <!-- Game Over Slide -->
-        <section class="slide" data-slide="22" aria-labelledby="title-22">
+        <section class="slide" data-slide="21" aria-labelledby="title-21">
           <div class="card">
-            <h2 class="title" id="title-22" style="color: var(--warn);">💥 Misi Gagal!</h2>
+            <h2 class="title" id="title-21" style="color: var(--warn);">💥 Misi Gagal!</h2>
             <img class="illustration" src="images/Babak-4-Altar-Keseimbangan-&-Pemecahan-Masalah.png" alt="Kristal Logika yang retak" loading="lazy">
             <p class="lead" style="color: var(--warn);">
               <strong>Kamu telah melakukan terlalu banyak kesalahan!</strong>
@@ -1765,7 +1720,7 @@
 
       function showGameOver() {
         // Navigate to Game Over slide
-        goTo(22); // Game Over slide index
+        goTo(21); // Game Over slide index
         
         // Disable navigation buttons
         document.querySelectorAll('.btn[data-next], .btn[data-prev]').forEach(btn => {
@@ -2140,92 +2095,7 @@
         return result;
       }
       
-      // Load and display leaderboard
-      async function loadLeaderboard() {
-        const leaderboardList = document.getElementById('leaderboard-list');
-        const totalPlayersEl = document.getElementById('total-players');
-        const completedPlayersEl = document.getElementById('completed-players');
-        const avgScoreEl = document.getElementById('avg-score');
-        
-        // Show loading
-        leaderboardList.innerHTML = `
-          <div style="text-align: center; padding: 2rem; color: var(--muted);">
-            <div style="font-size: 18px;">⏳</div>
-            <div>Memuat leaderboard...</div>
-          </div>
-        `;
-        
-        try {
-          // Get leaderboard data
-          const leaderboardResult = await apiCall(API_BASE_URL, { action: 'leaderboard' });
-          const statsResult = await apiCall(API_BASE_URL, { action: 'stats' });
-          
-          if (leaderboardResult.success && statsResult.success) {
-            const leaderboard = leaderboardResult.leaderboard;
-            const stats = statsResult.stats;
-            
-            // Update stats
-            totalPlayersEl.textContent = stats.total_players || '0';
-            completedPlayersEl.textContent = stats.completed_players || '0';
-            avgScoreEl.textContent = stats.avg_score ? Math.round(stats.avg_score) : '0';
-            
-            // Display leaderboard
-            if (leaderboard.length > 0) {
-              leaderboardList.innerHTML = leaderboard.map((player, index) => `
-                <div style="display: grid; grid-template-columns: 50px 1fr 80px 80px; gap: 0.5rem; padding: 0.5rem; border-bottom: 1px solid rgba(255,255,255,0.1); align-items: center;">
-                  <div style="text-align: center; font-weight: bold; color: ${index < 3 ? 'var(--accent)' : 'var(--muted)'};">
-                    ${index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : '#' + (index + 1)}
-                  </div>
-                  <div>
-                    <div style="font-weight: 600;">${player.nama}</div>
-                    <div style="font-size: 12px; color: var(--muted);">${player.kelas}</div>
-                  </div>
-                  <div style="text-align: center; font-weight: bold; color: var(--ok);">${player.score}</div>
-                  <div style="text-align: center;">
-                    <span style="color: var(--ok); font-size: 12px;">✅ Selesai</span>
-                  </div>
-                </div>
-              `).join('');
-            } else {
-              leaderboardList.innerHTML = `
-                <div style="text-align: center; padding: 2rem; color: var(--muted);">
-                  <div style="font-size: 18px;">🏆</div>
-                  <div>Belum ada yang menyelesaikan petualangan</div>
-                  <div style="font-size: 12px; margin-top: 0.5rem;">Jadilah yang pertama!</div>
-                </div>
-              `;
-            }
-          } else {
-            throw new Error('Failed to load leaderboard data');
-          }
-        } catch (error) {
-          console.error('Leaderboard error:', error);
-          
-          // Show offline mode leaderboard
-          totalPlayersEl.textContent = '1';
-          completedPlayersEl.textContent = '1';
-          avgScoreEl.textContent = '100';
-          
-          leaderboardList.innerHTML = `
-            <div style="text-align: center; padding: 2rem; color: var(--warn);">
-              <div style="font-size: 18px;">📶</div>
-              <div>Mode Offline</div>
-              <div style="font-size: 12px; margin-top: 0.5rem;">Leaderboard online tidak tersedia</div>
-            </div>
-            <div style="display: grid; grid-template-columns: 50px 1fr 80px 80px; gap: 0.5rem; padding: 0.5rem; border-bottom: 1px solid rgba(255,255,255,0.1); align-items: center;">
-              <div style="text-align: center; font-weight: bold; color: var(--accent);">🥇</div>
-              <div>
-                <div style="font-weight: 600;">${userInfo.name || 'Anda'}</div>
-                <div style="font-size: 12px; color: var(--muted);">${userInfo.class || 'Local'}</div>
-              </div>
-              <div style="text-align: center; font-weight: bold; color: var(--ok);">${Math.max(0, 100 - (totalMistakes * 10))}</div>
-              <div style="text-align: center;">
-                <span style="color: var(--ok); font-size: 12px;">✅ Selesai</span>
-              </div>
-            </div>
-          `;
-        }
-      }
+
       
       function loadUserInfo() {
         try {
@@ -3752,60 +3622,7 @@
         showToast('🔄 Ramuan direset! Coba lagi.');
       }
 
-      // Setup leaderboard buttons
-      function setupLeaderboardButtons() {
-        const btnViewLeaderboard = document.getElementById('btn-view-leaderboard');
-        const btnRefreshLeaderboard = document.getElementById('btn-refresh-leaderboard');
-        const btnBackToEnding = document.getElementById('btn-back-to-ending');
-        
-        if (btnViewLeaderboard) {
-          btnViewLeaderboard.addEventListener('click', () => {
-            console.log('View leaderboard button clicked');
-            console.log('Current index before goTo(21):', index);
-            goTo(21); // Go to leaderboard slide
-            console.log('Current index after goTo(21):', index);
-            setTimeout(() => {
-              console.log('Loading leaderboard data...');
-              loadLeaderboard();
-            }, 200);
-          });
-        } else {
-          console.error('btn-view-leaderboard not found');
-        }
-        
-        if (btnRefreshLeaderboard) {
-          btnRefreshLeaderboard.addEventListener('click', () => {
-            loadLeaderboard();
-          });
-        }
-        
-        if (btnBackToEnding) {
-          btnBackToEnding.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            console.log('Back to ending button clicked');
-            console.log('Current index before goTo(19):', index);
-            console.log('User agent:', navigator.userAgent);
-            
-            // Force slide deactivation before navigation
-            slides.forEach((slide, idx) => {
-              if (idx === 21) { // Current leaderboard slide
-                slide.style.display = 'none';
-                slide.style.visibility = 'hidden';
-                slide.style.pointerEvents = 'none';
-                slide.classList.remove('active');
-                console.log('Force deactivated leaderboard slide');
-              }
-            });
-            
-            goTo(19); // Back to epilog slide (success ending)
-            console.log('Current index after goTo(19):', index);
-            showToast('Kembali ke slide selamat');
-          });
-        } else {
-          console.error('btn-back-to-ending not found');
-        }
-      }
+
 
       // Final buttons functionality - Setup restart buttons
       function setupRestartButtons() {
@@ -3954,7 +3771,7 @@
       setupUserInfoInputs(); // Setup user info form
       setupRestartButtons(); // Setup restart buttons for both endings
       setupToBab1Button(); // Setup btn-to-bab1 button
-      setupLeaderboardButtons(); // Setup leaderboard navigation
+
       activateSlide(index);
       
       // Show mistake counter if there are any mistakes
