@@ -53,8 +53,20 @@ function sendError($message, $status_code = 400) {
 
 function validateInput($data, $required_fields) {
     foreach ($required_fields as $field) {
-        if (!isset($data[$field]) || empty(trim($data[$field]))) {
+        if (!isset($data[$field])) {
             return false;
+        }
+        
+        // Special handling for numeric fields (allow 0)
+        if (in_array($field, ['total_mistakes', 'score'])) {
+            if (!is_numeric($data[$field]) && $data[$field] !== 0 && $data[$field] !== '0') {
+                return false;
+            }
+        } else {
+            // String fields - check if empty after trim
+            if (empty(trim($data[$field]))) {
+                return false;
+            }
         }
     }
     return true;
