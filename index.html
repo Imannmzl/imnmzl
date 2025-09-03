@@ -1289,22 +1289,21 @@
                 <!-- Bahan yang tersedia -->
                 <div style="background: rgba(122,227,255,0.1); border: 2px solid rgba(122,227,255,0.5); border-radius: 12px; padding: 1rem;">
                   <h4 style="margin: 0 0 0.5rem 0; color: var(--accent);">Bahan Tersedia:</h4>
-                  <div class="ingredient-list" style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
-                    <div class="ingredient" data-concept="definisi" style="background: rgba(122,227,255,0.3); padding: 0.5rem; border-radius: 8px; cursor: pointer; user-select: none;">📚 Definisi Himpunan</div>
-                    <div class="ingredient" data-concept="keanggotaan" style="background: rgba(122,227,255,0.3); padding: 0.5rem; border-radius: 8px; cursor: pointer; user-select: none;">🎯 Keanggotaan</div>
-                    <div class="ingredient" data-concept="gabungan" style="background: rgba(122,227,255,0.3); padding: 0.5rem; border-radius: 8px; cursor: pointer; user-select: none;">🔗 Operasi Gabungan</div>
-                    <div class="ingredient" data-concept="irisan" style="background: rgba(122,227,255,0.3); padding: 0.5rem; border-radius: 8px; cursor: pointer; user-select: none;">⚡ Operasi Irisan</div>
-                    <div class="ingredient" data-concept="kosong" style="background: rgba(122,227,255,0.3); padding: 0.5rem; border-radius: 8px; cursor: pointer; user-select: none;">📭 Himpunan Kosong</div>
-                    <div class="ingredient" data-concept="universal" style="background: rgba(122,227,255,0.3); padding: 0.5rem; border-radius: 8px; cursor: pointer; user-select: none;">🌍 Himpunan Universal</div>
+                  <div class="final-ingredient-list" style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+                    <div class="final-draggable-item" data-category="definisi" style="background: rgba(122,227,255,0.3); padding: 0.5rem; border-radius: 8px; cursor: grab; user-select: none;">📚 Definisi Himpunan</div>
+                    <div class="final-draggable-item" data-category="keanggotaan" style="background: rgba(122,227,255,0.3); padding: 0.5rem; border-radius: 8px; cursor: grab; user-select: none;">🎯 Keanggotaan</div>
+                    <div class="final-draggable-item" data-category="gabungan" style="background: rgba(122,227,255,0.3); padding: 0.5rem; border-radius: 8px; cursor: grab; user-select: none;">🔗 Operasi Gabungan</div>
+                    <div class="final-draggable-item" data-category="irisan" style="background: rgba(122,227,255,0.3); padding: 0.5rem; border-radius: 8px; cursor: grab; user-select: none;">⚡ Operasi Irisan</div>
+                    <div class="final-draggable-item" data-category="kosong" style="background: rgba(122,227,255,0.3); padding: 0.5rem; border-radius: 8px; cursor: grab; user-select: none;">📭 Himpunan Kosong</div>
+                    <div class="final-draggable-item" data-category="universal" style="background: rgba(122,227,255,0.3); padding: 0.5rem; border-radius: 8px; cursor: grab; user-select: none;">🌍 Himpunan Universal</div>
                   </div>
                 </div>
 
                 <!-- Ramuan yang sedang dibuat -->
-                <div style="background: rgba(255,200,87,0.1); border: 2px dashed rgba(255,200,87,0.5); border-radius: 12px; padding: 1rem;">
+                <div class="final-drop-zone" data-set="ramuan" style="background: rgba(255,200,87,0.1); border: 2px dashed rgba(255,200,87,0.5); border-radius: 12px; padding: 1rem;">
                   <h4 style="margin: 0 0 0.5rem 0; color: var(--accent-2);">Ramuan Keseimbangan:</h4>
-                  <div class="potion-container" style="min-height: 120px; display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: flex-start; align-content: flex-start;">
-                    <p style="margin: 0; color: var(--muted); font-size: 14px; width: 100%;">Seret 3 bahan ke sini...</p>
-                  </div>
+                  <p style="margin: 0; font-size: 14px; color: var(--muted);">Seret 3 bahan ke sini...</p>
+                  <div class="final-drop-area" style="min-height: 80px; display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem;"></div>
                 </div>
               </div>
 
@@ -3161,62 +3160,70 @@
       const finalPuzzleRequiredIngredients = 3;
 
       function initFinalPuzzle() {
-        console.log('initFinalPuzzle called');
+        console.log('initFinalPuzzle called - using drag & drop system');
         
-        // Force reset finalPuzzleSelectedIngredients
+        // Force reset
         finalPuzzleSelectedIngredients = [];
         console.log('finalPuzzleSelectedIngredients reset to:', finalPuzzleSelectedIngredients);
         
         // Wait a bit to ensure DOM is ready
         setTimeout(() => {
-          const ingredients = document.querySelectorAll('#final-puzzle .ingredient');
-          console.log('Found final puzzle ingredients:', ingredients.length);
+          const draggableItems = document.querySelectorAll('#final-puzzle .final-draggable-item');
+          console.log('Found final puzzle draggable items:', draggableItems.length);
           
-          if (ingredients.length === 0) {
-            console.warn('No final puzzle ingredients found, retrying...');
+          if (draggableItems.length === 0) {
+            console.warn('No final puzzle draggable items found, retrying...');
             setTimeout(() => initFinalPuzzle(), 300);
             return;
           }
           
           // Clear any existing event listeners by cloning elements
-          ingredients.forEach(ingredient => {
-            const newIngredient = ingredient.cloneNode(true);
-            ingredient.parentNode.replaceChild(newIngredient, ingredient);
+          draggableItems.forEach(item => {
+            const newItem = item.cloneNode(true);
+            item.parentNode.replaceChild(newItem, item);
           });
           
-          // Re-select after cloning (specifically in final puzzle)
-          const newIngredients = document.querySelectorAll('#final-puzzle .ingredient');
-          console.log('After cloning, found ingredients:', newIngredients.length);
+          // Re-select after cloning
+          const newDraggableItems = document.querySelectorAll('#final-puzzle .final-draggable-item');
+          console.log('After cloning, found draggable items:', newDraggableItems.length);
           
-          // Add fresh event listeners only to final puzzle ingredients
-          newIngredients.forEach(ingredient => {
-            console.log('Checking ingredient:', ingredient.textContent, 'classList:', ingredient.classList, 'data-concept:', ingredient.dataset.concept);
+          // Setup drag & drop for final puzzle
+          newDraggableItems.forEach(item => {
+            item.draggable = true;
+            item.style.cursor = 'grab';
             
-            // Only add to ingredients in final puzzle container
-            const finalPuzzleContainer = ingredient.closest('#final-puzzle');
-            if (finalPuzzleContainer) {
-              ingredient.addEventListener('click', handleIngredientClick);
-              ingredient.style.opacity = '1';
-              ingredient.style.cursor = 'pointer';
-              ingredient.style.userSelect = 'none';
-              ingredient.style.pointerEvents = 'auto';
-              
-              console.log('✅ Event listener added to final puzzle ingredient:', ingredient.dataset.concept, ingredient.textContent);
-            } else {
-              console.log('❌ Ingredient not in final puzzle, skipping:', ingredient.textContent);
-            }
+            // Desktop drag events
+            item.addEventListener('dragstart', handleFinalDragStart);
+            item.addEventListener('dragend', handleFinalDragEnd);
+            
+            // Touch events for mobile
+            item.addEventListener('touchstart', handleFinalTouchStart, { passive: true });
+            item.addEventListener('touchmove', handleFinalTouchMove, { passive: false });
+            item.addEventListener('touchend', handleFinalTouchEnd, { passive: false });
+            
+            console.log('✅ Drag events added to final puzzle item:', item.dataset.category, item.textContent);
           });
+
+          // Setup drop zone
+          const dropZone = document.querySelector('#final-puzzle .final-drop-zone');
+          if (dropZone) {
+            // Desktop drag events
+            dropZone.addEventListener('dragover', handleFinalDragOver);
+            dropZone.addEventListener('drop', handleFinalDrop);
+            dropZone.addEventListener('dragenter', handleFinalDragEnter);
+            dropZone.addEventListener('dragleave', handleFinalDragLeave);
+            
+            console.log('✅ Drop events added to final puzzle drop zone');
+          }
           
-          console.log('Final puzzle initialization complete');
+          console.log('Final puzzle drag & drop initialization complete');
         }, 100);
         
-        // Clear potion container
-        const potionContainer = document.querySelector('#final-puzzle .potion-container');
-        if (potionContainer) {
-          potionContainer.innerHTML = '<p style="margin: 0; color: var(--muted); font-size: 14px; width: 100%;">Seret 3 bahan ke sini...</p>';
-          console.log('Potion container cleared and reset');
-        } else {
-          console.error('Potion container not found during initialization');
+        // Clear drop area
+        const dropArea = document.querySelector('#final-puzzle .final-drop-area');
+        if (dropArea) {
+          dropArea.innerHTML = '';
+          console.log('Drop area cleared and reset');
         }
         
         // Reset result display
@@ -3236,87 +3243,319 @@
         if (btnReset) {
           const newBtnReset = btnReset.cloneNode(true);
           btnReset.parentNode.replaceChild(newBtnReset, btnReset);
-          newBtnReset.addEventListener('click', resetPotion);
+          newBtnReset.addEventListener('click', resetFinalPuzzle);
         }
       }
 
-      function handleIngredientClick(e) {
-        console.log('🚨 handleIngredientClick called');
-        console.log('Event target:', e.target);
-        console.log('Event target innerHTML:', e.target.innerHTML);
-        console.log('Event target classList:', e.target.classList.toString());
-        console.log('Event target data-concept:', e.target.dataset.concept);
-        console.log('Event target data-answer:', e.target.dataset.answer);
-        console.log('Event target closest #final-puzzle:', e.target.closest('#final-puzzle'));
-        console.log('Event target closest #complex-puzzle:', e.target.closest('#complex-puzzle'));
-        console.log('Current slide index:', index);
+      // Final Puzzle Drag & Drop Event Handlers
+      let finalDraggedElement = null;
+      let finalTouchElement = null;
+      let finalTouchStartX = 0;
+      let finalTouchStartY = 0;
+      let finalIsDragging = false;
+
+      function handleFinalDragStart(e) {
+        console.log('Final drag start:', e.target);
+        finalDraggedElement = e.target;
+        e.target.style.opacity = '0.5';
+        e.target.classList.add('dragging');
+        
+        if (e.dataTransfer) {
+          e.dataTransfer.effectAllowed = 'move';
+          e.dataTransfer.setData('text/html', e.target.outerHTML);
+          e.dataTransfer.setData('text/plain', e.target.dataset.category);
+        }
+      }
+
+      function handleFinalDragEnd(e) {
+        console.log('Final drag end:', e.target);
+        e.target.style.opacity = '1';
+        e.target.classList.remove('dragging');
+        
+        setTimeout(() => {
+          if (finalDraggedElement === e.target) {
+            finalDraggedElement = null;
+          }
+        }, 100);
+      }
+
+      function handleFinalDragOver(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        if (e.dataTransfer) {
+          e.dataTransfer.dropEffect = 'move';
+        }
+      }
+
+      function handleFinalDragEnter(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        const dropZone = e.target.closest('.final-drop-zone');
+        if (dropZone) {
+          dropZone.style.borderColor = 'rgba(255,200,87,0.8)';
+          dropZone.style.backgroundColor = 'rgba(255,200,87,0.2)';
+        }
+      }
+
+      function handleFinalDragLeave(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        const dropZone = e.target.closest('.final-drop-zone');
+        if (dropZone) {
+          dropZone.style.borderColor = 'rgba(255,200,87,0.5)';
+          dropZone.style.backgroundColor = 'rgba(255,200,87,0.1)';
+        }
+      }
+
+      function handleFinalDrop(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        console.log('Final drop event:', { target: e.target, finalDraggedElement });
+        
+        const elementToDrop = finalDraggedElement;
+        if (!elementToDrop) {
+          console.log('No dragged element found');
+          return;
+        }
+
+        const dropZone = e.target.closest('.final-drop-zone');
+        if (!dropZone) {
+          console.log('No drop zone found');
+          return;
+        }
+
+        const dropArea = dropZone.querySelector('.final-drop-area');
+        if (!dropArea) {
+          console.log('No drop area found');
+          return;
+        }
+
+        const itemCategory = elementToDrop.dataset.category;
+        console.log('Final drop attempt:', { itemCategory, dropArea });
+
+        // Check if already have 3 ingredients
+        if (finalPuzzleSelectedIngredients.length >= finalPuzzleRequiredIngredients) {
+          showToast('⚠️ Ramuan sudah penuh! Reset untuk memulai lagi.');
+          return;
+        }
+
+        // Check if already added
+        if (finalPuzzleSelectedIngredients.includes(itemCategory)) {
+          showToast('⚠️ Bahan ini sudah ada di ramuan!');
+          return;
+        }
+
+        // Add to ramuan
+        finalPuzzleSelectedIngredients.push(itemCategory);
+        
+        const clonedItem = elementToDrop.cloneNode(true);
+        clonedItem.style.opacity = '1';
+        clonedItem.style.cursor = 'default';
+        clonedItem.style.transform = '';
+        clonedItem.style.position = '';
+        clonedItem.style.zIndex = '';
+        clonedItem.draggable = false;
+        clonedItem.classList.remove('dragging');
+        
+        // Remove all event listeners from cloned item
+        const cleanClone = clonedItem.cloneNode(true);
+        dropArea.appendChild(cleanClone);
+        
+        console.log('Item successfully dropped:', { cleanClone, dropArea });
+        
+        // Remove original item
+        elementToDrop.remove();
+        
+        // Visual feedback for successful drop
+        dropZone.style.borderColor = 'rgba(81,216,138,0.8)';
+        dropZone.style.backgroundColor = 'rgba(81,216,138,0.2)';
+        
+        showToast(`✅ ${cleanClone.textContent} ditambahkan ke ramuan!`);
+        
+        // Check if ready to brew
+        if (finalPuzzleSelectedIngredients.length === finalPuzzleRequiredIngredients) {
+          showToast('🧪 Ramuan siap diseduh! Klik "Seduh Ramuan"');
+        }
+      }
+
+      // Touch events for mobile (similar to existing drag & drop)
+      function handleFinalTouchStart(e) {
+        const target = e.target.closest('.final-draggable-item');
+        if (!target) return;
+        
+        finalTouchElement = target;
+        finalTouchStartX = e.touches[0].clientX;
+        finalTouchStartY = e.touches[0].clientY;
+        finalIsDragging = false;
+        
+        console.log('Final touch start:', { element: finalTouchElement, category: finalTouchElement.dataset.category });
+      }
+      
+      function handleFinalTouchMove(e) {
+        if (!finalTouchElement) return;
+        
+        const touch = e.touches[0];
+        const deltaX = touch.clientX - finalTouchStartX;
+        const deltaY = touch.clientY - finalTouchStartY;
+        const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+        
+        if (!finalIsDragging && distance > 10) {
+          e.preventDefault();
+          finalIsDragging = true;
+          finalTouchElement.style.opacity = '0.7';
+          finalTouchElement.style.transform = 'scale(1.05)';
+          finalTouchElement.style.zIndex = '1000';
+          finalTouchElement.style.position = 'fixed';
+          finalTouchElement.style.pointerEvents = 'none';
+          finalTouchElement.classList.add('dragging');
+          
+          const rect = finalTouchElement.getBoundingClientRect();
+          finalTouchElement.style.left = rect.left + 'px';
+          finalTouchElement.style.top = rect.top + 'px';
+        }
+        
+        if (!finalIsDragging) return;
         
         e.preventDefault();
         e.stopPropagation();
         
-        const ingredient = e.target;
+        if (finalTouchElement.style.position === 'fixed') {
+          finalTouchElement.style.left = (touch.clientX - 50) + 'px';
+          finalTouchElement.style.top = (touch.clientY - 25) + 'px';
+        }
         
-        // STRICT VALIDATION: Must be in final puzzle AND have ingredient class
-        if (!ingredient.closest('#final-puzzle') || !ingredient.classList.contains('ingredient')) {
-          console.log('Not a final puzzle ingredient, ignoring click');
+        // Check if over drop zone
+        finalTouchElement.style.visibility = 'hidden';
+        const elementBelow = document.elementFromPoint(touch.clientX, touch.clientY);
+        finalTouchElement.style.visibility = 'visible';
+        
+        const dropZone = elementBelow?.closest('.final-drop-zone');
+        
+        if (dropZone) {
+          dropZone.style.backgroundColor = 'rgba(255,200,87,0.3)';
+          dropZone.style.borderColor = 'rgba(255,200,87,1)';
+          dropZone.style.borderWidth = '3px';
+        }
+      }
+
+      function handleFinalTouchEnd(e) {
+        if (!finalTouchElement) return;
+        
+        e.preventDefault();
+        e.stopPropagation();
+        
+        if (!finalIsDragging) {
+          resetFinalTouchElement();
           return;
         }
         
-        const concept = ingredient.dataset.concept;
+        const touch = e.changedTouches[0];
         
-        // STRICT VALIDATION: Must have data-concept attribute
-        if (!concept) {
-          console.log('No data-concept attribute, ignoring click');
-          return;
-        }
+        finalTouchElement.style.visibility = 'hidden';
+        const elementBelow = document.elementFromPoint(touch.clientX, touch.clientY);
+        finalTouchElement.style.visibility = 'visible';
         
-        console.log('Valid final puzzle ingredient concept:', concept);
-        console.log('Current selected ingredients:', finalPuzzleSelectedIngredients);
-        console.log('Required ingredients:', finalPuzzleRequiredIngredients);
+        const dropZone = elementBelow?.closest('.final-drop-zone');
         
-        if (finalPuzzleSelectedIngredients.length < finalPuzzleRequiredIngredients && !finalPuzzleSelectedIngredients.includes(concept)) {
-          // Add to potion
-          finalPuzzleSelectedIngredients.push(concept);
-          const potionContainer = document.querySelector('#final-puzzle .potion-container');
+        if (dropZone) {
+          const dropArea = dropZone.querySelector('.final-drop-area');
+          const itemCategory = finalTouchElement.dataset.category;
           
-          console.log('Potion container found:', potionContainer);
-          console.log('Potion container innerHTML before:', potionContainer ? potionContainer.innerHTML : 'null');
+          console.log('Final touch drop attempt:', { itemCategory, dropArea, dropZone });
           
-          if (!potionContainer) {
-            console.error('Potion container not found!');
+          if (!dropArea) {
+            console.error('Drop area not found in drop zone:', dropZone);
+            resetFinalTouchElement();
             return;
           }
           
-          // Remove instruction text if first ingredient
-          if (finalPuzzleSelectedIngredients.length === 1) {
-            potionContainer.innerHTML = '';
-            console.log('Instruction text cleared');
+          // Check if already have 3 ingredients
+          if (finalPuzzleSelectedIngredients.length >= finalPuzzleRequiredIngredients) {
+            showToast('⚠️ Ramuan sudah penuh! Reset untuk memulai lagi.');
+            resetFinalTouchElement();
+            return;
           }
+
+          // Check if already added
+          if (finalPuzzleSelectedIngredients.includes(itemCategory)) {
+            showToast('⚠️ Bahan ini sudah ada di ramuan!');
+            resetFinalTouchElement();
+            return;
+          }
+
+          // Add to ramuan
+          finalPuzzleSelectedIngredients.push(itemCategory);
           
-          // Create ingredient element in potion
-          const potionIngredient = document.createElement('div');
-          potionIngredient.style.background = 'rgba(255,200,87,0.3)';
-          potionIngredient.style.padding = '0.5rem';
-          potionIngredient.style.borderRadius = '8px';
-          potionIngredient.style.cursor = 'pointer';
-          potionIngredient.style.animation = 'fadeIn 0.5s ease';
-          potionIngredient.textContent = ingredient.textContent;
-          potionIngredient.addEventListener('click', () => removeIngredient(concept, potionIngredient));
+          const clonedItem = finalTouchElement.cloneNode(true);
+          clonedItem.style.opacity = '1';
+          clonedItem.style.cursor = 'default';
+          clonedItem.style.transform = '';
+          clonedItem.style.position = '';
+          clonedItem.style.zIndex = '';
+          clonedItem.style.left = '';
+          clonedItem.style.top = '';
+          clonedItem.style.width = '';
+          clonedItem.style.height = '';
+          clonedItem.style.pointerEvents = '';
+          clonedItem.style.visibility = '';
+          clonedItem.draggable = false;
+          clonedItem.classList.remove('dragging');
           
-          potionContainer.appendChild(potionIngredient);
-          console.log('Ingredient added to potion container');
-          console.log('Potion container innerHTML after:', potionContainer.innerHTML);
+          const cleanClone = clonedItem.cloneNode(true);
+          dropArea.appendChild(cleanClone);
           
-          // Visual feedback
-          ingredient.style.opacity = '0.5';
-          ingredient.style.cursor = 'not-allowed';
+          console.log('Item successfully dropped:', { cleanClone, dropArea });
           
-          showToast(`✅ ${ingredient.textContent} ditambahkan ke ramuan!`);
-        } else if (finalPuzzleSelectedIngredients.includes(concept)) {
-          showToast('⚠️ Bahan ini sudah ada di ramuan!');
+          // Remove original item
+          finalTouchElement.remove();
+          
+          // Visual feedback for successful drop
+          dropZone.style.borderColor = 'rgba(81,216,138,0.8)';
+          dropZone.style.backgroundColor = 'rgba(81,216,138,0.2)';
+          dropZone.style.borderWidth = '2px';
+          
+          showToast(`✅ ${cleanClone.textContent} ditambahkan ke ramuan!`);
+          
+          // Check if ready to brew
+          if (finalPuzzleSelectedIngredients.length === finalPuzzleRequiredIngredients) {
+            showToast('🧪 Ramuan siap diseduh! Klik "Seduh Ramuan"');
+          }
         } else {
-          showToast('⚠️ Ramuan sudah penuh! Klik bahan di ramuan untuk menghapus.');
+          console.log('Not dropped on valid zone');
+          resetFinalTouchElement();
         }
+        
+        // Reset drop zone styles
+        resetFinalDropZoneStyles();
+        
+        finalTouchElement = null;
+        finalIsDragging = false;
+      }
+      
+      function resetFinalTouchElement() {
+        if (!finalTouchElement) return;
+        
+        finalTouchElement.style.opacity = '1';
+        finalTouchElement.style.transform = '';
+        finalTouchElement.style.position = '';
+        finalTouchElement.style.zIndex = '';
+        finalTouchElement.style.left = '';
+        finalTouchElement.style.top = '';
+        finalTouchElement.style.width = '';
+        finalTouchElement.style.height = '';
+        finalTouchElement.style.pointerEvents = '';
+        finalTouchElement.style.visibility = '';
+        finalTouchElement.classList.remove('dragging');
+      }
+      
+      function resetFinalDropZoneStyles() {
+        const dropZones = document.querySelectorAll('#final-puzzle .final-drop-zone');
+        dropZones.forEach(zone => {
+          zone.style.borderWidth = '2px';
+          zone.style.borderColor = 'rgba(255,200,87,0.5)';
+          zone.style.backgroundColor = 'rgba(255,200,87,0.1)';
+        });
       }
 
       function removeIngredient(concept, element) {
@@ -3383,17 +3622,33 @@
         }
       }
 
-      function resetPotion() {
+      function resetFinalPuzzle() {
         finalPuzzleSelectedIngredients = [];
-        document.querySelectorAll('#final-puzzle .ingredient').forEach(ingredient => {
-          ingredient.style.opacity = '1';
-          ingredient.style.cursor = 'pointer';
-        });
         
-        const potionContainer = document.querySelector('#final-puzzle .potion-container');
-        if (potionContainer) {
-          potionContainer.innerHTML = '<p style="margin: 0; color: var(--muted); font-size: 14px; width: 100%;">Seret 3 bahan ke sini...</p>';
+        // Clear drop area
+        const dropArea = document.querySelector('#final-puzzle .final-drop-area');
+        if (dropArea) {
+          dropArea.innerHTML = '';
         }
+        
+        // Reset drop zone styles
+        resetFinalDropZoneStyles();
+        
+        // Recreate draggable items
+        const ingredientList = document.querySelector('#final-puzzle .final-ingredient-list');
+        if (ingredientList) {
+          ingredientList.innerHTML = `
+            <div class="final-draggable-item" data-category="definisi" style="background: rgba(122,227,255,0.3); padding: 0.5rem; border-radius: 8px; cursor: grab; user-select: none;">📚 Definisi Himpunan</div>
+            <div class="final-draggable-item" data-category="keanggotaan" style="background: rgba(122,227,255,0.3); padding: 0.5rem; border-radius: 8px; cursor: grab; user-select: none;">🎯 Keanggotaan</div>
+            <div class="final-draggable-item" data-category="gabungan" style="background: rgba(122,227,255,0.3); padding: 0.5rem; border-radius: 8px; cursor: grab; user-select: none;">🔗 Operasi Gabungan</div>
+            <div class="final-draggable-item" data-category="irisan" style="background: rgba(122,227,255,0.3); padding: 0.5rem; border-radius: 8px; cursor: grab; user-select: none;">⚡ Operasi Irisan</div>
+            <div class="final-draggable-item" data-category="kosong" style="background: rgba(122,227,255,0.3); padding: 0.5rem; border-radius: 8px; cursor: grab; user-select: none;">📭 Himpunan Kosong</div>
+            <div class="final-draggable-item" data-category="universal" style="background: rgba(122,227,255,0.3); padding: 0.5rem; border-radius: 8px; cursor: grab; user-select: none;">🌍 Himpunan Universal</div>
+          `;
+        }
+        
+        // Re-initialize drag & drop
+        setTimeout(() => initFinalPuzzle(), 100);
         
         document.getElementById('potion-result').style.display = 'none';
         document.getElementById('btn-next-final').style.display = 'none';
