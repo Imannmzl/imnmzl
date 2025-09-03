@@ -1931,7 +1931,9 @@
       }
 
       function goTo(i) {
+        console.log(`goTo called: from slide ${index} to slide ${i}`);
         index = clamp(i, 0, maxIndex);
+        console.log(`Actual slide index set to: ${index}`);
         activateSlide(index);
         persistIndex();
       }
@@ -1992,6 +1994,8 @@
       // API Functions
       async function apiCall(endpoint, data = null, method = 'GET') {
         try {
+          console.log(`API Call: ${method} ${endpoint}`, data);
+          
           const options = {
             method: method,
             headers: {
@@ -2006,16 +2010,23 @@
           const url = method === 'GET' && data ? 
             `${endpoint}?${new URLSearchParams(data)}` : endpoint;
           
+          console.log('API URL:', url);
+          console.log('API Options:', options);
+          
           const response = await fetch(url, options);
+          console.log('API Response status:', response.status);
+          
           const result = await response.json();
+          console.log('API Response data:', result);
           
           if (!response.ok) {
-            throw new Error(result.message || 'Network error');
+            throw new Error(result.message || `HTTP ${response.status}`);
           }
           
           return result;
         } catch (error) {
           console.error('API Error:', error);
+          console.error('API Error details:', { endpoint, data, method });
           return { success: false, message: error.message };
         }
       }
@@ -2038,6 +2049,10 @@
           console.log('Player registered successfully:', { sessionId, result });
         } else {
           console.error('Registration failed:', result.message);
+          // Fallback: create local session for offline mode
+          sessionId = 'offline_' + Date.now();
+          localStorage.setItem(SESSION_KEY, sessionId);
+          console.log('Using offline session ID:', sessionId);
         }
         
         return result;
@@ -2146,11 +2161,28 @@
           }
         } catch (error) {
           console.error('Leaderboard error:', error);
+          
+          // Show offline mode leaderboard
+          totalPlayersEl.textContent = '1';
+          completedPlayersEl.textContent = '1';
+          avgScoreEl.textContent = '100';
+          
           leaderboardList.innerHTML = `
             <div style="text-align: center; padding: 2rem; color: var(--warn);">
-              <div style="font-size: 18px;">❌</div>
-              <div>Gagal memuat leaderboard</div>
-              <div style="font-size: 12px; margin-top: 0.5rem;">Periksa koneksi internet</div>
+              <div style="font-size: 18px;">📶</div>
+              <div>Mode Offline</div>
+              <div style="font-size: 12px; margin-top: 0.5rem;">Leaderboard online tidak tersedia</div>
+            </div>
+            <div style="display: grid; grid-template-columns: 50px 1fr 80px 80px; gap: 0.5rem; padding: 0.5rem; border-bottom: 1px solid rgba(255,255,255,0.1); align-items: center;">
+              <div style="text-align: center; font-weight: bold; color: var(--accent);">🥇</div>
+              <div>
+                <div style="font-weight: 600;">${userInfo.name || 'Anda'}</div>
+                <div style="font-size: 12px; color: var(--muted);">${userInfo.class || 'Local'}</div>
+              </div>
+              <div style="text-align: center; font-weight: bold; color: var(--ok);">${Math.max(0, 100 - (totalMistakes * 10))}</div>
+              <div style="text-align: center;">
+                <span style="color: var(--ok); font-size: 12px;">✅ Selesai</span>
+              </div>
             </div>
           `;
         }
@@ -3709,7 +3741,9 @@
         if (btnBackToEnding) {
           btnBackToEnding.addEventListener('click', () => {
             console.log('Back to ending button clicked');
+            console.log('Current index before goTo(19):', index);
             goTo(19); // Back to epilog slide (success ending)
+            console.log('Current index after goTo(19):', index);
             showToast('Kembali ke slide selamat');
           });
         } else {
