@@ -1795,9 +1795,9 @@
         console.log('activateSlide called with index:', i);
         
         // Reset final puzzle variables when leaving final puzzle slide
-        if (i !== 18 && typeof selectedIngredients !== 'undefined') {
-          selectedIngredients = [];
-          console.log('selectedIngredients reset on slide change');
+        if (i !== 18 && typeof finalPuzzleSelectedIngredients !== 'undefined') {
+          finalPuzzleSelectedIngredients = [];
+          console.log('finalPuzzleSelectedIngredients reset on slide change');
         }
         
         // Stop current audio when changing slides
@@ -3134,15 +3134,15 @@
       }
 
       // Final Puzzle functionality for Bab 4
-      let selectedIngredients = [];
-      const requiredIngredients = 3;
+      let finalPuzzleSelectedIngredients = [];
+      const finalPuzzleRequiredIngredients = 3;
 
       function initFinalPuzzle() {
         console.log('initFinalPuzzle called');
         
-        // Force reset selectedIngredients
-        selectedIngredients = [];
-        console.log('selectedIngredients reset to:', selectedIngredients);
+        // Force reset finalPuzzleSelectedIngredients
+        finalPuzzleSelectedIngredients = [];
+        console.log('finalPuzzleSelectedIngredients reset to:', finalPuzzleSelectedIngredients);
         
         // Wait a bit to ensure DOM is ready
         setTimeout(() => {
@@ -3238,16 +3238,16 @@
         }
         
         console.log('Valid final puzzle ingredient concept:', concept);
-        console.log('Current selected ingredients:', selectedIngredients);
-        console.log('Required ingredients:', requiredIngredients);
+        console.log('Current selected ingredients:', finalPuzzleSelectedIngredients);
+        console.log('Required ingredients:', finalPuzzleRequiredIngredients);
         
-        if (selectedIngredients.length < requiredIngredients && !selectedIngredients.includes(concept)) {
+        if (finalPuzzleSelectedIngredients.length < finalPuzzleRequiredIngredients && !finalPuzzleSelectedIngredients.includes(concept)) {
           // Add to potion
-          selectedIngredients.push(concept);
+          finalPuzzleSelectedIngredients.push(concept);
           const potionContainer = document.querySelector('.potion-container');
           
           // Remove instruction text if first ingredient
-          if (selectedIngredients.length === 1) {
+          if (finalPuzzleSelectedIngredients.length === 1) {
             potionContainer.innerHTML = '';
           }
           
@@ -3268,7 +3268,7 @@
           ingredient.style.cursor = 'not-allowed';
           
           showToast(`✅ ${ingredient.textContent} ditambahkan ke ramuan!`);
-        } else if (selectedIngredients.includes(concept)) {
+        } else if (finalPuzzleSelectedIngredients.includes(concept)) {
           showToast('⚠️ Bahan ini sudah ada di ramuan!');
         } else {
           showToast('⚠️ Ramuan sudah penuh! Klik bahan di ramuan untuk menghapus.');
@@ -3276,7 +3276,7 @@
       }
 
       function removeIngredient(concept, element) {
-        selectedIngredients = selectedIngredients.filter(c => c !== concept);
+        finalPuzzleSelectedIngredients = finalPuzzleSelectedIngredients.filter(c => c !== concept);
         element.remove();
         
         // Re-enable ingredient (only in final puzzle)
@@ -3290,7 +3290,7 @@
       }
 
       function brewPotion() {
-        if (selectedIngredients.length !== requiredIngredients) {
+        if (finalPuzzleSelectedIngredients.length !== finalPuzzleRequiredIngredients) {
           showToast('⚠️ Pilih tepat 3 bahan untuk ramuan!');
           return;
         }
@@ -3307,7 +3307,7 @@
         ];
         
         // Sort selected ingredients to match with valid combinations
-        const sortedSelected = [...selectedIngredients].sort();
+        const sortedSelected = [...finalPuzzleSelectedIngredients].sort();
         const isValid = validCombinations.some(combo => {
           const sortedCombo = [...combo].sort();
           return JSON.stringify(sortedSelected) === JSON.stringify(sortedCombo);
@@ -3340,7 +3340,7 @@
       }
 
       function resetPotion() {
-        selectedIngredients = [];
+        finalPuzzleSelectedIngredients = [];
         document.querySelectorAll('.ingredient').forEach(ingredient => {
           ingredient.style.opacity = '1';
           ingredient.style.cursor = 'pointer';
