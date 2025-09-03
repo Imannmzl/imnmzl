@@ -1849,7 +1849,19 @@
         }, 50);
         
         slides.forEach((el, idx) => {
-          if (idx === i) el.classList.add('active'); else el.classList.remove('active');
+          if (idx === i) {
+            el.classList.add('active');
+            el.style.pointerEvents = 'auto';
+            el.style.zIndex = '10';
+            console.log(`✅ Slide ${idx} activated with pointer-events: auto`);
+          } else {
+            el.classList.remove('active');
+            el.style.pointerEvents = 'none';
+            el.style.zIndex = '1';
+            if (idx === 17 || idx === 18) {
+              console.log(`❌ Slide ${idx} deactivated with pointer-events: none`);
+            }
+          }
         });
         updateProgress();
         
