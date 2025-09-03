@@ -741,9 +741,9 @@
         </section>
 
         <!-- Bab 1: Slide 2 - Definisi Himpunan -->
-        <section class="slide" data-slide="4" aria-labelledby="title-4">
+        <section class="slide" data-slide="5" aria-labelledby="title-5">
           <div class="card">
-            <h2 class="title" id="title-4">Definisi Himpunan</h2>
+            <h2 class="title" id="title-5">Definisi Himpunan</h2>
             <img class="illustration" src="images/Babak-1-Gerbang-Logika-&amp;-Definisi-yang-Jelas.png" alt="Contoh himpunan di hutan" loading="lazy">
             <p class="lead">
               <strong>Himpunan</strong> adalah kumpulan objek yang terdefinisi dengan jelas dan dapat dibedakan satu sama lain.
@@ -767,9 +767,9 @@
         </section>
 
         <!-- Bab 1: Slide 3 - Mini Game: Identifikasi Himpunan -->
-        <section class="slide" data-slide="5" aria-labelledby="title-5">
+        <section class="slide" data-slide="6" aria-labelledby="title-6">
           <div class="card">
-            <h2 class="title" id="title-5">Tantangan: Identifikasi Himpunan</h2>
+            <h2 class="title" id="title-6">Tantangan: Identifikasi Himpunan</h2>
             <img class="illustration" src="images/Babak-1-Gerbang-Logika-&amp;-Definisi-yang-Jelas.png" alt="Tantangan identifikasi himpunan" loading="lazy">
             <p class="lead">
               Penjaga Gerbang: <em>"Sekarang, coba identifikasi mana yang merupakan himpunan yang terdefinisi dengan jelas!"</em>
@@ -1338,10 +1338,67 @@
           </div>
         </section>
 
-        <!-- Bab 4: Slide 4 - Epilog: Keseimbangan Terpulihkan -->
+        <!-- Bab 4: Slide 4 - Puzzle Final: Ramuan Keseimbangan -->
         <section class="slide" data-slide="19" aria-labelledby="title-19">
           <div class="card">
-            <h2 class="title" id="title-19">Epilog: Keseimbangan Terpulihkan</h2>
+            <h2 class="title" id="title-19">Puzzle Final: Ramuan Keseimbangan</h2>
+            <img class="illustration" src="images/Babak-4-Altar-Keseimbangan-&-Pemecahan-Masalah.png" alt="Ramuan keseimbangan" loading="lazy">
+            <p class="lead">
+              Penjaga Altar: <em>"Sekarang, saatnya menyeduh Ramuan Keseimbangan! 
+              Pilih 3 bahan yang tepat untuk memulihkan Kristal Logika."</em>
+            </p>
+            
+            <div style="background: rgba(255,200,87,0.1); border: 1px solid rgba(255,200,87,0.3); border-radius: 12px; padding: 1rem; margin: 1rem 0;">
+              <h4 style="margin: 0 0 0.5rem 0; color: var(--accent-2);">Instruksi Ramuan:</h4>
+              <p style="margin: 0; color: var(--muted);">
+                Pilih 3 bahan dari himpunan yang berbeda untuk menciptakan keseimbangan sempurna. 
+                Setiap bahan harus mewakili konsep himpunan yang berbeda.
+              </p>
+            </div>
+
+            <div id="final-puzzle" style="margin: 1rem 0;">
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1rem 0;">
+                <!-- Bahan yang tersedia -->
+                <div style="background: rgba(122,227,255,0.1); border: 2px solid rgba(122,227,255,0.5); border-radius: 12px; padding: 1rem;">
+                  <h4 style="margin: 0 0 0.5rem 0; color: var(--accent);">Bahan Tersedia:</h4>
+                  <div class="final-ingredient-list" style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+                    <div class="final-draggable-item" data-category="definisi" style="background: rgba(122,227,255,0.3); padding: 0.5rem; border-radius: 8px; cursor: grab; user-select: none;">📚 Definisi Himpunan</div>
+                    <div class="final-draggable-item" data-category="keanggotaan" style="background: rgba(122,227,255,0.3); padding: 0.5rem; border-radius: 8px; cursor: grab; user-select: none;">🎯 Keanggotaan</div>
+                    <div class="final-draggable-item" data-category="gabungan" style="background: rgba(122,227,255,0.3); padding: 0.5rem; border-radius: 8px; cursor: grab; user-select: none;">🔗 Operasi Gabungan</div>
+                    <div class="final-draggable-item" data-category="irisan" style="background: rgba(122,227,255,0.3); padding: 0.5rem; border-radius: 8px; cursor: grab; user-select: none;">⚡ Operasi Irisan</div>
+                    <div class="final-draggable-item" data-category="kosong" style="background: rgba(122,227,255,0.3); padding: 0.5rem; border-radius: 8px; cursor: grab; user-select: none;">📭 Himpunan Kosong</div>
+                    <div class="final-draggable-item" data-category="universal" style="background: rgba(122,227,255,0.3); padding: 0.5rem; border-radius: 8px; cursor: grab; user-select: none;">🌍 Himpunan Universal</div>
+                  </div>
+                </div>
+
+                <!-- Ramuan yang sedang dibuat -->
+                <div class="final-drop-zone" data-set="ramuan" style="background: rgba(255,200,87,0.1); border: 2px dashed rgba(255,200,87,0.5); border-radius: 12px; padding: 1rem;">
+                  <h4 style="margin: 0 0 0.5rem 0; color: var(--accent-2);">Ramuan Keseimbangan:</h4>
+                  <p style="margin: 0; font-size: 14px; color: var(--muted);">Seret 3 bahan ke sini...</p>
+                  <div class="final-drop-area" style="min-height: 80px; display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem;"></div>
+                </div>
+              </div>
+
+              <div style="text-align: center; margin: 1rem 0;">
+                <button class="btn primary" id="btn-brew-potion" style="margin: 0.5rem;">Seduh Ramuan</button>
+                <button class="btn" id="btn-reset-potion" style="margin: 0.5rem;">Reset</button>
+              </div>
+
+              <div id="potion-result" style="display: none; background: rgba(81,216,138,0.1); border: 1px solid rgba(81,216,138,0.3); border-radius: 12px; padding: 1rem; margin: 1rem 0;">
+                <p style="margin: 0; color: var(--ok);"><strong>🎉 Ramuan Keseimbangan berhasil diseduh! Kristal Logika mulai pulih!</strong></p>
+              </div>
+            </div>
+
+            <div class="cta">
+              <button class="btn" data-prev>Sebelumnya</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Slide 20 - Epilog: Keseimbangan Terpulihkan -->
+        <section class="slide" data-slide="20" aria-labelledby="title-20">
+          <div class="card">
+            <h2 class="title" id="title-20">Epilog: Keseimbangan Terpulihkan</h2>
             <img class="illustration" src="images/Epilog.png" alt="Kristal Logika yang pulih" loading="lazy">
             <p class="lead">
               <strong>Selamat! Kamu berhasil memulihkan Kristal Logika!</strong>
@@ -1369,19 +1426,17 @@
             </p>
 
             <div class="cta">
-              <a href="leaderboard.html" class="btn primary" id="btn-view-leaderboard">🏆 Lihat Leaderboard</a>
+              <a href="leaderboard.html" class="btn primary">🏆 Lihat Leaderboard</a>
               <button class="btn" id="btn-restart">Mulai Petualangan Lagi</button>
               <button class="btn" id="btn-view-notes">Lihat Buku Resep</button>
             </div>
           </div>
         </section>
 
-
-
         <!-- Game Over Slide -->
-        <section class="slide" data-slide="21" aria-labelledby="title-21">
+        <section class="slide" data-slide="22" aria-labelledby="title-22">
           <div class="card">
-            <h2 class="title" id="title-21" style="color: var(--warn);">💥 Misi Gagal!</h2>
+            <h2 class="title" id="title-22" style="color: var(--warn);">💥 Misi Gagal!</h2>
             <img class="illustration" src="images/Babak-4-Altar-Keseimbangan-&-Pemecahan-Masalah.png" alt="Kristal Logika yang retak" loading="lazy">
             <p class="lead" style="color: var(--warn);">
               <strong>Kamu telah melakukan terlalu banyak kesalahan!</strong>
@@ -1738,7 +1793,7 @@
         }, 500);
         
         // Navigate to Game Over slide
-        goTo(21); // Game Over slide index
+        goTo(22); // Game Over slide index
         
         // Disable navigation buttons
         document.querySelectorAll('.btn[data-next], .btn[data-prev]').forEach(btn => {
@@ -1906,9 +1961,9 @@
           // Initialize complex puzzle when entering puzzle slide
           setTimeout(() => initComplexPuzzle(), 100);
         }
-        if (i === 18) {
+        if (i === 19) {
           // Initialize final puzzle when entering final puzzle slide
-          console.log('Entering slide 18 - Final Puzzle');
+          console.log('Entering slide 19 - Final Puzzle');
           setTimeout(() => {
             console.log('About to initialize final puzzle');
             initFinalPuzzle();
@@ -1916,7 +1971,7 @@
           // Update progress at final puzzle start
           setTimeout(() => updateBackendProgress(), 500);
         }
-        if (i === 19) {
+        if (i === 20) {
           // Reached epilog slide - display success message
           console.log('Reached epilog slide - displaying success message');
           console.log('Total mistakes at epilog:', totalMistakes);
@@ -3627,9 +3682,9 @@
               // Auto-navigate to epilog after completion (only if still in final puzzle)
               showToast('🎉 Misi berhasil diselesaikan! Menuju epilog...');
               setTimeout(() => {
-                if (index === 18) {
+                if (index === 19) {
                   console.log('🏠 Auto-navigating to epilog slide...');
-                  goTo(19);
+                  goTo(20);
                 } else {
                   console.log('⚠️ User already navigated away from final puzzle, skipping auto-navigation');
                 }
@@ -3641,9 +3696,9 @@
               
               // Still navigate to epilog (only if still in final puzzle)
               setTimeout(() => {
-                if (index === 18) {
+                if (index === 19) {
                   console.log('🏠 Navigating to epilog slide (offline mode)...');
-                  goTo(19);
+                  goTo(20);
                 } else {
                   console.log('⚠️ User already navigated away, skipping navigation');
                 }
