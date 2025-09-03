@@ -346,6 +346,21 @@
         align-items: center !important;
         justify-content: flex-start !important;
       }
+      
+      /* Mobile slide isolation */
+      .slide:not(.active) {
+        display: none !important;
+        visibility: hidden !important;
+        pointer-events: none !important;
+        z-index: -1 !important;
+      }
+      
+      .slide.active {
+        display: flex !important;
+        visibility: visible !important;
+        pointer-events: auto !important;
+        z-index: 10 !important;
+      }
       .card .title { 
         font-size: 1.2rem; 
         margin-bottom: 0.8rem;
@@ -1854,13 +1869,15 @@
             el.style.zIndex = '10';
             el.style.visibility = 'visible';
             el.style.display = 'flex';
+            el.style.touchAction = 'auto';
             console.log(`✅ Slide ${idx} activated with pointer-events: auto`);
           } else {
             el.classList.remove('active');
             el.style.pointerEvents = 'none';
-            el.style.zIndex = '1';
+            el.style.zIndex = '-1';
             el.style.visibility = 'hidden';
             el.style.display = 'none';
+            el.style.touchAction = 'none';
             if (idx >= 17 && idx <= 22) {
               console.log(`❌ Slide ${idx} deactivated with pointer-events: none, visibility: hidden`);
             }
@@ -3763,9 +3780,24 @@
         }
         
         if (btnBackToEnding) {
-          btnBackToEnding.addEventListener('click', () => {
+          btnBackToEnding.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
             console.log('Back to ending button clicked');
             console.log('Current index before goTo(19):', index);
+            console.log('User agent:', navigator.userAgent);
+            
+            // Force slide deactivation before navigation
+            slides.forEach((slide, idx) => {
+              if (idx === 21) { // Current leaderboard slide
+                slide.style.display = 'none';
+                slide.style.visibility = 'hidden';
+                slide.style.pointerEvents = 'none';
+                slide.classList.remove('active');
+                console.log('Force deactivated leaderboard slide');
+              }
+            });
+            
             goTo(19); // Back to epilog slide (success ending)
             console.log('Current index after goTo(19):', index);
             showToast('Kembali ke slide selamat');
