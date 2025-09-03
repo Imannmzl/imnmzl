@@ -1,0 +1,398 @@
+/* Shared CSS untuk semua slide - Hutan Harmoni */
+
+:root {
+  --bg: #0b1220;
+  --bg2: #0e1628;
+  --card: #121a2a;
+  --card2: #1a2540;
+  --text: #e7efff;
+  --muted: #aab7d4;
+  --accent: #7ae3ff;
+  --accent-2: #ffc857;
+  --ok: #51d88a;
+  --warn: #ff8a65;
+  --shadow: 0 10px 30px rgba(0,0,0,.45);
+}
+
+* { 
+  box-sizing: border-box;
+  -webkit-overscroll-behavior: none;
+  overscroll-behavior: none;
+}
+
+html, body { 
+  height: 100%; 
+  max-width: 100%; 
+  overflow-x: hidden;
+  overscroll-behavior: none;
+  -webkit-overflow-scrolling: touch;
+  margin: 0;
+  padding: 0;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  color: var(--text);
+  background: radial-gradient(1200px 800px at 20% -10%, #1b2b4d 0%, transparent 60%),
+              radial-gradient(900px 600px at 120% 0%, #263a66 0%, transparent 55%),
+              linear-gradient(180deg, var(--bg) 0%, var(--bg2) 100%);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overscroll-behavior-y: none;
+  -webkit-overscroll-behavior-y: none;
+}
+
+.app {
+  min-height: 100dvh;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  overflow-x: hidden;
+  margin: 0;
+  padding: 0;
+}
+
+header.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: linear-gradient(180deg, rgba(18,26,42,.9) 0%, rgba(18,26,42,.7) 100%);
+  backdrop-filter: blur(6px);
+  border-bottom: 1px solid rgba(255,255,255,.06);
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .75rem;
+  padding: .75rem 1rem .5rem 1rem;
+}
+
+.brand {
+  display: flex; 
+  align-items: center; 
+  gap: .75rem;
+}
+
+.brand .logo {
+  width: 36px; 
+  height: 36px; 
+  border-radius: 10px;
+  background: radial-gradient(circle at 70% 30%, #7ae3ff, #2bbaea 60%, #1b7aa0 100%);
+  box-shadow: inset 0 0 12px rgba(255,255,255,.25), var(--shadow);
+}
+
+.brand h1 { 
+  font-size: clamp(16px, 2.6vw, 20px); 
+  margin: 0; 
+  letter-spacing: .3px; 
+}
+
+.brand .subtitle { 
+  color: var(--muted); 
+  font-size: 12px; 
+  margin-top: 2px; 
+}
+
+.header-actions { 
+  display: flex; 
+  gap: .5rem; 
+  align-items: center; 
+}
+
+.progress {
+  height: 6px; 
+  width: 100%; 
+  background: rgba(255,255,255,.06);
+}
+
+.bar {
+  height: 100%; 
+  width: 0%; 
+  background: linear-gradient(90deg, var(--accent), #4cd4ff);
+  box-shadow: 0 0 12px rgba(122,227,255,.8);
+  transition: width .35s ease;
+}
+
+main { 
+  position: relative; 
+  overflow-x: hidden; 
+  overflow-y: auto; 
+  -webkit-overflow-scrolling: touch; 
+  margin: 0; 
+  padding: 2rem 0;
+  height: 100%;
+  min-height: 100vh;
+  overscroll-behavior: none;
+  overscroll-behavior-y: none;
+  -webkit-overscroll-behavior-y: none;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  min-height: calc(100vh - 120px);
+  padding: 0;
+}
+
+.card {
+  width: min(880px, 92vw);
+  background: linear-gradient(180deg, rgba(255,255,255,.06) 0%, rgba(255,255,255,.03) 100%);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  padding: clamp(16px, 3vw, 28px);
+  margin: 1rem auto 3rem auto;
+  max-height: none;
+  height: auto;
+  flex-shrink: 0;
+}
+
+.title {
+  font-size: clamp(22px, 4.8vw, 36px);
+  line-height: 1.15; 
+  margin: 0 0 .5rem 0;
+  text-wrap: balance;
+}
+
+.lead { 
+  color: var(--muted); 
+  font-size: clamp(14px, 2.8vw, 18px); 
+  margin: .25rem 0 1rem 0; 
+}
+
+.illustration {
+  width: 100%;
+  max-height: min(38vh, 360px);
+  object-fit: cover;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,.08);
+  box-shadow: var(--shadow);
+  margin: .25rem 0 1rem 0;
+  background: #0e1628;
+}
+
+.cta { 
+  display: flex; 
+  gap: .75rem; 
+  flex-wrap: wrap; 
+  margin-top: 1rem; 
+}
+
+.btn {
+  appearance: none; 
+  -webkit-appearance: none;
+  border: 1px solid rgba(255,255,255,.1);
+  background: linear-gradient(180deg, rgba(255,255,255,.06) 0%, rgba(255,255,255,.03) 100%);
+  color: var(--text);
+  padding: .65rem .9rem;
+  border-radius: 12px;
+  font-weight: 600;
+  letter-spacing: .2px;
+  cursor: pointer;
+  transition: transform .06s ease, border-color .2s ease, background .2s ease, opacity .2s ease;
+  text-decoration: none;
+  display: inline-block;
+  text-align: center;
+}
+
+.btn[disabled] { 
+  opacity: .55; 
+  cursor: not-allowed; 
+  transform: none !important; 
+}
+
+.btn:active { 
+  transform: translateY(1px) scale(.99); 
+}
+
+.btn.primary { 
+  border-color: rgba(122,227,255,.6); 
+  background: linear-gradient(180deg, rgba(122,227,255,.18) 0%, rgba(122,227,255,.08) 100%); 
+  color: #e9fbff; 
+}
+
+.btn:hover:not([disabled]) {
+  transform: translateY(-1px);
+}
+
+/* Audio Controls */
+.audio-controls {
+  display: flex; 
+  align-items: center; 
+  gap: 0.5rem; 
+  margin: 1rem 0; 
+  justify-content: center;
+}
+
+.audio-time {
+  font-size: 12px; 
+  color: var(--muted);
+}
+
+/* Drag & Drop Styles */
+.draggable-item {
+  touch-action: none;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  position: relative;
+  z-index: 1;
+  transition: transform 0.1s ease, opacity 0.1s ease;
+}
+
+.draggable-item.dragging {
+  z-index: 1000;
+  position: fixed;
+  pointer-events: none;
+  transform: scale(1.05);
+  opacity: 0.8;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+}
+
+.drop-zone {
+  min-height: 120px;
+  border-radius: 12px;
+  padding: 1rem;
+  transition: all 0.2s ease;
+}
+
+.drop-area {
+  min-height: 60px; 
+  display: flex; 
+  flex-wrap: wrap; 
+  gap: 0.5rem; 
+  margin-top: 0.5rem;
+}
+
+/* Quiz Styles */
+.quiz-option {
+  flex: 1; 
+  min-width: 120px;
+  margin: 0.25rem;
+}
+
+.quiz-feedback {
+  margin-top: 0.5rem; 
+  padding: 0.5rem; 
+  border-radius: 8px;
+}
+
+/* Toast */
+.toast { 
+  position: fixed; 
+  left: 50%; 
+  bottom: 20px; 
+  transform: translateX(-50%);
+  background: rgba(0,0,0,.75); 
+  color: #fff; 
+  padding: .6rem .85rem; 
+  border-radius: 12px; 
+  font-size: 14px; 
+  display: none; 
+  z-index: 60; 
+}
+
+.toast.show { 
+  display: block; 
+  animation: toast-in .2s ease, toast-out .2s ease 2.2s forwards; 
+}
+
+@keyframes toast-in { 
+  from { opacity: 0; transform: translate(-50%, 8px);} 
+  to { opacity: 1; transform: translate(-50%, 0);} 
+}
+
+@keyframes toast-out { 
+  to { opacity: 0; transform: translate(-50%, 8px);} 
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  .header-inner {
+    padding: 0.5rem 1rem;
+  }
+  
+  .brand h1 {
+    font-size: 1.1rem;
+    line-height: 1.2;
+  }
+  
+  .brand .subtitle {
+    font-size: 0.8rem;
+  }
+  
+  .card { 
+    padding: 1rem; 
+    margin: 0.5rem 0.25rem 3rem 0.25rem; 
+    max-height: none;
+    height: auto;
+    flex-shrink: 0;
+  }
+  
+  .card .title { 
+    font-size: 1.2rem; 
+    margin-bottom: 0.8rem;
+  }
+  
+  .card .lead { 
+    font-size: 0.9rem; 
+    margin-bottom: 1rem;
+  }
+  
+  .card p {
+    margin-bottom: 0.8rem;
+    line-height: 1.4;
+  }
+  
+  .card .illustration { 
+    max-height: 180px; 
+    margin: 0.8rem 0;
+  }
+  
+  .cta { 
+    flex-direction: column; 
+    gap: 0.5rem; 
+    margin-top: 1rem;
+  }
+  
+  .cta .btn { 
+    width: 100%; 
+    padding: 0.8rem;
+  }
+  
+  .audio-controls { 
+    margin: 0.5rem 0 !important; 
+    gap: 0.3rem !important;
+  }
+  
+  .audio-controls .btn {
+    padding: 0.5rem;
+    font-size: 0.9rem;
+  }
+  
+  .audio-time {
+    font-size: 10px !important;
+  }
+  
+  .draggable-item { 
+    font-size: 0.9rem !important; 
+    padding: 0.6rem 1rem !important;
+    min-height: 44px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+  
+  .drop-zone {
+    min-height: 100px !important;
+    padding: 1rem !important;
+  }
+}

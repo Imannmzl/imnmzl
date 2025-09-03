@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no, maximum-scale=1" />
+  <meta name="color-scheme" content="dark light">
+  <title>🧪 Puzzle Final - Hutan Harmoni</title>
+  <link rel="stylesheet" href="shared.css">
+</head>
+<body>
+  <div class="app">
+    <header class="app-header" role="banner">
+      <div class="header-inner">
+        <div class="brand">
+          <div class="logo" aria-hidden="true"></div>
+          <div>
+            <h1>Sang Alkemis Muda dan Hutan Harmoni</h1>
+            <div class="subtitle">Puzzle Final: Ramuan Keseimbangan</div>
+          </div>
+        </div>
+        <div class="header-actions">
+          <button class="btn" onclick="window.open('../leaderboard.html', '_blank')" title="Lihat Leaderboard">🏆 Leaderboard</button>
+        </div>
+      </div>
+      <div class="progress"><div class="bar" style="width: 90%;"></div></div>
+    </header>
+
+    <main role="main">
+      <div class="container">
+        <div class="card">
+          <h2 class="title">Puzzle Final: Ramuan Keseimbangan</h2>
+          <img class="illustration" src="../images/Babak-4-Altar-Keseimbangan-&-Pemecahan-Masalah.png" alt="Ramuan keseimbangan" loading="lazy">
+          <p class="lead">
+            Penjaga Altar: <em>"Sekarang, saatnya menyeduh Ramuan Keseimbangan! 
+            Pilih 3 bahan yang tepat untuk memulihkan Kristal Logika."</em>
+          </p>
+          
+          <div style="background: rgba(255,200,87,0.1); border: 1px solid rgba(255,200,87,0.3); border-radius: 12px; padding: 1rem; margin: 1rem 0;">
+            <h4 style="margin: 0 0 0.5rem 0; color: var(--accent-2);">Instruksi Ramuan:</h4>
+            <p style="margin: 0; color: var(--muted);">
+              Pilih 3 bahan dari himpunan yang berbeda untuk menciptakan keseimbangan sempurna. 
+              Setiap bahan harus mewakili konsep himpunan yang berbeda.
+            </p>
+          </div>
+
+          <div id="final-puzzle" style="margin: 1rem 0;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1rem 0;">
+              <!-- Bahan yang tersedia -->
+              <div style="background: rgba(122,227,255,0.1); border: 2px solid rgba(122,227,255,0.5); border-radius: 12px; padding: 1rem;">
+                <h4 style="margin: 0 0 0.5rem 0; color: var(--accent);">Bahan Tersedia:</h4>
+                <div class="final-ingredient-list" style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+                  <div class="final-draggable-item" data-category="definisi" style="background: rgba(122,227,255,0.3); padding: 0.5rem; border-radius: 8px; cursor: grab; user-select: none;">📚 Definisi Himpunan</div>
+                  <div class="final-draggable-item" data-category="keanggotaan" style="background: rgba(122,227,255,0.3); padding: 0.5rem; border-radius: 8px; cursor: grab; user-select: none;">🎯 Keanggotaan</div>
+                  <div class="final-draggable-item" data-category="gabungan" style="background: rgba(122,227,255,0.3); padding: 0.5rem; border-radius: 8px; cursor: grab; user-select: none;">🔗 Operasi Gabungan</div>
+                  <div class="final-draggable-item" data-category="irisan" style="background: rgba(122,227,255,0.3); padding: 0.5rem; border-radius: 8px; cursor: grab; user-select: none;">⚡ Operasi Irisan</div>
+                  <div class="final-draggable-item" data-category="kosong" style="background: rgba(122,227,255,0.3); padding: 0.5rem; border-radius: 8px; cursor: grab; user-select: none;">📭 Himpunan Kosong</div>
+                  <div class="final-draggable-item" data-category="universal" style="background: rgba(122,227,255,0.3); padding: 0.5rem; border-radius: 8px; cursor: grab; user-select: none;">🌍 Himpunan Universal</div>
+                </div>
+              </div>
+
+              <!-- Ramuan yang sedang dibuat -->
+              <div class="final-drop-zone" data-set="ramuan" style="background: rgba(255,200,87,0.1); border: 2px dashed rgba(255,200,87,0.5); border-radius: 12px; padding: 1rem;">
+                <h4 style="margin: 0 0 0.5rem 0; color: var(--accent-2);">Ramuan Keseimbangan:</h4>
+                <p style="margin: 0; font-size: 14px; color: var(--muted);">Seret 3 bahan ke sini...</p>
+                <div class="final-drop-area" style="min-height: 80px; display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem;"></div>
+              </div>
+            </div>
+
+            <div style="text-align: center; margin: 1rem 0;">
+              <button class="btn primary" id="btn-brew-potion">Seduh Ramuan</button>
+              <button class="btn" id="btn-reset-potion">Reset</button>
+            </div>
+
+            <div id="potion-result" style="display: none; background: rgba(81,216,138,0.1); border: 1px solid rgba(81,216,138,0.3); border-radius: 12px; padding: 1rem; margin: 1rem 0;">
+              <p style="margin: 0; color: var(--ok);"><strong>🎉 Ramuan Keseimbangan berhasil diseduh! Kristal Logika mulai pulih!</strong></p>
+            </div>
+          </div>
+
+          <div class="cta">
+            <button class="btn primary" id="btn-selesaikan-misi" style="display: none;">Selesaikan Misi</button>
+            <a href="17-complex-puzzle.html" class="btn">Sebelumnya</a>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <audio id="audio-18" preload="metadata">
+    <source src="../audio/bab4/slide3_final_puzzle.wav" type="audio/wav">
+  </audio>
+
+  <script src="shared.js"></script>
+  <script>
+    // Final Puzzle functionality
+    let selectedIngredients = [];
+    const requiredIngredients = 3;
+    let draggedElement = null;
+
+    // Drag & Drop Event Handlers
+    function handleDragStart(e) {
+      draggedElement = e.target;
+      e.target.style.opacity = '0.5';
+      if (e.dataTransfer) {
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/plain', e.target.dataset.category);
+      }
+    }
+
+    function handleDragEnd(e) {
+      e.target.style.opacity = '1';
+      setTimeout(() => { draggedElement = null; }, 100);
+    }
+
+    function handleDragOver(e) {
+      e.preventDefault();
+      if (e.dataTransfer) {
+        e.dataTransfer.dropEffect = 'move';
+      }
+    }
+
+    function handleDrop(e) {
+      e.preventDefault();
+      
+      if (!draggedElement) return;
+      
+      const dropZone = e.target.closest('.final-drop-zone');
+      if (!dropZone) return;
+      
+      const dropArea = dropZone.querySelector('.final-drop-area');
+      if (!dropArea) return;
+      
+      const itemCategory = draggedElement.dataset.category;
+      
+      // Validation
+      if (selectedIngredients.length >= requiredIngredients) {
+        showToast('⚠️ Ramuan sudah penuh!');
+        return;
+      }
+      
+      if (selectedIngredients.includes(itemCategory)) {
+        showToast('⚠️ Bahan ini sudah ada di ramuan!');
+        return;
+      }
+      
+      // Add to ramuan
+      selectedIngredients.push(itemCategory);
+      
+      const clonedItem = draggedElement.cloneNode(true);
+      clonedItem.style.opacity = '1';
+      clonedItem.style.cursor = 'default';
+      clonedItem.draggable = false;
+      
+      dropArea.appendChild(clonedItem);
+      draggedElement.remove();
+      
+      showToast(`✅ ${clonedItem.textContent} ditambahkan ke ramuan!`);
+      
+      if (selectedIngredients.length === requiredIngredients) {
+        showToast('🧪 Ramuan siap diseduh! Klik "Seduh Ramuan"');
+      }
+    }
+
+    function brewPotion() {
+      if (selectedIngredients.length !== requiredIngredients) {
+        showToast('⚠️ Pilih tepat 3 bahan untuk ramuan!');
+        return;
+      }
+      
+      // Valid combinations
+      const validCombinations = [
+        ['definisi', 'keanggotaan', 'gabungan'],
+        ['definisi', 'keanggotaan', 'irisan'],
+        ['definisi', 'gabungan', 'irisan'],
+        ['keanggotaan', 'gabungan', 'irisan']
+      ];
+      
+      const sortedSelected = [...selectedIngredients].sort();
+      const isValid = validCombinations.some(combo => {
+        const sortedCombo = [...combo].sort();
+        return JSON.stringify(sortedSelected) === JSON.stringify(sortedCombo);
+      });
+      
+      if (isValid) {
+        // Success! Show completion UI
+        document.getElementById('potion-result').style.display = 'block';
+        document.getElementById('btn-selesaikan-misi').style.display = 'inline-block';
+        
+        showToast('🎉 Ramuan Keseimbangan berhasil diseduh! Kristal Logika mulai pulih!');
+        
+        // Scroll to show button
+        setTimeout(() => {
+          const button = document.getElementById('btn-selesaikan-misi');
+          if (button) {
+            button.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+        }, 500);
+      } else {
+        showToast('❌ Kombinasi bahan tidak tepat! Coba kombinasi lain.');
+        // Update progress with mistake
+        updateBackendProgress(1);
+      }
+    }
+
+    function resetPuzzle() {
+      selectedIngredients = [];
+      
+      // Clear drop area
+      const dropArea = document.querySelector('.final-drop-area');
+      if (dropArea) {
+        dropArea.innerHTML = '';
+      }
+      
+      // Recreate draggable items
+      const ingredientList = document.querySelector('.final-ingredient-list');
+      if (ingredientList) {
+        ingredientList.innerHTML = `
+          <div class="final-draggable-item" data-category="definisi" style="background: rgba(122,227,255,0.3); padding: 0.5rem; border-radius: 8px; cursor: grab; user-select: none;">📚 Definisi Himpunan</div>
+          <div class="final-draggable-item" data-category="keanggotaan" style="background: rgba(122,227,255,0.3); padding: 0.5rem; border-radius: 8px; cursor: grab; user-select: none;">🎯 Keanggotaan</div>
+          <div class="final-draggable-item" data-category="gabungan" style="background: rgba(122,227,255,0.3); padding: 0.5rem; border-radius: 8px; cursor: grab; user-select: none;">🔗 Operasi Gabungan</div>
+          <div class="final-draggable-item" data-category="irisan" style="background: rgba(122,227,255,0.3); padding: 0.5rem; border-radius: 8px; cursor: grab; user-select: none;">⚡ Operasi Irisan</div>
+          <div class="final-draggable-item" data-category="kosong" style="background: rgba(122,227,255,0.3); padding: 0.5rem; border-radius: 8px; cursor: grab; user-select: none;">📭 Himpunan Kosong</div>
+          <div class="final-draggable-item" data-category="universal" style="background: rgba(122,227,255,0.3); padding: 0.5rem; border-radius: 8px; cursor: grab; user-select: none;">🌍 Himpunan Universal</div>
+        `;
+      }
+      
+      // Hide completion UI
+      document.getElementById('potion-result').style.display = 'none';
+      document.getElementById('btn-selesaikan-misi').style.display = 'none';
+      
+      // Reinitialize drag & drop
+      initDragDrop();
+      
+      showToast('🔄 Ramuan direset! Coba lagi.');
+    }
+
+    function initDragDrop() {
+      const draggableItems = document.querySelectorAll('.final-draggable-item');
+      const dropZone = document.querySelector('.final-drop-zone');
+      
+      draggableItems.forEach(item => {
+        item.draggable = true;
+        item.addEventListener('dragstart', handleDragStart);
+        item.addEventListener('dragend', handleDragEnd);
+      });
+      
+      if (dropZone) {
+        dropZone.addEventListener('dragover', handleDragOver);
+        dropZone.addEventListener('drop', handleDrop);
+      }
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      console.log('Final Puzzle page loaded');
+      
+      // Initialize drag & drop
+      initDragDrop();
+      
+      // Setup buttons
+      document.getElementById('btn-brew-potion').addEventListener('click', brewPotion);
+      document.getElementById('btn-reset-potion').addEventListener('click', resetPuzzle);
+      
+      // Setup completion button
+      document.getElementById('btn-selesaikan-misi').addEventListener('click', async () => {
+        console.log('🚀 Selesaikan Misi clicked - completing game!');
+        
+        showToast('🔄 Menyelesaikan misi...');
+        
+        try {
+          // Get total mistakes from localStorage or assume 0
+          const totalMistakes = 0; // You can track this properly
+          
+          // Complete game on backend
+          await updateBackendProgress(totalMistakes);
+          await completeGameOnBackend(totalMistakes);
+          
+          // Navigate to epilog
+          showToast('🎉 Misi berhasil diselesaikan!');
+          setTimeout(() => {
+            window.location.href = '19-epilog.html';
+          }, 1000);
+          
+        } catch (error) {
+          console.error('Failed to complete game:', error);
+          showToast('❌ Gagal menyimpan data. Mode offline.');
+          // Still navigate to epilog
+          setTimeout(() => {
+            window.location.href = '19-epilog.html';
+          }, 1000);
+        }
+      });
+      
+      // Play audio if enabled
+      if (audioEnabled) {
+        setTimeout(() => playAudio(18), 500);
+      }
+    });
+  </script>
+</body>
+</html>

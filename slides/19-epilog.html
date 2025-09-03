@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no, maximum-scale=1" />
+  <meta name="color-scheme" content="dark light">
+  <title>🎉 Epilog - Hutan Harmoni</title>
+  <link rel="stylesheet" href="shared.css">
+</head>
+<body>
+  <div class="app">
+    <header class="app-header" role="banner">
+      <div class="header-inner">
+        <div class="brand">
+          <div class="logo" aria-hidden="true"></div>
+          <div>
+            <h1>Sang Alkemis Muda dan Hutan Harmoni</h1>
+            <div class="subtitle">Epilog: Keseimbangan Terpulihkan</div>
+          </div>
+        </div>
+        <div class="header-actions">
+          <button class="btn" onclick="window.open('../leaderboard.html', '_blank')" title="Lihat Leaderboard">🏆 Leaderboard</button>
+        </div>
+      </div>
+      <div class="progress"><div class="bar" style="width: 100%;"></div></div>
+    </header>
+
+    <main role="main">
+      <div class="container">
+        <div class="card">
+          <h2 class="title">Epilog: Keseimbangan Terpulihkan</h2>
+          <img class="illustration" src="../images/Epilog.png" alt="Kristal Logika yang pulih" loading="lazy">
+          <p class="lead">
+            <strong>Selamat! Kamu berhasil memulihkan Kristal Logika!</strong>
+          </p>
+          <p>
+            Penjaga Altar: <em>"Luar biasa, Alkemis Muda! Kamu telah menunjukkan pemahaman yang mendalam tentang konsep himpunan. 
+            Kristal Logika sekarang bersinar terang lagi, dan keseimbangan telah kembali ke Hutan Harmoni."</em>
+          </p>
+          
+          <div style="background: rgba(81,216,138,0.1); border: 1px solid rgba(81,216,138,0.3); border-radius: 12px; padding: 1rem; margin: 1rem 0;">
+            <h4 style="margin: 0 0 0.5rem 0; color: var(--ok);">Pengetahuan yang Telah Dikuasai:</h4>
+            <ul style="margin: 0; color: var(--muted);">
+              <li>✅ Definisi himpunan dan keanggotaan</li>
+              <li>✅ Notasi himpunan (∈, ∉, ⊆, ∅, U)</li>
+              <li>✅ Operasi gabungan (∪) dan irisan (∩)</li>
+              <li>✅ Himpunan kosong dan universal</li>
+              <li>✅ Pemecahan masalah dengan himpunan</li>
+            </ul>
+          </div>
+
+          <p>
+            <strong>Terima kasih telah menyelesaikan petualangan di Hutan Harmoni!</strong> 
+            Kamu sekarang telah menjadi Alkemis Himpunan yang sejati. 
+            Gunakan pengetahuan ini untuk memecahkan masalah-masalah kompleks di masa depan.
+          </p>
+
+          <div class="cta">
+            <a href="../leaderboard.html" class="btn primary">🏆 Lihat Leaderboard</a>
+            <button class="btn" id="btn-restart">Mulai Petualangan Lagi</button>
+            <button class="btn" onclick="window.open('modal-notes.html', '_blank')">📖 Lihat Buku Resep</button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <audio id="audio-19" preload="metadata">
+    <source src="../audio/bab4/slide4_epilog.wav" type="audio/wav">
+  </audio>
+
+  <script src="shared.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      console.log('Epilog page loaded - game completed!');
+      
+      // Setup restart button
+      document.getElementById('btn-restart').addEventListener('click', () => {
+        if (confirm('Apakah Anda yakin ingin memulai petualangan dari awal?')) {
+          // Clear all progress
+          localStorage.removeItem('hh-progress-v1');
+          localStorage.removeItem('hh-mistakes-v1');
+          localStorage.removeItem('hh-notes-v1');
+          
+          showToast('🔄 Memulai petualangan baru...');
+          setTimeout(() => {
+            window.location.href = '00-user-input.html';
+          }, 1000);
+        }
+      });
+      
+      // Play audio if enabled
+      if (audioEnabled) {
+        setTimeout(() => playAudio(19), 500);
+      }
+      
+      // Show completion message with user name
+      if (userInfo.name) {
+        showToast(`🎉 Selamat ${userInfo.name}! Petualangan berhasil diselesaikan!`);
+      }
+    });
+  </script>
+</body>
+</html>

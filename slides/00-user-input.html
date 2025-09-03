@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no, maximum-scale=1" />
+  <meta name="color-scheme" content="dark light">
+  <title>🎓 Selamat Datang - Hutan Harmoni</title>
+  <link rel="stylesheet" href="shared.css">
+</head>
+<body>
+  <div class="app">
+    <header class="app-header" role="banner">
+      <div class="header-inner">
+        <div class="brand">
+          <div class="logo" aria-hidden="true"></div>
+          <div>
+            <h1>Sang Alkemis Muda dan Hutan Harmoni</h1>
+            <div class="subtitle">Berpikir Komputasional – Himpunan</div>
+          </div>
+        </div>
+        <div class="header-actions">
+          <button class="btn" onclick="window.open('../leaderboard.html', '_blank')" title="Lihat Leaderboard">🏆 Leaderboard</button>
+        </div>
+      </div>
+      <div class="progress"><div class="bar" style="width: 0%;"></div></div>
+    </header>
+
+    <main role="main">
+      <div class="container">
+        <div class="card">
+          <h2 class="title">🎓 Selamat Datang, Alkemis Muda!</h2>
+          <p class="lead">
+            Sebelum memulai petualangan di Hutan Harmoni, mari berkenalan terlebih dahulu. 
+            Isi data diri kamu untuk memulai pembelajaran Berpikir Komputasional - Himpunan.
+          </p>
+          
+          <!-- User Info Form -->
+          <div class="user-info-form" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0;">
+            <h3 style="margin: 0 0 1rem 0; font-size: 18px; color: var(--accent); text-align: center;">✨ Perkenalkan Diri</h3>
+            <div style="display: grid; gap: 1rem;">
+              <div>
+                <label for="user-name" style="display: block; margin-bottom: 0.5rem; font-size: 14px; color: var(--muted); font-weight: 600;">Nama Lengkap:</label>
+                <input type="text" id="user-name" placeholder="Masukkan nama lengkap..." style="width: 100%; padding: 0.75rem; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; background: rgba(255,255,255,0.1); color: var(--text); font-size: 16px;" />
+              </div>
+              <div>
+                <label for="user-class" style="display: block; margin-bottom: 0.5rem; font-size: 14px; color: var(--muted); font-weight: 600;">Kelas:</label>
+                <input type="text" id="user-class" placeholder="Contoh: 7A, 8B, 9C..." style="width: 100%; padding: 0.75rem; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; background: rgba(255,255,255,0.1); color: var(--text); font-size: 16px;" />
+              </div>
+            </div>
+          </div>
+          
+          <div class="cta">
+            <button class="btn primary" id="btn-start" disabled>Masuk ke Hutan Harmoni</button>
+            <p id="help-text" style="font-size: 12px; color: var(--muted); margin: 0.5rem 0 0 0; text-align: center;">Isi nama dan kelas untuk memulai</p>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="shared.js"></script>
+  <script>
+    // User input functionality
+    function validateUserInfo() {
+      const nameInput = document.getElementById('user-name');
+      const classInput = document.getElementById('user-class');
+      const startButton = document.getElementById('btn-start');
+      const helpText = document.getElementById('help-text');
+      
+      const name = nameInput.value.trim();
+      const userClass = classInput.value.trim();
+      
+      if (name && userClass) {
+        startButton.disabled = false;
+        helpText.textContent = `Selamat datang, ${name} dari kelas ${userClass}!`;
+        helpText.style.color = 'var(--ok)';
+        
+        userInfo.name = name;
+        userInfo.class = userClass;
+        localStorage.setItem(USER_INFO_KEY, JSON.stringify(userInfo));
+      } else {
+        startButton.disabled = true;
+        helpText.textContent = 'Isi nama dan kelas untuk memulai';
+        helpText.style.color = 'var(--muted)';
+      }
+    }
+
+    // Register player to backend
+    async function registerPlayer() {
+      console.log('Registering player:', { nama: userInfo.name, kelas: userInfo.class });
+      
+      const result = await apiCall(API_BASE_URL, {
+        action: 'register',
+        nama: userInfo.name,
+        kelas: userInfo.class
+      }, 'POST');
+      
+      if (result.success) {
+        sessionId = result.session_id;
+        localStorage.setItem(SESSION_KEY, sessionId);
+        console.log('Player registered successfully:', { sessionId, result });
+        return true;
+      } else {
+        console.error('Registration failed:', result.message);
+        // Fallback: create offline session
+        sessionId = 'offline_' + Date.now();
+        localStorage.setItem(SESSION_KEY, sessionId);
+        console.log('Using offline session ID:', sessionId);
+        return false;
+      }
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      const nameInput = document.getElementById('user-name');
+      const classInput = document.getElementById('user-class');
+      const startButton = document.getElementById('btn-start');
+      
+      // Load existing data
+      if (userInfo.name) {
+        nameInput.value = userInfo.name;
+        classInput.value = userInfo.class;
+        validateUserInfo();
+      }
+      
+      // Setup event listeners
+      nameInput.addEventListener('input', validateUserInfo);
+      classInput.addEventListener('input', validateUserInfo);
+      
+      startButton.addEventListener('click', async () => {
+        if (!startButton.disabled) {
+          showToast('🔄 Mendaftarkan pemain...');
+          
+          const registerResult = await registerPlayer();
+          if (registerResult) {
+            showToast(`🎉 Selamat datang, ${userInfo.name}! Petualangan dimulai!`);
+          } else {
+            showToast('⚠️ Mode offline - data tidak tersimpan online');
+          }
+          
+          // Navigate to prolog
+          setTimeout(() => {
+            window.location.href = '01-prolog.html';
+          }, 1000);
+        }
+      });
+    });
+  </script>
+</body>
+</html>
