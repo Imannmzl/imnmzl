@@ -690,6 +690,11 @@
               <li>Bab 4: Altar Keseimbangan & Pemecahan Masalah</li>
             </ul>
             
+            <div class="audio-controls" style="display: flex; align-items: center; gap: 0.5rem; margin: 1rem 0; justify-content: center;">
+              <button class="btn" id="btn-play-3" title="Putar Narasi">▶️</button>
+              <span class="audio-time" id="audio-time-3" style="font-size: 12px; color: var(--muted);">0:00 / 0:00</span>
+            </div>
+            
             <div class="cta">
               <button class="btn primary" id="btn-to-bab1">Menuju Gerbang Kuno (Bab 1)</button>
               <button class="btn" data-prev>Sebelumnya</button>
@@ -709,6 +714,10 @@
               Seorang Penjaga Gerbang muncul: <strong>"Halo, Alkemis Muda! Untuk melewati gerbang ini, kamu harus memahami konsep dasar Himpunan. 
               Himpunan adalah kumpulan objek yang terdefinisi dengan jelas. Mari kita mulai dengan contoh sederhana."</strong>
             </p>
+            <div class="audio-controls" style="display: flex; align-items: center; gap: 0.5rem; margin: 1rem 0; justify-content: center;">
+              <button class="btn" id="btn-play-4" title="Putar Narasi">▶️</button>
+              <span class="audio-time" id="audio-time-4" style="font-size: 12px; color: var(--muted);">0:00 / 0:00</span>
+            </div>
             <div class="cta">
               <button class="btn primary" data-next>Pelajari Definisi Himpunan</button>
               <button class="btn" data-prev>Kembali ke Prolog</button>
@@ -1429,58 +1438,58 @@
   <audio id="audio-3" preload="metadata">
     <source src="audio/prolog/slide3_recipe_book.wav" type="audio/wav">
   </audio>
-  <audio id="audio-3" preload="metadata">
+  <audio id="audio-4" preload="metadata">
     <source src="audio/bab1/slide1_gate.wav" type="audio/wav">
   </audio>
-  <audio id="audio-4" preload="metadata">
+  <audio id="audio-5" preload="metadata">
     <source src="audio/bab1/slide2_definition.wav" type="audio/wav">
   </audio>
-  <audio id="audio-5" preload="metadata">
+  <audio id="audio-6" preload="metadata">
     <source src="audio/bab1/slide3_quiz.wav" type="audio/wav">
   </audio>
-  <audio id="audio-6" preload="metadata">
+  <audio id="audio-7" preload="metadata">
     <source src="audio/bab1/slide4_notation.wav" type="audio/wav">
   </audio>
-  <audio id="audio-7" preload="metadata">
+  <audio id="audio-8" preload="metadata">
     <source src="audio/bab2/slide1_garden.wav" type="audio/wav">
   </audio>
-  <audio id="audio-8" preload="metadata">
+  <audio id="audio-9" preload="metadata">
     <source src="audio/bab2/slide2_membership.wav" type="audio/wav">
   </audio>
-  <audio id="audio-9" preload="metadata">
+  <audio id="audio-10" preload="metadata">
     <source src="audio/bab2/slide3_dragdrop.wav" type="audio/wav">
   </audio>
-  <audio id="audio-10" preload="metadata">
+  <audio id="audio-11" preload="metadata">
     <source src="audio/bab2/slide4_empty_universal.wav" type="audio/wav">
   </audio>
-  <audio id="audio-11" preload="metadata">
+  <audio id="audio-12" preload="metadata">
     <source src="audio/bab3/slide1_river.wav" type="audio/wav">
   </audio>
-  <audio id="audio-12" preload="metadata">
+  <audio id="audio-13" preload="metadata">
     <source src="audio/bab3/slide2_union.wav" type="audio/wav">
   </audio>
-  <audio id="audio-13" preload="metadata">
+  <audio id="audio-14" preload="metadata">
     <source src="audio/bab3/slide3_union_sim.wav" type="audio/wav">
   </audio>
-  <audio id="audio-14" preload="metadata">
+  <audio id="audio-15" preload="metadata">
     <source src="audio/bab3/slide4_intersection.wav" type="audio/wav">
   </audio>
-  <audio id="audio-15" preload="metadata">
+  <audio id="audio-16" preload="metadata">
     <source src="audio/bab3/slide5_intersection_sim.wav" type="audio/wav">
   </audio>
-  <audio id="audio-16" preload="metadata">
+  <audio id="audio-17" preload="metadata">
     <source src="audio/bab4/slide1_altar.wav" type="audio/wav">
   </audio>
-  <audio id="audio-17" preload="metadata">
+  <audio id="audio-18" preload="metadata">
     <source src="audio/bab4/slide2_complex_puzzle.wav" type="audio/wav">
   </audio>
-  <audio id="audio-18" preload="metadata">
+  <audio id="audio-19" preload="metadata">
     <source src="audio/bab4/slide3_final_puzzle.wav" type="audio/wav">
   </audio>
-  <audio id="audio-19" preload="metadata">
+  <audio id="audio-20" preload="metadata">
     <source src="audio/bab4/slide4_epilog.wav" type="audio/wav">
   </audio>
-  <audio id="audio-20" preload="metadata">
+  <audio id="audio-21" preload="metadata">
     <source src="audio/game_over/slide1_failure.wav" type="audio/wav">
   </audio>
 
@@ -1974,7 +1983,7 @@
 
       btnToBab1.addEventListener('click', () => {
         showToast('Selamat datang di Bab 1: Gerbang Logika!');
-        goTo(4); // Updated index for Bab 1 after adding user input slide
+        goTo(3); // Correct index for Bab 1 slide
       });
 
       // Quiz functionality for Bab 1
