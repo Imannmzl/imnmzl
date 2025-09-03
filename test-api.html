@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="utf-8">
+    <title>Test API Connection</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background: #f0f0f0; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 20px; border-radius: 10px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        .info { background-color: #d1ecf1; border-color: #bee5eb; }
+        button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+        pre { background: #f8f9fa; padding: 10px; border-radius: 5px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Test API Connection - Hutan Harmoni</h1>
+        
+        <div class="test-section info">
+            <h3>Database Info</h3>
+            <p><strong>Database:</strong> n1567943_mediainteraktif_db</p>
+            <p><strong>Table:</strong> leaderboard_himpunan</p>
+            <p><strong>API Endpoint:</strong> api/leaderboard.php</p>
+        </div>
+
+        <div class="test-section">
+            <h3>1. Test Database Connection</h3>
+            <button onclick="testConnection()">Test Connection</button>
+            <div id="connection-result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>2. Test Player Registration</h3>
+            <input type="text" id="test-name" placeholder="Nama" value="Test User">
+            <input type="text" id="test-class" placeholder="Kelas" value="Test Class">
+            <button onclick="testRegistration()">Test Register</button>
+            <div id="registration-result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>3. Test Perfect Score Completion</h3>
+            <input type="text" id="test-session" placeholder="Session ID (from registration)">
+            <button onclick="testPerfectScore()">Test Complete Game (0 mistakes)</button>
+            <div id="completion-result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>4. Test Leaderboard</h3>
+            <button onclick="testLeaderboard()">Test Get Leaderboard</button>
+            <div id="leaderboard-result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>5. Test Statistics</h3>
+            <button onclick="testStats()">Test Get Stats</button>
+            <div id="stats-result"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'api/leaderboard.php';
+        let testSessionId = null;
+
+        async function apiCall(endpoint, data = null, method = 'GET') {
+            try {
+                console.log(`API Call: ${method} ${endpoint}`, data);
+                
+                const options = {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                };
+                
+                if (data && method !== 'GET') {
+                    options.body = JSON.stringify(data);
+                }
+                
+                const url = method === 'GET' && data ? 
+                    `${endpoint}?${new URLSearchParams(data)}` : endpoint;
+                
+                console.log('API URL:', url);
+                
+                const response = await fetch(url, options);
+                console.log('API Response status:', response.status);
+                
+                const result = await response.json();
+                console.log('API Response data:', result);
+                
+                return { response, result };
+            } catch (error) {
+                console.error('API Error:', error);
+                return { error: error.message };
+            }
+        }
+
+        function displayResult(elementId, result, apiResponse = null) {
+            const element = document.getElementById(elementId);
+            
+            if (result.error) {
+                element.innerHTML = `<div class="error"><strong>Error:</strong> ${result.error}</div>`;
+            } else if (apiResponse && apiResponse.result.success) {
+                element.innerHTML = `<div class="success"><strong>Success!</strong><pre>${JSON.stringify(apiResponse.result, null, 2)}</pre></div>`;
+            } else if (apiResponse) {
+                element.innerHTML = `<div class="error"><strong>API Error:</strong><pre>${JSON.stringify(apiResponse.result, null, 2)}</pre></div>`;
+            } else {
+                element.innerHTML = `<div class="info"><pre>${JSON.stringify(result, null, 2)}</pre></div>`;
+            }
+        }
+
+        async function testConnection() {
+            const result = await apiCall(API_BASE_URL, { action: 'stats' });
+            displayResult('connection-result', result, result);
+        }
+
+        async function testRegistration() {
+            const nama = document.getElementById('test-name').value;
+            const kelas = document.getElementById('test-class').value;
+            
+            const result = await apiCall(API_BASE_URL, {
+                action: 'register',
+                nama: nama,
+                kelas: kelas
+            }, 'POST');
+            
+            if (result.result && result.result.success) {
+                testSessionId = result.result.session_id;
+                document.getElementById('test-session').value = testSessionId;
+            }
+            
+            displayResult('registration-result', result, result);
+        }
+
+        async function testPerfectScore() {
+            const sessionId = document.getElementById('test-session').value || testSessionId;
+            
+            if (!sessionId) {
+                displayResult('completion-result', { error: 'No session ID - please register first' });
+                return;
+            }
+            
+            // First update progress with 0 mistakes
+            console.log('Testing progress update with 0 mistakes...');
+            const progressResult = await apiCall(API_BASE_URL, {
+                action: 'update_progress',
+                session_id: sessionId,
+                total_mistakes: 0
+            }, 'POST');
+            
+            console.log('Progress update result:', progressResult);
+            
+            // Then complete game with 0 mistakes
+            console.log('Testing game completion with 0 mistakes...');
+            const completionResult = await apiCall(API_BASE_URL, {
+                action: 'complete_game',
+                session_id: sessionId,
+                total_mistakes: 0
+            }, 'POST');
+            
+            displayResult('completion-result', completionResult, completionResult);
+        }
+
+        async function testLeaderboard() {
+            const result = await apiCall(API_BASE_URL, { action: 'leaderboard' });
+            displayResult('leaderboard-result', result, result);
+        }
+
+        async function testStats() {
+            const result = await apiCall(API_BASE_URL, { action: 'stats' });
+            displayResult('stats-result', result, result);
+        }
+    </script>
+</body>
+</html>

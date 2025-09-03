@@ -2075,12 +2075,14 @@
       
       // Complete game on backend
       async function completeGameOnBackend() {
-        console.log('completeGameOnBackend called');
+        console.log('🎯 completeGameOnBackend called');
         console.log('sessionId:', sessionId);
         console.log('totalMistakes:', totalMistakes);
+        console.log('typeof totalMistakes:', typeof totalMistakes);
+        console.log('userInfo:', userInfo);
         
         if (!sessionId) {
-          console.error('No session ID found - cannot complete game on backend');
+          console.error('❌ No session ID found - cannot complete game on backend');
           showToast('⚠️ Sesi tidak ditemukan. Data tidak tersimpan.');
           // Still show local score
           const localScore = Math.max(0, 100 - (totalMistakes * 10));
@@ -2088,24 +2090,33 @@
           return;
         }
         
-        console.log('Sending completion data to backend...');
+        // Ensure totalMistakes is a valid number
+        const mistakeCount = Number(totalMistakes) || 0;
+        console.log('🔢 Processed mistake count:', mistakeCount);
+        
+        console.log('📤 Sending completion data to backend...');
         const result = await apiCall(API_BASE_URL, {
           action: 'complete_game',
           session_id: sessionId,
-          total_mistakes: totalMistakes || 0  // Ensure 0 if undefined
+          total_mistakes: mistakeCount
         }, 'POST');
         
-        console.log('Backend completion result:', result);
+        console.log('📥 Backend completion result:', result);
         
         if (result.success) {
-          const score = result.score || (100 - (totalMistakes * 10));
+          const score = result.score || (100 - (mistakeCount * 10));
           const rank = result.rank || 1;
           showToast(`🎉 Skor: ${score}! Ranking: #${rank}`);
-          console.log('Game completion successful:', result);
+          console.log('✅ Game completion successful:', result);
+          
+          // Force refresh leaderboard data
+          setTimeout(() => {
+            console.log('🔄 Auto-refreshing leaderboard after completion...');
+          }, 2000);
         } else {
-          console.error('Game completion failed:', result.message);
+          console.error('❌ Game completion failed:', result.message);
           // Still show local score even if backend fails
-          const localScore = Math.max(0, 100 - (totalMistakes * 10));
+          const localScore = Math.max(0, 100 - (mistakeCount * 10));
           showToast(`🎉 Skor lokal: ${localScore}! (Offline mode)`);
         }
         
