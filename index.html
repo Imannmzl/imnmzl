@@ -99,9 +99,25 @@
       cursor: pointer;
       transition: transform .06s ease, border-color .2s ease, background .2s ease, opacity .2s ease;
     }
-    .btn[disabled] { opacity: .55; cursor: not-allowed; }
+    .btn[disabled] { opacity: .55; cursor: not-allowed; transform: none !important; }
     .btn:active { transform: translateY(1px) scale(.99); }
     .btn.primary { border-color: rgba(122,227,255,.6); background: linear-gradient(180deg, rgba(122,227,255,.18) 0%, rgba(122,227,255,.08) 100%); color: #e9fbff; }
+    
+    /* User Info Form Styling */
+    .user-info-form input {
+      transition: border-color 0.2s ease, background 0.2s ease;
+      outline: none;
+    }
+    
+    .user-info-form input:focus {
+      border-color: rgba(122,227,255,.6);
+      background: rgba(255,255,255,0.15);
+      box-shadow: 0 0 0 2px rgba(122,227,255,.2);
+    }
+    
+    .user-info-form input::placeholder {
+      color: rgba(255,255,255,0.4);
+    }
 
     .draggable-item {
       touch-action: none;
@@ -382,6 +398,28 @@
         padding: 0.5rem;
         font-size: 0.9rem;
       }
+      
+      /* User Info Form Mobile */
+      .user-info-form {
+        margin: 1rem 0 !important;
+        padding: 1rem !important;
+      }
+      
+      .user-info-form h3 {
+        font-size: 16px !important;
+        margin-bottom: 0.75rem !important;
+      }
+      
+      .user-info-form input {
+        padding: 0.6rem !important;
+        font-size: 14px !important;
+        border-radius: 6px !important;
+      }
+      
+      .user-info-form label {
+        font-size: 13px !important;
+        margin-bottom: 0.4rem !important;
+      }
       .audio-time {
         font-size: 10px !important;
       }
@@ -573,8 +611,25 @@
               <button class="btn" id="btn-play-0" title="Putar Narasi">▶️</button>
               <span class="audio-time" id="audio-time-0" style="font-size: 12px; color: var(--muted);">0:00 / 0:00</span>
             </div>
+            
+            <!-- User Info Form -->
+            <div class="user-info-form" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0;">
+              <h3 style="margin: 0 0 1rem 0; font-size: 18px; color: var(--accent); text-align: center;">✨ Perkenalkan Diri Alkemis Muda</h3>
+              <div style="display: grid; gap: 1rem;">
+                <div>
+                  <label for="user-name" style="display: block; margin-bottom: 0.5rem; font-size: 14px; color: var(--muted); font-weight: 600;">Nama Lengkap:</label>
+                  <input type="text" id="user-name" placeholder="Masukkan nama lengkap..." style="width: 100%; padding: 0.75rem; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; background: rgba(255,255,255,0.1); color: var(--text); font-size: 16px;" />
+                </div>
+                <div>
+                  <label for="user-class" style="display: block; margin-bottom: 0.5rem; font-size: 14px; color: var(--muted); font-weight: 600;">Kelas:</label>
+                  <input type="text" id="user-class" placeholder="Contoh: 7A, 8B, 9C..." style="width: 100%; padding: 0.75rem; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; background: rgba(255,255,255,0.1); color: var(--text); font-size: 16px;" />
+                </div>
+              </div>
+            </div>
+            
             <div class="cta">
-              <button class="btn primary" id="btn-start">Mulai Petualangan</button>
+              <button class="btn primary" id="btn-start" disabled>Mulai Petualangan</button>
+              <p style="font-size: 12px; color: var(--muted); margin: 0.5rem 0 0 0; text-align: center;">Isi nama dan kelas untuk memulai</p>
             </div>
           </div>
         </section>
@@ -1802,10 +1857,79 @@
         modalResep.setAttribute('aria-hidden', 'true');
       }
 
+      // User info management
+      const USER_INFO_KEY = 'hh-user-info-v1';
+      let userInfo = { name: '', class: '' };
+      
+      function loadUserInfo() {
+        try {
+          const saved = localStorage.getItem(USER_INFO_KEY);
+          if (saved) {
+            userInfo = JSON.parse(saved);
+            document.getElementById('user-name').value = userInfo.name || '';
+            document.getElementById('user-class').value = userInfo.class || '';
+            validateUserInfo();
+          }
+        } catch (e) {
+          console.warn('Failed to load user info:', e);
+        }
+      }
+      
+      function saveUserInfo() {
+        try {
+          localStorage.setItem(USER_INFO_KEY, JSON.stringify(userInfo));
+        } catch (e) {
+          console.warn('Failed to save user info:', e);
+        }
+      }
+      
+      function validateUserInfo() {
+        const nameInput = document.getElementById('user-name');
+        const classInput = document.getElementById('user-class');
+        const startButton = document.getElementById('btn-start');
+        const helpText = document.querySelector('.cta p');
+        
+        const name = nameInput.value.trim();
+        const userClass = classInput.value.trim();
+        
+        if (name && userClass) {
+          startButton.disabled = false;
+          helpText.textContent = `Selamat datang, ${name} dari kelas ${userClass}!`;
+          helpText.style.color = 'var(--ok)';
+          
+          userInfo.name = name;
+          userInfo.class = userClass;
+          saveUserInfo();
+        } else {
+          startButton.disabled = true;
+          helpText.textContent = 'Isi nama dan kelas untuk memulai';
+          helpText.style.color = 'var(--muted)';
+        }
+      }
+      
+      // Setup user info inputs
+      function setupUserInfoInputs() {
+        const nameInput = document.getElementById('user-name');
+        const classInput = document.getElementById('user-class');
+        
+        if (nameInput && classInput) {
+          nameInput.addEventListener('input', validateUserInfo);
+          classInput.addEventListener('input', validateUserInfo);
+          
+          // Load saved data
+          loadUserInfo();
+        }
+      }
+
       // Event bindings
       document.querySelectorAll('[data-next]').forEach(b => b.addEventListener('click', next));
       document.querySelectorAll('[data-prev]').forEach(b => b.addEventListener('click', prev));
-      btnStart && btnStart.addEventListener('click', () => goTo(1));
+      btnStart && btnStart.addEventListener('click', () => {
+        if (!btnStart.disabled) {
+          showToast(`🎉 Selamat datang, ${userInfo.name}! Petualangan dimulai!`);
+          goTo(1);
+        }
+      });
 
       btnResep.addEventListener('click', openResep);
       btnCloseResep.addEventListener('click', closeResep);
@@ -3016,7 +3140,7 @@
       addAudioControlsToSlides();
       setupPlayButtons();
       updateAutoplayIndicators();
-
+      setupUserInfoInputs(); // Setup user info form
       setupRestartButtons(); // Setup restart buttons for both endings
       activateSlide(index);
       
