@@ -3246,17 +3246,7 @@
           newBtnReset.addEventListener('click', resetFinalPuzzle);
         }
         
-        // Setup "Selesaikan Misi" button (only works after puzzle completion)
-        const btnNextFinal = document.getElementById('btn-next-final');
-        if (btnNextFinal) {
-          const newBtnNextFinal = btnNextFinal.cloneNode(true);
-          btnNextFinal.parentNode.replaceChild(newBtnNextFinal, btnNextFinal);
-          newBtnNextFinal.addEventListener('click', () => {
-            console.log('Selesaikan Misi button clicked');
-            console.log('User has completed final puzzle - proceeding to epilog');
-            goTo(19); // Go to epilog slide
-          });
-        }
+        // Note: "Selesaikan Misi" button event listener will be setup when button appears after puzzle completion
       }
 
       // Final Puzzle Drag & Drop Event Handlers
@@ -3616,6 +3606,28 @@
           const resultDiv = document.getElementById('potion-result');
           resultDiv.style.display = 'block';
           document.getElementById('btn-next-final').style.display = 'inline-block';
+          
+          // Setup event listener for "Selesaikan Misi" button when it appears
+          setTimeout(() => {
+            const btnNextFinal = document.getElementById('btn-next-final');
+            if (btnNextFinal) {
+              console.log('Setting up Selesaikan Misi button after puzzle completion');
+              // Remove any existing listeners
+              const newBtnNextFinal = btnNextFinal.cloneNode(true);
+              btnNextFinal.parentNode.replaceChild(newBtnNextFinal, btnNextFinal);
+              
+              newBtnNextFinal.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('🚀 Selesaikan Misi button clicked - navigating to epilog');
+                console.log('Current slide index:', index);
+                goTo(19); // Go to epilog slide
+              });
+              console.log('✅ Selesaikan Misi button event listener added');
+            } else {
+              console.error('btn-next-final not found after puzzle completion');
+            }
+          }, 100);
           
           showToast('🎉 Ramuan Keseimbangan berhasil diseduh! Kristal Logika mulai pulih!');
           
