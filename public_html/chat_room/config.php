@@ -15,11 +15,13 @@ $DB_NAME = 'n1567943_chat-room-realtime_db';
 $DB_USER = 'n1567943_chat-room-realtime_user';
 $DB_PASS = 'Gitar222@@@';
 
-// Upload settings
+// Upload settings - Web optimized compression
 $UPLOAD_BASE_DIR = __DIR__ . '/uploads';
-$MAX_IMAGE_WIDTH = 1280;
-$MAX_IMAGE_HEIGHT = 1280;
-$JPEG_QUALITY = 80;
+$MAX_IMAGE_WIDTH = 800;
+$MAX_IMAGE_HEIGHT = 600;
+$JPEG_QUALITY = 75;
+$PNG_COMPRESSION = 8;
+$WEBP_QUALITY = 75;
 $ALLOWED_IMAGE_MIME = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
 
 // Create PDO instance (MySQL)

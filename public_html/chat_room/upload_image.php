@@ -10,23 +10,24 @@ try {
 		throw new RuntimeException('Upload gagal');
 	}
 	$file = $_FILES['image'];
+	
+	// Check file size (max 5MB)
+	if ($file['size'] > 5 * 1024 * 1024) {
+		throw new RuntimeException('File terlalu besar (max 5MB)');
+	}
 	$finfo = finfo_open(FILEINFO_MIME_TYPE);
 	$mime = finfo_file($finfo, $file['tmp_name']);
 	finfo_close($finfo);
 
-	global $ALLOWED_IMAGE_MIME, $UPLOAD_BASE_DIR, $MAX_IMAGE_WIDTH, $MAX_IMAGE_HEIGHT, $JPEG_QUALITY, $APP_BASE_URL;
+	global $ALLOWED_IMAGE_MIME, $UPLOAD_BASE_DIR, $MAX_IMAGE_WIDTH, $MAX_IMAGE_HEIGHT, $JPEG_QUALITY, $PNG_COMPRESSION, $WEBP_QUALITY, $APP_BASE_URL;
 	if (!in_array($mime, $ALLOWED_IMAGE_MIME, true)) {
 		throw new RuntimeException('Tipe file tidak diizinkan');
 	}
 
 	ensure_dir($UPLOAD_BASE_DIR);
-	$ext = match ($mime) {
-		'image/jpeg' => 'jpg',
-		'image/png' => 'png',
-		'image/gif' => 'gif',
-		'image/webp' => 'webp',
-		default => 'img'
-	};
+	
+	// Convert all images to WebP for better compression (except if already WebP)
+	$ext = 'webp';
 	$filename = bin2hex(random_bytes(10)) . '.' . $ext;
 	$destPath = $UPLOAD_BASE_DIR . '/' . $filename;
 
@@ -51,18 +52,17 @@ try {
 	}
 	imagecopyresampled($dst, $src, 0, 0, 0, 0, $newW, $newH, $width, $height);
 
+	// Convert to WebP for optimal web compression (with fallback)
 	$ok = false;
-	if ($mime === 'image/jpeg') {
-		// Progressive JPEG for better web delivery
+	if (function_exists('imagewebp')) {
+		$ok = imagewebp($dst, $destPath, $WEBP_QUALITY);
+	} else {
+		// Fallback to JPEG if WebP not supported
+		$ext = 'jpg';
+		$filename = bin2hex(random_bytes(10)) . '.' . $ext;
+		$destPath = $UPLOAD_BASE_DIR . '/' . $filename;
 		imageinterlace($dst, true);
 		$ok = imagejpeg($dst, $destPath, $JPEG_QUALITY);
-	} elseif ($mime === 'image/png') {
-		// Slightly stronger PNG compression
-		$ok = imagepng($dst, $destPath, 7);
-	} elseif ($mime === 'image/gif') {
-		$ok = imagegif($dst, $destPath);
-	} elseif ($mime === 'image/webp') {
-		$ok = imagewebp($dst, $destPath, $JPEG_QUALITY);
 	}
 	imagedestroy($src);
 	imagedestroy($dst);
