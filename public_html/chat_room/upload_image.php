@@ -1,15 +1,37 @@
 <?php
 declare(strict_types=1);
 require_once __DIR__ . '/config.php';
-require_login();
+
+// Allow both regular users and session users
+if (empty($_SESSION['user']) && empty($_SESSION['session_user'])) {
+	http_response_code(401);
+	echo json_encode(['ok' => false, 'error' => 'Unauthorized']);
+	exit;
+}
 
 header('Content-Type: application/json');
 
 try {
-	if (!isset($_FILES['image']) || $_FILES['image']['error'] !== UPLOAD_ERR_OK) {
-		throw new RuntimeException('Upload gagal');
+	if (!isset($_FILES['image'])) {
+		throw new RuntimeException('No file uploaded');
 	}
+	
 	$file = $_FILES['image'];
+	
+	// Check for upload errors
+	if ($file['error'] !== UPLOAD_ERR_OK) {
+		$error_messages = [
+			UPLOAD_ERR_INI_SIZE => 'File terlalu besar (server limit)',
+			UPLOAD_ERR_FORM_SIZE => 'File terlalu besar (form limit)',
+			UPLOAD_ERR_PARTIAL => 'File hanya ter-upload sebagian',
+			UPLOAD_ERR_NO_FILE => 'Tidak ada file yang diupload',
+			UPLOAD_ERR_NO_TMP_DIR => 'Temporary directory tidak ada',
+			UPLOAD_ERR_CANT_WRITE => 'Gagal menulis file',
+			UPLOAD_ERR_EXTENSION => 'Upload dihentikan oleh extension'
+		];
+		$error_msg = $error_messages[$file['error']] ?? 'Upload error: ' . $file['error'];
+		throw new RuntimeException($error_msg);
+	}
 	
 	// Check file size (max 7MB)
 	if ($file['size'] > 7 * 1024 * 1024) {
@@ -25,6 +47,11 @@ try {
 	}
 
 	ensure_dir($UPLOAD_BASE_DIR);
+	
+	// Check if upload directory is writable
+	if (!is_writable($UPLOAD_BASE_DIR)) {
+		throw new RuntimeException('Upload directory tidak writable');
+	}
 	
 	// Convert all images to WebP for better compression (except if already WebP)
 	$ext = 'webp';

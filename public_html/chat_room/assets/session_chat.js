@@ -113,30 +113,43 @@ function setProgress(percent) {
 
 function uploadImageWithProgress(file) {
 	return new Promise((resolve, reject) => {
+		console.log('Starting upload:', file.name, file.size, file.type);
+		
 		const form = new FormData();
 		form.append('image', file);
 		const xhr = new XMLHttpRequest();
 		xhr.open('POST', 'upload_image.php');
+		
 		xhr.upload.onprogress = (ev) => {
 			if (ev.lengthComputable) {
 				const percent = (ev.loaded / ev.total) * 100;
 				setProgress(percent);
 			}
 		};
+		
 		xhr.onreadystatechange = () => {
 			if (xhr.readyState === 4) {
+				console.log('Upload response:', xhr.status, xhr.responseText);
 				if (xhr.status >= 200 && xhr.status < 300) {
 					try {
 						const data = JSON.parse(xhr.responseText);
 						if (data.ok) return resolve(data.url);
 						return reject(new Error(data.error || 'Upload gagal'));
-					} catch(e) { return reject(e); }
+					} catch(e) { 
+						console.error('Parse error:', e, xhr.responseText);
+						return reject(new Error('Response parsing error'));
+					}
 				} else {
-					return reject(new Error('Upload gagal'));
+					return reject(new Error(`Upload gagal (${xhr.status}): ${xhr.responseText}`));
 				}
 			}
 		};
-		xhr.onerror = () => reject(new Error('Upload error'));
+		
+		xhr.onerror = () => {
+			console.error('XHR error');
+			reject(new Error('Upload error'));
+		};
+		
 		xhr.send(form);
 	});
 }
