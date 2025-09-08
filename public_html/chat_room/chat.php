@@ -130,8 +130,17 @@ $dosenUsernames = $pdo->query("SELECT username FROM users WHERE role = 'dosen'")
 		<!-- Sticky input area -->
 		<div class="sticky-composer">
 			<form id="composer" class="composer" enctype="multipart/form-data">
-				<textarea id="message-input" placeholder="Tulis pesan..." autocomplete="off" rows="3"></textarea>
-				<input type="file" id="image-input" accept="image/*" />
+				<div class="input-wrapper">
+					<textarea id="message-input" placeholder="Tulis pesan..." autocomplete="off" rows="3"></textarea>
+					<label for="image-input" class="upload-icon" title="Upload gambar">
+						<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+							<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+							<polyline points="7,10 12,15 17,10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+							<line x1="12" y1="15" x2="12" y2="3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+						</svg>
+					</label>
+					<input type="file" id="image-input" accept="image/*" style="display: none;" />
+				</div>
 				<button type="submit">Kirim</button>
 			</form>
 			<div id="upload-progress" class="progress" style="display:none;">
