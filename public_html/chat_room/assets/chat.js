@@ -34,12 +34,15 @@ function renderMessage(msgId, msg) {
 	el.className = 'message';
 	const initials = (msg.username || '?').slice(0, 2).toUpperCase();
 	const imageHtml = msg.image_url ? `<div><img src="${msg.image_url}" class="img-thumb" alt="image" /></div>` : '';
+	const canDelete = (window.APP_USER && window.APP_USER.role === 'dosen');
+	const delBtn = canDelete ? `<div class="actions" style="margin-top:6px;"><button class="secondary" data-del="${msgId}">Hapus</button></div>` : '';
 	el.innerHTML = `
 		<div class="avatar">${initials}</div>
 		<div>
 			<div class="meta">${msg.username} • ${formatTime(msg.created_at || Date.now())}</div>
 			<div class="bubble">${(msg.text || '').replace(/</g,'&lt;')}</div>
 			${imageHtml}
+			${delBtn}
 		</div>
 	`;
 	messagesDiv.appendChild(el);
@@ -90,6 +93,18 @@ composerForm.addEventListener('submit', async (e) => {
 	db.ref(`rooms/${currentRoom}/messages`).push(payload);
 	messageInput.value = '';
 	imageInput.value = '';
+});
+
+// Delegate delete clicks
+messagesDiv.addEventListener('click', (e) => {
+	const btn = e.target.closest('button[data-del]');
+	if (!btn) return;
+	const key = btn.getAttribute('data-del');
+	if (!key) return;
+	if (!confirm('Hapus pesan ini?')) return;
+	db.ref(`rooms/${currentRoom}/messages/${key}`).remove();
+	messagesDiv.innerHTML = '';
+	subscribeRoom(currentRoom);
 });
 
 // initial subscribe
