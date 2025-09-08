@@ -54,7 +54,7 @@ button:disabled { opacity: .5; cursor: not-allowed; }
 .avatar { width: 44px; height: 44px; border-radius: 50%; background: #1f2937; display: grid; place-items: center; color: var(--muted); font-weight: 600; }
 .message .meta { color: var(--muted); font-size: 12px; }
 .message .meta { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-.message .bubble { background: #101826; border: 1px solid #1c2739; border-radius: 10px; padding: 10px; word-wrap: break-word; overflow-wrap: anywhere; }
+.message .bubble { background: #101826; border: 1px solid #1c2739; border-radius: 10px; padding: 20px; word-wrap: break-word; overflow-wrap: anywhere; min-height: 40px; }
 .message.dosen .bubble { background: #0e1b29; border-color: #22d3ee; border-left: 1px solid #22d3ee; }
 .message.dosen .avatar { background: #0b2a3c; color: #22d3ee; }
 .badge-dosen { display:none; }
