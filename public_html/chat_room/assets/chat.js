@@ -96,12 +96,23 @@ composerForm.addEventListener('submit', async (e) => {
 });
 
 // Delegate delete clicks
-messagesDiv.addEventListener('click', (e) => {
+messagesDiv.addEventListener('click', async (e) => {
 	const btn = e.target.closest('button[data-del]');
 	if (!btn) return;
 	const key = btn.getAttribute('data-del');
 	if (!key) return;
 	if (!confirm('Hapus pesan ini?')) return;
+	// Try to load image_url first, then remove from Firebase and server if present
+	const snap = await db.ref(`rooms/${currentRoom}/messages/${key}`).get();
+	const val = snap.val() || {};
+	if (val.image_url) {
+		try {
+			const form = new FormData();
+			form.append('csrf_token', window.CSRF_TOKEN || '');
+			form.append('url', val.image_url);
+			await fetch('delete_uploaded_image.php', { method: 'POST', body: form });
+		} catch (err) { console.error(err); }
+	}
 	db.ref(`rooms/${currentRoom}/messages/${key}`).remove();
 	messagesDiv.innerHTML = '';
 	subscribeRoom(currentRoom);

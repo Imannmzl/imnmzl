@@ -33,4 +33,7 @@ ensure_csrf_token();
 	</div>
 </header>
 <main class="container">
+<script>
+window.CSRF_TOKEN = <?= json_encode($_SESSION['csrf_token']) ?>;
+</script>
 
