@@ -38,7 +38,11 @@ function isDosenMessage(msg) {
 	// Fallback: if older messages don't have role, match by username against DOSEN_USERS
 	try {
 		if (Array.isArray(window.DOSEN_USERS)) {
-			return window.DOSEN_USERS.includes(msg.username);
+			const name = (msg.username || '').toLowerCase();
+			for (let i = 0; i < window.DOSEN_USERS.length; i++) {
+				if (String(window.DOSEN_USERS[i] || '').toLowerCase() === name) return true;
+			}
+			return false;
 		}
 	} catch(_) {}
 	return false;
@@ -235,7 +239,27 @@ try {
 if (onlineList) {
     const presenceRef = db.ref('presence');
     onlineList.innerHTML = '<div class="muted">Memuat...</div>';
+    let presenceLoaded = false;
+    // Initial fetch to handle permission errors and empty state
+    presenceRef.get().then((snapshot) => {
+        presenceLoaded = true;
+        const val = snapshot.val() || {};
+        const items = Object.entries(val).map(([id, data]) => ({ id, ...(data || {}) }));
+        items.sort((a,b) => (a.username||'').localeCompare(b.username||''));
+        if (!items.length) {
+            onlineList.innerHTML = '<div class="muted">Tidak ada mahasiswa online</div>';
+            return;
+        }
+        onlineList.innerHTML = items.map(it => `
+            <div class="online-user"><span class="dot"></span><span>${(it.username||'Mahasiswa')}</span></div>
+        `).join('');
+    }).catch(() => {
+        presenceLoaded = true;
+        onlineList.innerHTML = '<div class="muted">Tidak dapat membaca presence (cek Firebase Rules)</div>';
+    });
+    // Realtime updates
     presenceRef.on('value', (snapshot) => {
+        presenceLoaded = true;
         const val = snapshot.val() || {};
         const items = Object.entries(val).map(([id, data]) => ({ id, ...(data || {}) }));
         items.sort((a,b) => (a.username||'').localeCompare(b.username||''));
@@ -247,5 +271,11 @@ if (onlineList) {
             <div class="online-user"><span class="dot"></span><span>${(it.username||'Mahasiswa')}</span></div>
         `).join('');
     });
+    // Fallback timer
+    setTimeout(() => {
+        if (!presenceLoaded) {
+            onlineList.innerHTML = '<div class="muted">Memuat terlalu lama... cek koneksi atau rules Firebase</div>';
+        }
+    }, 6000);
 }
 
