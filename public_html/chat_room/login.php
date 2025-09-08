@@ -22,11 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 					'username' => $user['username'],
 					'role' => $user['role'],
 				];
-				if ($user['role'] === 'dosen') {
-					redirect('dosen/index.php');
-				} else {
-					redirect('chat.php');
-				}
+				redirect('chat.php');
 			} else {
 				$errors[] = 'Email atau password salah';
 			}
