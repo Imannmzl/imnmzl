@@ -44,7 +44,7 @@ function renderMessage(msgId, msg) {
 	const roleBadge = senderRole === 'dosen' ? `<span class="badge-dosen">Dosen</span>` : '';
 	const delBtn = canDelete ? `
 		<button class="icon-btn" data-del="${msgId}" title="Hapus" aria-label="Hapus">
-			<svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+			<svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 				<path d="M3 6h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
 				<path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
 				<path d="M6 6l1 14a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-14" stroke="currentColor" stroke-width="2"/>
@@ -223,7 +223,8 @@ try {
 // Render online list for all users
 if (onlineList) {
     const presenceRef = db.ref('presence');
-    function renderPresence(snapshot) {
+    onlineList.innerHTML = '<div class="muted">Memuat...</div>';
+    presenceRef.on('value', (snapshot) => {
         const val = snapshot.val() || {};
         const items = Object.entries(val).map(([id, data]) => ({ id, ...(data || {}) }));
         items.sort((a,b) => (a.username||'').localeCompare(b.username||''));
@@ -234,7 +235,6 @@ if (onlineList) {
         onlineList.innerHTML = items.map(it => `
             <div class="online-user"><span class="dot"></span><span>${(it.username||'Mahasiswa')}</span></div>
         `).join('');
-    }
-    presenceRef.on('value', renderPresence);
+    });
 }
 
