@@ -215,22 +215,24 @@ window.deleteRoomData = function(roomSlug) {
 	});
 }
 
-// Mobile tab functionality
+// Mobile accordion functionality
 document.addEventListener('DOMContentLoaded', function() {
-	const tabBtns = document.querySelectorAll('.tab-btn');
-	const tabContents = document.querySelectorAll('.tab-content');
+	const accordionHeaders = document.querySelectorAll('.accordion-header');
 	
-	tabBtns.forEach(btn => {
-		btn.addEventListener('click', () => {
-			const targetTab = btn.getAttribute('data-tab');
+	accordionHeaders.forEach(header => {
+		header.addEventListener('click', () => {
+			const targetId = header.getAttribute('data-target');
+			const content = document.getElementById(targetId);
+			const isActive = header.classList.contains('active');
 			
-			// Remove active class from all tabs and contents
-			tabBtns.forEach(b => b.classList.remove('active'));
-			tabContents.forEach(c => c.classList.remove('active'));
-			
-			// Add active class to clicked tab and corresponding content
-			btn.classList.add('active');
-			document.getElementById(targetTab + '-tab').classList.add('active');
+			// Toggle current accordion
+			if (isActive) {
+				header.classList.remove('active');
+				content.classList.remove('active');
+			} else {
+				header.classList.add('active');
+				content.classList.add('active');
+			}
 		});
 	});
 });
