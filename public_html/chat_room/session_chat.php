@@ -56,6 +56,7 @@ include __DIR__ . '/partials/header.php';
 		<!-- Desktop content (hidden on mobile) -->
 		<div class="desktop-content">
 			<h3>Room: #<?= htmlspecialchars($room['name']) ?></h3>
+			<p class="muted">Anda bergabung sebagai: <strong><?= htmlspecialchars($session_user['username']) ?></strong></p>
 			<div class="stack" style="margin-top:16px;">
 				<h4>Peserta Online</h4>
 				<div id="online-list" class="online-list muted">
@@ -74,21 +75,6 @@ include __DIR__ . '/partials/header.php';
 		</div>
 		
 		<!-- Mobile accordion (hidden on desktop) -->
-		<div class="accordion-item">
-			<button class="accordion-header" data-target="room-content">
-				<span>Room Info</span>
-				<svg class="accordion-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-					<path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-				</svg>
-			</button>
-			<div class="accordion-content" id="room-content">
-				<div class="stack">
-					<h4>Room: #<?= htmlspecialchars($room['name']) ?></h4>
-					<p class="muted">Anda bergabung sebagai: <strong><?= htmlspecialchars($session_user['username']) ?></strong></p>
-				</div>
-			</div>
-		</div>
-		
 		<!-- Online accordion -->
 		<div class="accordion-item">
 			<button class="accordion-header" data-target="online-content">
