@@ -54,7 +54,7 @@ function renderMessage(msgId, msg) {
 	el.className = 'message ' + senderRole;
 	el.dataset.id = msgId;
 	const initials = (msg.username || '?').slice(0, 2).toUpperCase();
-	const imageHtml = msg.image_url ? `<div><img src="${msg.image_url}" class="img-thumb" alt="image" /></div>` : '';
+	const imageHtml = msg.image_url ? `<img src="${msg.image_url}" class="img-thumb" alt="image" />` : '';
 	const canDelete = (window.APP_USER && window.APP_USER.role === 'dosen');
 	const roleBadge = senderRole === 'dosen' ? `<span class="badge-dosen">Dosen</span>` : '';
 	const delBtn = canDelete ? `
@@ -71,8 +71,7 @@ function renderMessage(msgId, msg) {
 		<div class="avatar">${initials}</div>
 		<div>
 			<div class="meta"><span>${msg.username} ${roleBadge} • ${formatTime(msg.created_at || Date.now())}</span>${delBtn}</div>
-			<div class="bubble">${(msg.text || '').replace(/</g,'&lt;')}</div>
-			${imageHtml}
+			<div class="bubble">${(msg.text || '').replace(/</g,'&lt;')}${imageHtml}</div>
 		</div>
 	`;
 	messagesDiv.appendChild(el);

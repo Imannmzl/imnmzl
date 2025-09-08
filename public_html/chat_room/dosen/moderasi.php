@@ -55,8 +55,7 @@ function renderItem(key, val, room) {
 		<div class="avatar">${initials}</div>
 		<div>
 			<div class="meta">${val.username} • ${new Date(val.created_at||Date.now()).toLocaleString()}</div>
-			<div class="bubble">${(val.text||'').replace(/</g,'&lt;')}</div>
-			${val.image_url ? `<div><img src="${val.image_url}" class="img-thumb" /></div>` : ''}
+			<div class="bubble">${(val.text||'').replace(/</g,'&lt;')}${val.image_url ? `<img src="${val.image_url}" class="img-thumb" />` : ''}</div>
 			<div class="actions" style="margin-top:6px;">
 				<button class="secondary" onclick="deleteMessage('${room}','${key}')">Hapus</button>
 			</div>

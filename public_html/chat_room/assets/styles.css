@@ -70,7 +70,7 @@ button:disabled { opacity: .5; cursor: not-allowed; }
 	justify-content: center; cursor: pointer; transition: all 0.2s ease;
 }
 .upload-icon:hover { background: #0ea5e9; transform: scale(1.1); }
-.img-thumb { max-width: 100%; height: auto; border-radius: 8px; border: 1px solid #1f2937; }
+.img-thumb { max-width: 100%; height: auto; border-radius: 8px; border: 1px solid #1f2937; margin-top: 8px; display: block; }
 
 .muted { color: var(--muted); }
 
