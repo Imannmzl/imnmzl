@@ -35,11 +35,13 @@ function formatTime(ts) {
 
 function renderMessage(msgId, msg) {
 	const el = document.createElement('div');
-	el.className = 'message';
+	const senderRole = (msg.role === 'dosen') ? 'dosen' : 'mahasiswa';
+	el.className = 'message ' + senderRole;
 	el.dataset.id = msgId;
 	const initials = (msg.username || '?').slice(0, 2).toUpperCase();
 	const imageHtml = msg.image_url ? `<div><img src="${msg.image_url}" class="img-thumb" alt="image" /></div>` : '';
 	const canDelete = (window.APP_USER && window.APP_USER.role === 'dosen');
+	const roleBadge = senderRole === 'dosen' ? `<span class="badge-dosen">Dosen</span>` : '';
 	const delBtn = canDelete ? `
 		<button class="icon-btn" data-del="${msgId}" title="Hapus" aria-label="Hapus">
 			<svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -53,7 +55,7 @@ function renderMessage(msgId, msg) {
 	el.innerHTML = `
 		<div class="avatar">${initials}</div>
 		<div>
-			<div class="meta"><span>${msg.username} • ${formatTime(msg.created_at || Date.now())}</span>${delBtn}</div>
+			<div class="meta"><span>${msg.username} ${roleBadge} • ${formatTime(msg.created_at || Date.now())}</span>${delBtn}</div>
 			<div class="bubble">${(msg.text || '').replace(/</g,'&lt;')}</div>
 			${imageHtml}
 		</div>
@@ -151,6 +153,7 @@ composerForm.addEventListener('submit', async (e) => {
 	const payload = {
 		user_id: window.APP_USER.id,
 		username: window.APP_USER.username,
+		role: window.APP_USER.role,
 		text,
 		image_url: imageUrl,
 		created_at: Date.now()
