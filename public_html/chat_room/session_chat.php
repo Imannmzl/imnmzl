@@ -39,6 +39,15 @@ $stmt = $pdo->prepare('
 $stmt->execute([$session_user['session_id'], $session_user['username']]);
 $participants = $stmt->fetchAll();
 
+// Get all dosen users (any dosen can chat in any room)
+$stmt = $pdo->prepare('
+	SELECT u.username 
+	FROM users u 
+	WHERE u.role = "dosen"
+');
+$stmt->execute();
+$dosen_users = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
 include __DIR__ . '/partials/header.php';
 ?>
 
@@ -163,9 +172,10 @@ window.SESSION_USER = <?= json_encode([
 	'room_slug' => $session_user['room_slug'],
 	'is_rejoin' => $session_user['is_rejoin'] ?? false
 ]) ?>;
+window.DOSEN_USERS = <?= json_encode($dosen_users) ?>;
 </script>
 <script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-database-compat.js"></script>
-<script src="assets/session_chat.js?v=20250110"></script>
+<script src="assets/session_chat.js?v=20250111"></script>
 
 <?php include __DIR__ . '/partials/footer.php'; ?>

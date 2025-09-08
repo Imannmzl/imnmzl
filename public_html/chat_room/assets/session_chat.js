@@ -35,6 +35,21 @@ function formatTime(ts) {
 	return d.toLocaleString();
 }
 
+function isDosenMessage(msg) {
+	if (msg && msg.role) return msg.role === 'dosen';
+	// Fallback: if older messages don't have role, match by username against DOSEN_USERS
+	try {
+		if (Array.isArray(window.DOSEN_USERS)) {
+			const name = (msg.username || '').toLowerCase();
+			for (let i = 0; i < window.DOSEN_USERS.length; i++) {
+				if (String(window.DOSEN_USERS[i] || '').toLowerCase() === name) return true;
+			}
+			return false;
+		}
+	} catch (e) { console.error(e); }
+	return false;
+}
+
 function renderMessage(msgId, msg) {
 	const el = document.createElement('div');
 	el.className = 'message';
@@ -47,7 +62,10 @@ function renderMessage(msgId, msg) {
 			<div class="bubble">${(msg.text || '').replace(/</g,'&lt;')}</div>
 		`;
 	} else {
-		// Regular message
+		// Regular message - check if dosen
+		const senderRole = isDosenMessage(msg) ? 'dosen' : 'mahasiswa';
+		el.className += ' ' + senderRole;
+		
 		const initials = (msg.username || '?').slice(0, 2).toUpperCase();
 		const imageHtml = msg.image_url ? `<img src="${msg.image_url}" class="img-thumb" alt="image" />` : '';
 		el.innerHTML = `
