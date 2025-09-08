@@ -1,20 +1,5 @@
-/* Dark theme (default) */
+/* Light theme (default) */
 :root {
-	--bg: #0f172a;
-	--panel: #111827;
-	--muted: #94a3b8;
-	--text: #e5e7eb;
-	--accent: #22d3ee;
-	--border: #1f2937;
-	--border-light: #233044;
-	--input-bg: #0b1220;
-	--hover: #1f2937;
-	--chat-bubble: #101826;
-	--chat-bubble-dosen: #0e1b29;
-}
-
-/* Light theme */
-[data-theme="light"] {
 	--bg: #f8fafc;
 	--panel: #ffffff;
 	--muted: #64748b;
@@ -26,6 +11,21 @@
 	--hover: #f1f5f9;
 	--chat-bubble: #ffffff;
 	--chat-bubble-dosen: #eff6ff;
+}
+
+/* Dark theme */
+[data-theme="dark"] {
+	--bg: #0f172a;
+	--panel: #111827;
+	--muted: #94a3b8;
+	--text: #e5e7eb;
+	--accent: #22d3ee;
+	--border: #1f2937;
+	--border-light: #233044;
+	--input-bg: #0b1220;
+	--hover: #1f2937;
+	--chat-bubble: #101826;
+	--chat-bubble-dosen: #0e1b29;
 }
 
 * { box-sizing: border-box; }
