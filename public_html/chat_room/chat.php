@@ -89,6 +89,10 @@ $rooms = $pdo->query('SELECT id, slug, name FROM rooms ORDER BY name')->fetchAll
 				<?php endforeach; ?>
 			</div>
 		</div>
+		<div class="stack" style="margin-top:16px;">
+			<h4>Mahasiswa Online</h4>
+			<div id="online-list" class="online-list muted">Memuat...</div>
+		</div>
 	</aside>
 	<section class="stack" style="min-width:0;">
 		<div class="card stack">

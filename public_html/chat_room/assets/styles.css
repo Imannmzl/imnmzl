@@ -44,6 +44,10 @@ button:disabled { opacity: .5; cursor: not-allowed; }
 
 .chat-layout { display: grid; grid-template-columns: 260px 1fr; gap: 16px; }
 .room-list { max-height: 70vh; overflow: auto; }
+.online-list { max-height: 30vh; overflow: auto; background: #0b1220; border: 1px solid #233044; border-radius: 10px; padding: 10px; }
+.online-user { display: flex; align-items: center; gap: 8px; padding: 6px 0; border-bottom: 1px solid #122033; }
+.online-user:last-child { border-bottom: none; }
+.dot { width: 8px; height: 8px; border-radius: 50%; background: #22c55e; }
 .messages { height: 60vh; overflow: auto; background: #0b1220; border: 1px solid #233044; border-radius: 10px; padding: 12px; }
 .message { display: grid; grid-template-columns: 44px 1fr; gap: 10px; margin-bottom: 10px; }
 .avatar { width: 44px; height: 44px; border-radius: 50%; background: #1f2937; display: grid; place-items: center; color: var(--muted); font-weight: 600; }

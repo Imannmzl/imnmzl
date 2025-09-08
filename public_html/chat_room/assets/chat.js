@@ -23,6 +23,7 @@ const imageInput = document.getElementById('image-input');
 const progressWrap = document.getElementById('upload-progress');
 const progressBar = progressWrap ? progressWrap.querySelector('.bar') : null;
 const progressPct = progressWrap ? progressWrap.querySelector('.pct') : null;
+const onlineList = document.getElementById('online-list');
 
 let currentRoom = roomSelect.value;
 let messagesRef = null;
@@ -198,4 +199,39 @@ window.deleteRoomData = function(roomSlug) {
 
 // initial subscribe
 subscribeRoom(currentRoom);
+
+// Presence tracking (mahasiswa only) using Realtime Database
+try {
+    if (window.APP_USER && window.APP_USER.role === 'mahasiswa') {
+        const uid = String(window.APP_USER.id);
+        const userRef = db.ref(`presence/${uid}`);
+        const lastOnlineRef = db.ref(`presence_last/${uid}`);
+        const infoRef = firebase.database().ref('.info/connected');
+        infoRef.on('value', function(snap) {
+            if (snap.val() === true) {
+                userRef.onDisconnect().remove();
+                lastOnlineRef.onDisconnect().set(firebase.database.ServerValue.TIMESTAMP);
+                userRef.set({ username: window.APP_USER.username, since: firebase.database.ServerValue.TIMESTAMP });
+            }
+        });
+    }
+} catch (e) { console.error(e); }
+
+// Render online list for all users
+if (onlineList) {
+    const presenceRef = db.ref('presence');
+    function renderPresence(snapshot) {
+        const val = snapshot.val() || {};
+        const items = Object.entries(val).map(([id, data]) => ({ id, ...(data || {}) }));
+        items.sort((a,b) => (a.username||'').localeCompare(b.username||''));
+        if (!items.length) {
+            onlineList.innerHTML = '<div class="muted">Tidak ada mahasiswa online</div>';
+            return;
+        }
+        onlineList.innerHTML = items.map(it => `
+            <div class="online-user"><span class="dot"></span><span>${(it.username||'Mahasiswa')}</span></div>
+        `).join('');
+    }
+    presenceRef.on('value', renderPresence);
+}
 
