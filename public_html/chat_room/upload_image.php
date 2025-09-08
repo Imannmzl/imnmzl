@@ -11,9 +11,9 @@ try {
 	}
 	$file = $_FILES['image'];
 	
-	// Check file size (max 5MB)
-	if ($file['size'] > 5 * 1024 * 1024) {
-		throw new RuntimeException('File terlalu besar (max 5MB)');
+	// Check file size (max 7MB)
+	if ($file['size'] > 7 * 1024 * 1024) {
+		throw new RuntimeException('File terlalu besar (max 7MB)');
 	}
 	$finfo = finfo_open(FILEINFO_MIME_TYPE);
 	$mime = finfo_file($finfo, $file['tmp_name']);
