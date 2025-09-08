@@ -215,6 +215,26 @@ window.deleteRoomData = function(roomSlug) {
 	});
 }
 
+// Mobile tab functionality
+document.addEventListener('DOMContentLoaded', function() {
+	const tabBtns = document.querySelectorAll('.tab-btn');
+	const tabContents = document.querySelectorAll('.tab-content');
+	
+	tabBtns.forEach(btn => {
+		btn.addEventListener('click', () => {
+			const targetTab = btn.getAttribute('data-tab');
+			
+			// Remove active class from all tabs and contents
+			tabBtns.forEach(b => b.classList.remove('active'));
+			tabContents.forEach(c => c.classList.remove('active'));
+			
+			// Add active class to clicked tab and corresponding content
+			btn.classList.add('active');
+			document.getElementById(targetTab + '-tab').classList.add('active');
+		});
+	});
+});
+
 // initial subscribe
 subscribeRoom(currentRoom);
 

@@ -42,60 +42,71 @@ $dosenUsernames = $pdo->query("SELECT username FROM users WHERE role = 'dosen'")
 <?php include __DIR__ . '/partials/header.php'; ?>
 
 <div class="chat-layout">
-	<aside class="card">
-		<h3>Rooms</h3>
-		<div class="room-list" id="room-list">
-			<?php if (($user['role'] ?? '') === 'dosen'): ?>
-				<div class="stack" style="margin-bottom:12px;">
-					<h4>Kelola Room</h4>
-					<?php if (!empty($errors)): ?>
-						<div class="muted">
-							<?php foreach ($errors as $er): ?>
-								<div>- <?= htmlspecialchars($er) ?></div>
-							<?php endforeach; ?>
-						</div>
-					<?php endif; ?>
-					<form method="post" class="stack">
-						<input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
-						<input type="hidden" name="action" value="create">
-						<div class="form-row">
-							<label>Slug</label>
-							<input type="text" name="slug" placeholder="mis: kelas-if101">
-						</div>
-						<div class="form-row">
-							<label>Nama</label>
-							<input type="text" name="name" placeholder="Kelas IF101">
-						</div>
-						<div class="actions">
-							<button type="submit">Tambah Room</button>
-						</div>
-					</form>
-				</div>
-			<?php endif; ?>
-			<div class="stack">
-				<?php foreach ($rooms as $r): ?>
-					<div class="actions" style="justify-content:space-between;">
-						<div>#<?= htmlspecialchars($r['name']) ?> <span class="muted">(<?= htmlspecialchars($r['slug']) ?>)</span></div>
-						<?php if (($user['role'] ?? '') === 'dosen'): ?>
-							<form method="post" class="actions" style="gap:6px;">
-								<input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
-								<input type="hidden" name="id" value="<?= (int)$r['id'] ?>">
-								<input type="text" name="name" value="<?= htmlspecialchars($r['name']) ?>" style="width:160px;">
-								<button name="action" value="update" type="submit" class="secondary">Ubah</button>
-								<button name="action" value="delete" type="submit" class="secondary" onclick="return confirm('Hapus room? Tidak menghapus data di Firebase');">Hapus</button>
-							</form>
-							<button type="button" class="secondary" onclick="deleteRoomData('<?= htmlspecialchars($r['slug']) ?>')">Hapus Data Firebase</button>
+	<aside class="card mobile-sidebar">
+		<!-- Mobile tabs -->
+		<div class="mobile-tabs">
+			<button class="tab-btn active" data-tab="rooms">Rooms</button>
+			<button class="tab-btn" data-tab="online">Online</button>
+		</div>
+		
+		<!-- Rooms tab content -->
+		<div class="tab-content" id="rooms-tab">
+			<h3>Rooms</h3>
+			<div class="room-list" id="room-list">
+				<?php if (($user['role'] ?? '') === 'dosen'): ?>
+					<div class="stack" style="margin-bottom:12px;">
+						<h4>Kelola Room</h4>
+						<?php if (!empty($errors)): ?>
+							<div class="muted">
+								<?php foreach ($errors as $er): ?>
+									<div>- <?= htmlspecialchars($er) ?></div>
+								<?php endforeach; ?>
+							</div>
 						<?php endif; ?>
+						<form method="post" class="stack">
+							<input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
+							<input type="hidden" name="action" value="create">
+							<div class="form-row">
+								<label>Slug</label>
+								<input type="text" name="slug" placeholder="mis: kelas-if101">
+							</div>
+							<div class="form-row">
+								<label>Nama</label>
+								<input type="text" name="name" placeholder="Kelas IF101">
+							</div>
+							<div class="actions">
+								<button type="submit">Tambah Room</button>
+							</div>
+						</form>
 					</div>
-				<?php endforeach; ?>
+				<?php endif; ?>
+				<div class="stack">
+					<?php foreach ($rooms as $r): ?>
+						<div class="actions" style="justify-content:space-between;">
+							<div>#<?= htmlspecialchars($r['name']) ?> <span class="muted">(<?= htmlspecialchars($r['slug']) ?>)</span></div>
+							<?php if (($user['role'] ?? '') === 'dosen'): ?>
+								<form method="post" class="actions" style="gap:6px;">
+									<input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
+									<input type="hidden" name="id" value="<?= (int)$r['id'] ?>">
+									<input type="text" name="name" value="<?= htmlspecialchars($r['name']) ?>" style="width:160px;">
+									<button name="action" value="update" type="submit" class="secondary">Ubah</button>
+									<button name="action" value="delete" type="submit" class="secondary" onclick="return confirm('Hapus room? Tidak menghapus data di Firebase');">Hapus</button>
+								</form>
+								<button type="button" class="secondary" onclick="deleteRoomData('<?= htmlspecialchars($r['slug']) ?>')">Hapus Data Firebase</button>
+							<?php endif; ?>
+						</div>
+					<?php endforeach; ?>
+				</div>
 			</div>
 		</div>
-		<div class="stack" style="margin-top:16px;">
-			<h4>Mahasiswa Online</h4>
+		
+		<!-- Online tab content -->
+		<div class="tab-content" id="online-tab" style="display:none;">
+			<h3>Mahasiswa Online</h3>
 			<div id="online-list" class="online-list muted">Memuat...</div>
 		</div>
 	</aside>
-	<section class="stack" style="min-width:0;">
+	<section class="chat-section">
 		<div class="card stack">
 			<div class="actions">
 				<strong>Room:</strong>
@@ -106,6 +117,10 @@ $dosenUsernames = $pdo->query("SELECT username FROM users WHERE role = 'dosen'")
 				</select>
 			</div>
 			<div class="messages" id="messages"></div>
+		</div>
+		
+		<!-- Sticky input area -->
+		<div class="sticky-composer">
 			<form id="composer" class="composer" enctype="multipart/form-data">
 				<textarea id="message-input" placeholder="Tulis pesan..." autocomplete="off" rows="3"></textarea>
 				<input type="file" id="image-input" accept="image/*" />
