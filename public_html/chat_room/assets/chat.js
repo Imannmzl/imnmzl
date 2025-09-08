@@ -24,6 +24,10 @@ const progressWrap = document.getElementById('upload-progress');
 const progressBar = progressWrap ? progressWrap.querySelector('.bar') : null;
 const progressPct = progressWrap ? progressWrap.querySelector('.pct') : null;
 const onlineList = document.getElementById('online-list');
+const imagePreview = document.getElementById('image-preview');
+const previewImg = document.getElementById('preview-img');
+const previewName = document.getElementById('preview-name');
+const removeImageBtn = document.getElementById('remove-image');
 
 let currentRoom = roomSelect.value;
 let messagesRef = null;
@@ -101,6 +105,35 @@ roomSelect.addEventListener('change', () => {
 	subscribeRoom(currentRoom);
 });
 
+// Image preview functionality
+imageInput.addEventListener('change', (e) => {
+	const file = e.target.files[0];
+	if (file) {
+		showImagePreview(file);
+	}
+});
+
+removeImageBtn.addEventListener('click', () => {
+	clearImagePreview();
+});
+
+function showImagePreview(file) {
+	const reader = new FileReader();
+	reader.onload = (e) => {
+		previewImg.src = e.target.result;
+		previewName.textContent = file.name;
+		imagePreview.style.display = 'block';
+	};
+	reader.readAsDataURL(file);
+}
+
+function clearImagePreview() {
+	imagePreview.style.display = 'none';
+	imageInput.value = '';
+	previewImg.src = '';
+	previewName.textContent = '';
+}
+
 function setProgressVisible(visible) {
 	if (!progressWrap) return;
 	progressWrap.style.display = visible ? '' : 'none';
@@ -174,7 +207,7 @@ composerForm.addEventListener('submit', async (e) => {
 	};
 	db.ref(`rooms/${currentRoom}/messages`).push(payload);
 	messageInput.value = '';
-	imageInput.value = '';
+	clearImagePreview();
 });
 
 // Delegate delete clicks

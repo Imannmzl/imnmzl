@@ -70,6 +70,32 @@ button:disabled { opacity: .5; cursor: not-allowed; }
 	justify-content: center; cursor: pointer; transition: all 0.2s ease;
 }
 .upload-icon:hover { background: #0ea5e9; transform: scale(1.1); }
+
+/* Image preview */
+.image-preview { 
+	margin-top: 8px; padding: 8px; background: #0b1220; 
+	border: 1px solid #233044; border-radius: 8px; 
+}
+.preview-content { display: flex; align-items: center; gap: 8px; }
+.preview-content img { 
+	width: 40px; height: 40px; object-fit: cover; 
+	border-radius: 6px; border: 1px solid #1f2937; 
+}
+.preview-info { 
+	flex: 1; display: flex; align-items: center; 
+	justify-content: space-between; 
+}
+.preview-info span { 
+	color: var(--muted); font-size: 14px; 
+	overflow: hidden; text-overflow: ellipsis; white-space: nowrap; 
+}
+.remove-btn { 
+	background: #ef4444; color: white; border: none; 
+	border-radius: 4px; padding: 4px; cursor: pointer; 
+	display: flex; align-items: center; justify-content: center;
+}
+.remove-btn:hover { background: #dc2626; }
+
 .img-thumb { max-width: 100%; height: auto; border-radius: 8px; border: 1px solid #1f2937; margin-top: 8px; display: block; }
 
 .muted { color: var(--muted); }

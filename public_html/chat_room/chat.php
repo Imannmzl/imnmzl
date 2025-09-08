@@ -198,6 +198,23 @@ $dosenUsernames = $pdo->query("SELECT username FROM users WHERE role = 'dosen'")
 				</div>
 				<button type="submit">Kirim</button>
 			</form>
+			
+			<!-- Image preview -->
+			<div id="image-preview" class="image-preview" style="display: none;">
+				<div class="preview-content">
+					<img id="preview-img" src="" alt="Preview" />
+					<div class="preview-info">
+						<span id="preview-name"></span>
+						<button type="button" id="remove-image" class="remove-btn" title="Hapus gambar">
+							<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+								<path d="M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+								<path d="M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+							</svg>
+						</button>
+					</div>
+				</div>
+			</div>
+			
 			<div id="upload-progress" class="progress" style="display:none;">
 				<div class="track"><div class="bar"></div></div>
 				<span class="pct">0%</span>
