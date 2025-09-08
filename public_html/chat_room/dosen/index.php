@@ -110,6 +110,12 @@ include __DIR__ . '/../partials/header.php';
 		<p class="muted">Buat link invite untuk mahasiswa bergabung tanpa registrasi.</p>
 		<a class="btn" href="invite.php">Buat Invite Link</a>
 	</div>
+
+	<div class="card stack">
+		<h3>Chat Room</h3>
+		<p class="muted">Masuk ke chat room untuk berinteraksi dengan mahasiswa.</p>
+		<a class="btn" href="../chat.php">Buka Chat Room</a>
+	</div>
 </div>
 
 <?php include __DIR__ . '/../partials/footer.php'; ?>
