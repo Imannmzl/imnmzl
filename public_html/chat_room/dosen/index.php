@@ -104,6 +104,12 @@ include __DIR__ . '/../partials/header.php';
 		<p class="muted">Gunakan halaman moderasi untuk menghapus pesan kurang pantas per room.</p>
 		<a class="btn" href="moderasi.php">Buka Moderasi</a>
 	</div>
+
+	<div class="card stack">
+		<h3>Invite Link</h3>
+		<p class="muted">Buat link invite untuk mahasiswa bergabung tanpa registrasi.</p>
+		<a class="btn" href="invite.php">Buat Invite Link</a>
+	</div>
 </div>
 
 <?php include __DIR__ . '/../partials/footer.php'; ?>

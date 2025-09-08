@@ -30,6 +30,14 @@ ensure_csrf_token();
 					<a class="btn" href="dosen/index.php">Dashboard</a>
 				<?php endif; ?>
 				<a class="btn" href="logout.php">Logout</a>
+			<?php elseif (!empty($_SESSION['session_user'])): $su = $_SESSION['session_user']; ?>
+				<span class="welcome"><?= htmlspecialchars($su['username']) ?> (Mahasiswa)</span>
+				<button class="btn theme-toggle" id="theme-toggle" title="Ganti tema">
+					<svg class="theme-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+					</svg>
+				</button>
+				<a class="btn" href="session_logout.php">Keluar</a>
 			<?php else: ?>
 				<button class="btn theme-toggle" id="theme-toggle" title="Ganti tema">
 					<svg class="theme-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
