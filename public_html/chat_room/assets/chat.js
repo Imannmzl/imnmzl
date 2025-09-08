@@ -33,9 +33,20 @@ function formatTime(ts) {
 	return d.toLocaleString();
 }
 
+function isDosenMessage(msg) {
+	if (msg && msg.role) return msg.role === 'dosen';
+	// Fallback: if older messages don't have role, match by username against DOSEN_USERS
+	try {
+		if (Array.isArray(window.DOSEN_USERS)) {
+			return window.DOSEN_USERS.includes(msg.username);
+		}
+	} catch(_) {}
+	return false;
+}
+
 function renderMessage(msgId, msg) {
 	const el = document.createElement('div');
-	const senderRole = (msg.role === 'dosen') ? 'dosen' : 'mahasiswa';
+	const senderRole = isDosenMessage(msg) ? 'dosen' : 'mahasiswa';
 	el.className = 'message ' + senderRole;
 	el.dataset.id = msgId;
 	const initials = (msg.username || '?').slice(0, 2).toUpperCase();
@@ -43,7 +54,7 @@ function renderMessage(msgId, msg) {
 	const canDelete = (window.APP_USER && window.APP_USER.role === 'dosen');
 	const roleBadge = senderRole === 'dosen' ? `<span class="badge-dosen">Dosen</span>` : '';
 	const delBtn = canDelete ? `
-		<button class="icon-btn" data-del="${msgId}" title="Hapus" aria-label="Hapus">
+		<button class="icon-btn danger" data-del="${msgId}" title="Hapus" aria-label="Hapus">
 			<svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 				<path d="M3 6h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
 				<path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>

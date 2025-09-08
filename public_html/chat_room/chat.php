@@ -37,6 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && (($user['role'] ?? '') === 'dosen')
 }
 // Fetch rooms dynamically (after any change)
 $rooms = $pdo->query('SELECT id, slug, name FROM rooms ORDER BY name')->fetchAll();
+$dosenUsernames = $pdo->query("SELECT username FROM users WHERE role = 'dosen'")->fetchAll(PDO::FETCH_COLUMN);
 ?>
 <?php include __DIR__ . '/partials/header.php'; ?>
 
@@ -120,10 +121,11 @@ $rooms = $pdo->query('SELECT id, slug, name FROM rooms ORDER BY name')->fetchAll
 
 <script>
 window.APP_USER = <?= json_encode(['id' => $user['id'], 'username' => $user['username'], 'role' => $user['role'] ?? 'mahasiswa']) ?>;
+window.DOSEN_USERS = <?= json_encode(array_values($dosenUsernames)) ?>;
 </script>
 <script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-database-compat.js"></script>
-<script src="assets/chat.js"></script>
+<script src="assets/chat.js?v=20250908"></script>
 
 <?php include __DIR__ . '/partials/footer.php'; ?>
 
