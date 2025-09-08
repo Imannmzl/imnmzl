@@ -107,7 +107,7 @@ $dosenUsernames = $pdo->query("SELECT username FROM users WHERE role = 'dosen'")
 			</div>
 			<div class="messages" id="messages"></div>
 			<form id="composer" class="composer" enctype="multipart/form-data">
-				<input type="text" id="message-input" placeholder="Tulis pesan..." autocomplete="off" />
+				<textarea id="message-input" placeholder="Tulis pesan..." autocomplete="off" rows="3"></textarea>
 				<input type="file" id="image-input" accept="image/*" />
 				<button type="submit">Kirim</button>
 			</form>
