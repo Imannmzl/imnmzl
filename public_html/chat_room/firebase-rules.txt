@@ -1,0 +1,40 @@
+FIREBASE REALTIME DATABASE RULES
+
+Untuk mengatasi masalah "Memuat..." di tab Mahasiswa Online, pastikan Firebase Rules diatur sebagai berikut:
+
+1. Buka Firebase Console: https://console.firebase.google.com/
+2. Pilih project: chat-room-cde34
+3. Klik "Realtime Database" di sidebar
+4. Klik tab "Rules"
+5. Ganti rules dengan:
+
+{
+  "rules": {
+    "rooms": {
+      ".read": true,
+      ".write": true
+    },
+    "presence": {
+      ".read": true,
+      ".write": true
+    },
+    "presence_last": {
+      ".read": true,
+      ".write": true
+    }
+  }
+}
+
+6. Klik "Publish"
+
+CATATAN:
+- Rules ini sementara untuk testing
+- Untuk production, perketat rules berdasarkan authentication
+- Pastikan tidak ada error di Firebase Console
+- Cek tab "Usage" untuk melihat aktivitas database
+
+TROUBLESHOOTING:
+- Jika masih "Memuat...", cek browser console untuk error
+- Pastikan koneksi internet stabil
+- Coba refresh halaman
+- Pastikan minimal ada 1 mahasiswa yang login untuk melihat daftar online

@@ -289,47 +289,76 @@ try {
     }
 } catch (e) { console.error(e); }
 
-// Render online list for all users
-if (onlineList) {
+// Render online list for all users (both desktop and mobile)
+function initOnlineList() {
+    const desktopOnlineList = document.getElementById('online-list');
+    const mobileOnlineList = document.getElementById('online-list-mobile');
+    const onlineLists = [desktopOnlineList, mobileOnlineList].filter(el => el);
+    
+    if (!onlineLists.length) return;
+    
     const presenceRef = db.ref('presence');
-    onlineList.innerHTML = '<div class="muted">Memuat...</div>';
     let presenceLoaded = false;
+    
+    // Set initial loading state
+    onlineLists.forEach(list => {
+        if (list) list.innerHTML = '<div class="muted">Memuat...</div>';
+    });
+    
     // Initial fetch to handle permission errors and empty state
     presenceRef.get().then((snapshot) => {
         presenceLoaded = true;
         const val = snapshot.val() || {};
         const items = Object.entries(val).map(([id, data]) => ({ id, ...(data || {}) }));
         items.sort((a,b) => (a.username||'').localeCompare(b.username||''));
-        if (!items.length) {
-            onlineList.innerHTML = '<div class="muted">Tidak ada mahasiswa online</div>';
-            return;
-        }
-        onlineList.innerHTML = items.map(it => `
-            <div class="online-user"><span class="dot"></span><span>${(it.username||'Mahasiswa')}</span></div>
-        `).join('');
-    }).catch(() => {
+        
+        const html = !items.length ? 
+            '<div class="muted">Tidak ada mahasiswa online</div>' :
+            items.map(it => `
+                <div class="online-user"><span class="dot"></span><span>${(it.username||'Mahasiswa')}</span></div>
+            `).join('');
+            
+        onlineLists.forEach(list => {
+            if (list) list.innerHTML = html;
+        });
+    }).catch((error) => {
+        console.error('Presence fetch error:', error);
         presenceLoaded = true;
-        onlineList.innerHTML = '<div class="muted">Tidak dapat membaca presence (cek Firebase Rules)</div>';
+        const errorHtml = '<div class="muted">Tidak dapat membaca presence (cek Firebase Rules)</div>';
+        onlineLists.forEach(list => {
+            if (list) list.innerHTML = errorHtml;
+        });
     });
+    
     // Realtime updates
     presenceRef.on('value', (snapshot) => {
         presenceLoaded = true;
         const val = snapshot.val() || {};
         const items = Object.entries(val).map(([id, data]) => ({ id, ...(data || {}) }));
         items.sort((a,b) => (a.username||'').localeCompare(b.username||''));
-        if (!items.length) {
-            onlineList.innerHTML = '<div class="muted">Tidak ada mahasiswa online</div>';
-            return;
-        }
-        onlineList.innerHTML = items.map(it => `
-            <div class="online-user"><span class="dot"></span><span>${(it.username||'Mahasiswa')}</span></div>
-        `).join('');
+        
+        const html = !items.length ? 
+            '<div class="muted">Tidak ada mahasiswa online</div>' :
+            items.map(it => `
+                <div class="online-user"><span class="dot"></span><span>${(it.username||'Mahasiswa')}</span></div>
+            `).join('');
+            
+        onlineLists.forEach(list => {
+            if (list) list.innerHTML = html;
+        });
     });
+    
     // Fallback timer
     setTimeout(() => {
         if (!presenceLoaded) {
-            onlineList.innerHTML = '<div class="muted">Memuat terlalu lama... cek koneksi atau rules Firebase</div>';
+            const timeoutHtml = '<div class="muted">Memuat terlalu lama... cek koneksi atau rules Firebase</div>';
+            onlineLists.forEach(list => {
+                if (list) list.innerHTML = timeoutHtml;
+            });
         }
     }, 6000);
 }
+
+// Initialize online list
+initOnlineList();
 
