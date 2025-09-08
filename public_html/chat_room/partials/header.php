@@ -27,7 +27,9 @@ ensure_csrf_token();
 					</svg>
 				</button>
 				<?php if (($u['role'] ?? '') === 'dosen'): ?>
-					<a class="btn" href="chat.php">Chat Room</a>
+					<?php if (basename($_SERVER['PHP_SELF']) !== 'chat.php'): ?>
+						<a class="btn" href="chat.php">Chat Room</a>
+					<?php endif; ?>
 					<a class="btn" href="dosen/index.php">Dashboard</a>
 				<?php endif; ?>
 				<a class="btn" href="logout.php">Logout</a>
