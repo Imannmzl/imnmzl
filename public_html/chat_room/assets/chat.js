@@ -35,6 +35,7 @@ function formatTime(ts) {
 function renderMessage(msgId, msg) {
 	const el = document.createElement('div');
 	el.className = 'message';
+	el.dataset.id = msgId;
 	const initials = (msg.username || '?').slice(0, 2).toUpperCase();
 	const imageHtml = msg.image_url ? `<div><img src="${msg.image_url}" class="img-thumb" alt="image" /></div>` : '';
 	const canDelete = (window.APP_USER && window.APP_USER.role === 'dosen');
@@ -70,6 +71,11 @@ function subscribeRoom(room) {
 	messagesRef = db.ref(`rooms/${room}/messages`).limitToLast(100);
 	messagesRef.on('child_added', snap => {
 		renderMessage(snap.key, snap.val());
+	});
+	messagesRef.on('child_removed', snap => {
+		const id = snap.key;
+		const node = messagesDiv.querySelector(`.message[data-id="${id}"]`);
+		if (node) node.remove();
 	});
 }
 
@@ -172,8 +178,7 @@ messagesDiv.addEventListener('click', async (e) => {
 		} catch (err) { console.error(err); }
 	}
 	db.ref(`rooms/${currentRoom}/messages/${key}`).remove();
-	messagesDiv.innerHTML = '';
-	subscribeRoom(currentRoom);
+	// child_removed listener will update UI
 });
 
 // Delete all Firebase data for a room (dosen only)
