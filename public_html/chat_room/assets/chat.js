@@ -20,6 +20,9 @@ const messagesDiv = document.getElementById('messages');
 const composerForm = document.getElementById('composer');
 const messageInput = document.getElementById('message-input');
 const imageInput = document.getElementById('image-input');
+const progressWrap = document.getElementById('upload-progress');
+const progressBar = progressWrap ? progressWrap.querySelector('.bar') : null;
+const progressPct = progressWrap ? progressWrap.querySelector('.pct') : null;
 
 let currentRoom = roomSelect.value;
 let messagesRef = null;
@@ -75,19 +78,66 @@ roomSelect.addEventListener('change', () => {
 	subscribeRoom(currentRoom);
 });
 
+function setProgressVisible(visible) {
+	if (!progressWrap) return;
+	progressWrap.style.display = visible ? '' : 'none';
+}
+
+function setProgress(percent) {
+	if (!progressBar || !progressPct) return;
+	const pct = Math.max(0, Math.min(100, Math.round(percent)));
+	progressBar.style.width = pct + '%';
+	progressPct.textContent = pct + '%';
+}
+
+function uploadImageWithProgress(file) {
+	return new Promise((resolve, reject) => {
+		const form = new FormData();
+		form.append('image', file);
+		const xhr = new XMLHttpRequest();
+		xhr.open('POST', 'upload_image.php');
+		xhr.upload.onprogress = (ev) => {
+			if (ev.lengthComputable) {
+				const percent = (ev.loaded / ev.total) * 100;
+				setProgress(percent);
+			}
+		};
+		xhr.onreadystatechange = () => {
+			if (xhr.readyState === 4) {
+				if (xhr.status >= 200 && xhr.status < 300) {
+					try {
+						const data = JSON.parse(xhr.responseText);
+						if (data.ok) return resolve(data.url);
+						return reject(new Error(data.error || 'Upload gagal'));
+					} catch(e) { return reject(e); }
+				} else {
+					return reject(new Error('Upload gagal'));
+				}
+			}
+		};
+		xhr.onerror = () => reject(new Error('Upload error'));
+		xhr.send(form);
+	});
+}
+
 composerForm.addEventListener('submit', async (e) => {
 	e.preventDefault();
 	const text = messageInput.value.trim();
 	let imageUrl = '';
 	if (imageInput.files && imageInput.files[0]) {
-		const form = new FormData();
-		form.append('image', imageInput.files[0]);
+		const submitBtn = composerForm.querySelector('button[type="submit"]');
 		try {
-			const res = await fetch('upload_image.php', { method: 'POST', body: form });
-			const data = await res.json();
-			if (data.ok) { imageUrl = data.url; }
+			if (submitBtn) submitBtn.disabled = true;
+			setProgressVisible(true);
+			setProgress(0);
+			imageUrl = await uploadImageWithProgress(imageInput.files[0]);
 		} catch (err) {
 			console.error(err);
+			alert('Gagal upload gambar');
+		} finally {
+			setProgressVisible(false);
+			setProgress(0);
+			if (submitBtn) submitBtn.disabled = false;
 		}
 	}
 	if (!text && !imageUrl) return;

@@ -53,9 +53,12 @@ try {
 
 	$ok = false;
 	if ($mime === 'image/jpeg') {
+		// Progressive JPEG for better web delivery
+		imageinterlace($dst, true);
 		$ok = imagejpeg($dst, $destPath, $JPEG_QUALITY);
 	} elseif ($mime === 'image/png') {
-		$ok = imagepng($dst, $destPath, 6);
+		// Slightly stronger PNG compression
+		$ok = imagepng($dst, $destPath, 7);
 	} elseif ($mime === 'image/gif') {
 		$ok = imagegif($dst, $destPath);
 	} elseif ($mime === 'image/webp') {

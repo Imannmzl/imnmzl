@@ -106,6 +106,10 @@ $rooms = $pdo->query('SELECT id, slug, name FROM rooms ORDER BY name')->fetchAll
 				<input type="file" id="image-input" accept="image/*" />
 				<button type="submit">Kirim</button>
 			</form>
+			<div id="upload-progress" class="progress" style="display:none;">
+				<div class="track"><div class="bar"></div></div>
+				<span class="pct">0%</span>
+			</div>
 		</div>
 	</section>
 </div>
