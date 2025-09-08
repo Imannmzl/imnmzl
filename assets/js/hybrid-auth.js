@@ -51,7 +51,23 @@ class HybridAuth {
      */
     async request(endpoint, options = {}) {
         try {
-            const baseUrl = window.location.origin + window.location.pathname.split('/').slice(0, -1).join('/');
+            // Get proper base URL
+            const origin = window.location.origin;
+            const pathname = window.location.pathname;
+            
+            // Remove the current file from path and get directory
+            const pathParts = pathname.split('/').filter(part => part);
+            const currentFile = pathname.split('/').pop();
+            
+            // If we're in a subdirectory, remove the last part
+            let basePath = '';
+            if (pathParts.length > 0) {
+                // Remove the current file/directory from path
+                const dirParts = pathParts.slice(0, -1);
+                basePath = '/' + dirParts.join('/');
+            }
+            
+            const baseUrl = origin + basePath;
             const url = `${baseUrl}/api/${endpoint}`;
             
             const defaultOptions = {
@@ -214,8 +230,21 @@ class HybridAuth {
             
             if (isAuthPage) {
                 setTimeout(() => {
-                    // Get base URL properly
-                    const baseUrl = window.location.origin + window.location.pathname.split('/').slice(0, -1).join('/');
+                    // Get proper base URL
+                    const origin = window.location.origin;
+                    const pathname = window.location.pathname;
+                    
+                    // Get the base path by removing current file/directory
+                    const pathParts = pathname.split('/').filter(part => part);
+                    let basePath = '';
+                    
+                    if (pathParts.length > 0) {
+                        // Remove the current file/directory from path
+                        const dirParts = pathParts.slice(0, -1);
+                        basePath = '/' + dirParts.join('/');
+                    }
+                    
+                    const baseUrl = origin + basePath;
                     
                     if (user.role === 'teacher') {
                         window.location.href = baseUrl + '/dashboard/teacher/index.php';

@@ -6,7 +6,8 @@
 // Application Configuration
 define('APP_NAME', 'Chat Room Realtime');
 define('APP_VERSION', '2.0.0');
-define('APP_URL', 'http://localhost/Chat-Room-Realtime');
+// APP_URL will be auto-detected based on current domain
+// define('APP_URL', 'http://localhost/Chat-Room-Realtime');
 
 // Auto-detect base URL if not set
 if (!defined('BASE_URL')) {
@@ -25,6 +26,11 @@ if (!defined('BASE_URL')) {
     
     $baseUrl = $protocol . '://' . $host . $path;
     define('BASE_URL', rtrim($baseUrl, '/'));
+}
+
+// Define APP_URL based on BASE_URL
+if (!defined('APP_URL')) {
+    define('APP_URL', BASE_URL);
 }
 
 // Upload Configuration (PHP Upload - No Firebase Storage needed)
