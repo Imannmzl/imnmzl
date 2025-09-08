@@ -48,9 +48,14 @@ button:disabled { opacity: .5; cursor: not-allowed; }
 .message { display: grid; grid-template-columns: 44px 1fr; gap: 10px; margin-bottom: 10px; }
 .avatar { width: 44px; height: 44px; border-radius: 50%; background: #1f2937; display: grid; place-items: center; color: var(--muted); font-weight: 600; }
 .message .meta { color: var(--muted); font-size: 12px; }
+.message .meta { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 .message .bubble { background: #101826; border: 1px solid #1c2739; border-radius: 10px; padding: 10px; }
 .composer { display: grid; grid-template-columns: 1fr auto auto; gap: 8px; margin-top: 10px; }
 .img-thumb { max-width: 220px; border-radius: 8px; border: 1px solid #1f2937; }
 
 .muted { color: var(--muted); }
+
+/* Icon button (compact) */
+.icon-btn { background: transparent; border: none; padding: 4px; border-radius: 6px; color: var(--muted); cursor: pointer; }
+.icon-btn:hover { color: #ef4444; background: #1f2937; }
 
