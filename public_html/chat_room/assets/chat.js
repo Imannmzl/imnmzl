@@ -1,12 +1,13 @@
-// Firebase config placeholders - replace with your project keys in production
+// Firebase config - provided by user
 const firebaseConfig = {
-	apiKey: "YOUR_API_KEY",
-	authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-	databaseURL: "https://YOUR_PROJECT_ID-default-rtdb.asia-southeast1.firebasedatabase.app",
-	projectId: "YOUR_PROJECT_ID",
-	storageBucket: "YOUR_PROJECT_ID.appspot.com",
-	messagingSenderId: "",
-	appId: ""
+	apiKey: "AIzaSyC6Y44JXrCAuCPbjGbGxDAvZMVy4OkNSuc",
+	authDomain: "chat-room-cde34.firebaseapp.com",
+	databaseURL: "https://chat-room-cde34-default-rtdb.asia-southeast1.firebasedatabase.app",
+	projectId: "chat-room-cde34",
+	storageBucket: "chat-room-cde34.firebasestorage.app",
+	messagingSenderId: "859236242502",
+	appId: "1:859236242502:web:4e65bf833fce4e723ca647",
+	measurementId: "G-M08F2EY2EB"
 };
 
 firebase.initializeApp(firebaseConfig);
