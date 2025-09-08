@@ -228,7 +228,23 @@ class AuthHybrid {
      */
     public function requireLogin($redirectTo = 'login.php') {
         if (!$this->isLoggedIn()) {
-            header("Location: $redirectTo");
+            // Handle relative paths correctly
+            if (strpos($redirectTo, '/') === 0) {
+                // Absolute path
+                header("Location: $redirectTo");
+            } else {
+                // Relative path - construct proper URL
+                $scheme = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
+                $host = $_SERVER['HTTP_HOST'];
+                $uri = $_SERVER['REQUEST_URI'];
+                $basePath = dirname($uri);
+                
+                // Calculate relative path
+                $redirectUrl = $scheme . '://' . $host . $basePath . '/' . $redirectTo;
+                $redirectUrl = str_replace('//', '/', str_replace($scheme . ':/', $scheme . '://', $redirectUrl));
+                
+                header("Location: $redirectUrl");
+            }
             exit;
         }
     }

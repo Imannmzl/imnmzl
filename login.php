@@ -5,10 +5,11 @@ require_once 'config/auth-hybrid.php';
 // Jika sudah login, redirect ke dashboard
 if (isLoggedIn()) {
     $user = getCurrentUser();
+    $baseUrl = rtrim(dirname($_SERVER['REQUEST_URI']), '/');
     if ($user['role'] === 'teacher') {
-        header('Location: ./dashboard/teacher/index.php');
+        header('Location: ' . $baseUrl . '/dashboard/teacher/index.php');
     } else {
-        header('Location: ./dashboard/student/index.php');
+        header('Location: ' . $baseUrl . '/dashboard/student/index.php');
     }
     exit;
 }

@@ -214,10 +214,13 @@ class HybridAuth {
             
             if (isAuthPage) {
                 setTimeout(() => {
+                    // Get base URL properly
+                    const baseUrl = window.location.origin + window.location.pathname.split('/').slice(0, -1).join('/');
+                    
                     if (user.role === 'teacher') {
-                        window.location.href = './dashboard/teacher/index.php';
+                        window.location.href = baseUrl + '/dashboard/teacher/index.php';
                     } else {
-                        window.location.href = './dashboard/student/index.php';
+                        window.location.href = baseUrl + '/dashboard/student/index.php';
                     }
                 }, 1000);
             }
@@ -228,7 +231,18 @@ class HybridAuth {
                                    currentPath.includes('chat/');
             
             if (isProtectedPage) {
-                window.location.href = 'login.php';
+                // Get proper redirect URL based on current location
+                const pathParts = window.location.pathname.split('/');
+                let redirectUrl = 'login.php';
+                
+                if (pathParts.includes('dashboard') || pathParts.includes('chat')) {
+                    // If we're in a subdirectory, go back to root
+                    const depth = pathParts.filter(part => part && part !== 'dashboard' && part !== 'teacher' && part !== 'student' && part !== 'chat').length - 1;
+                    const prefix = '../'.repeat(Math.max(depth, 0));
+                    redirectUrl = prefix + 'login.php';
+                }
+                
+                window.location.href = redirectUrl;
             }
         }
     }

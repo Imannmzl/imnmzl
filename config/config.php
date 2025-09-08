@@ -12,8 +12,19 @@ define('APP_URL', 'http://localhost/Chat-Room-Realtime');
 if (!defined('BASE_URL')) {
     $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
     $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
-    $path = dirname($_SERVER['SCRIPT_NAME']);
-    define('BASE_URL', $protocol . '://' . $host . $path);
+    $scriptName = $_SERVER['SCRIPT_NAME'] ?? '';
+    
+    // Get the base path by removing the filename and getting the directory
+    $path = dirname($scriptName);
+    
+    // Remove multiple slashes and normalize path
+    $path = str_replace('//', '/', $path);
+    if ($path === '/' || $path === '.') {
+        $path = '';
+    }
+    
+    $baseUrl = $protocol . '://' . $host . $path;
+    define('BASE_URL', rtrim($baseUrl, '/'));
 }
 
 // Upload Configuration (PHP Upload - No Firebase Storage needed)
