@@ -4,6 +4,9 @@ require_once __DIR__ . '/config.php';
 require_login();
 $user = current_user();
 ensure_dir(__DIR__ . '/uploads');
+// Fetch rooms dynamically
+$pdo = get_pdo();
+$rooms = $pdo->query('SELECT slug, name FROM rooms ORDER BY name')->fetchAll();
 ?>
 <?php include __DIR__ . '/partials/header.php'; ?>
 
@@ -19,9 +22,9 @@ ensure_dir(__DIR__ . '/uploads');
 			<div class="actions">
 				<strong>Room:</strong>
 				<select id="room-select">
-					<option value="general">#general</option>
-					<option value="kelas">#kelas</option>
-					<option value="dosen">#dosen</option>
+					<?php foreach ($rooms as $r): ?>
+						<option value="<?= htmlspecialchars($r['slug']) ?>">#<?= htmlspecialchars($r['name']) ?></option>
+					<?php endforeach; ?>
 				</select>
 			</div>
 			<div class="messages" id="messages"></div>

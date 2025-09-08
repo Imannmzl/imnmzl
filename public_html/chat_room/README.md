@@ -11,6 +11,9 @@ Aplikasi chat realtime untuk dosen dan mahasiswa.
 ```
 public_html/
   chat_room/
+    dosen/
+      index.php (CRUD rooms)
+      moderasi.php (hapus pesan)
     assets/
       chat.js
       styles.css
@@ -56,6 +59,13 @@ public_html/
 
 5) Deploy ke cPanel
 - Unggah folder `chat_room` ke `public_html` sehingga aplikasi berada di `https://multinteraktif.online/chat_room`
+
+## Roles & Dashboard Dosen
+- Pada register, pilih role "Dosen" atau "Mahasiswa".
+- Login sebagai dosen akan diarahkan ke `chat_room/dosen/`:
+  - Buat/Ubah/Hapus room (disimpan di tabel `rooms`)
+  - Moderasi: lihat dan hapus pesan (langsung dari Firebase)
+- Chat page (`chat.php`) memuat daftar room dari tabel `rooms`.
 
 ## Menggunakan Aplikasi
 - Buka `/chat_room/register.php` untuk membuat akun

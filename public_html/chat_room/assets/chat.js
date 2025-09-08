@@ -12,6 +12,8 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
+// Expose config for moderation page reuse
+window.firebaseConfig = firebaseConfig;
 
 const roomSelect = document.getElementById('room-select');
 const messagesDiv = document.getElementById('messages');

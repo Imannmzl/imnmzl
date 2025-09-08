@@ -20,7 +20,10 @@ ensure_csrf_token();
 		<a class="brand" href="index.php">Chat Room</a>
 		<nav class="nav">
 			<?php if (!empty($_SESSION['user'])): $u = $_SESSION['user']; ?>
-				<span class="welcome">Hi, <?= htmlspecialchars($u['username']) ?></span>
+				<span class="welcome">Hi, <?= htmlspecialchars($u['username']) ?> (<?= htmlspecialchars($u['role'] ?? 'mahasiswa') ?>)</span>
+				<?php if (($u['role'] ?? '') === 'dosen'): ?>
+					<a class="btn" href="dosen/index.php">Dashboard Dosen</a>
+				<?php endif; ?>
 				<a class="btn" href="logout.php">Logout</a>
 			<?php else: ?>
 				<a class="btn" href="login.php">Login</a>

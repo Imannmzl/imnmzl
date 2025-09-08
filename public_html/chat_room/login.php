@@ -12,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 		try {
 			$pdo = get_pdo();
-			$stmt = $pdo->prepare('SELECT id, email, username, password_hash FROM users WHERE email = ?');
+			$stmt = $pdo->prepare('SELECT id, email, username, password_hash, role FROM users WHERE email = ?');
 			$stmt->execute([$email]);
 			$user = $stmt->fetch();
 			if ($user && password_verify($password, $user['password_hash'])) {
@@ -20,8 +20,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 					'id' => $user['id'],
 					'email' => $user['email'],
 					'username' => $user['username'],
+					'role' => $user['role'],
 				];
-				redirect('chat.php');
+				if ($user['role'] === 'dosen') {
+					redirect('dosen/index.php');
+				} else {
+					redirect('chat.php');
+				}
 			} else {
 				$errors[] = 'Email atau password salah';
 			}

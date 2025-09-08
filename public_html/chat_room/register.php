@@ -34,8 +34,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 					$errors[] = 'Email sudah terdaftar';
 				} else {
 					$hash = password_hash($password, PASSWORD_DEFAULT);
-					$insert = $pdo->prepare('INSERT INTO users (email, username, password_hash) VALUES (?, ?, ?)');
-					$insert->execute([$email, $username, $hash]);
+					$role = in_array(($_POST['role'] ?? ''), ['dosen','mahasiswa'], true) ? $_POST['role'] : 'mahasiswa';
+					$insert = $pdo->prepare('INSERT INTO users (email, username, password_hash, role) VALUES (?, ?, ?, ?)');
+					$insert->execute([$email, $username, $hash, $role]);
 					redirect('login.php');
 				}
 			} catch (Throwable $e) {
@@ -74,6 +75,13 @@ include __DIR__ . '/partials/header.php';
 		<div class="form-row">
 			<label>Konfirmasi Password</label>
 			<input type="password" name="confirm_password" required>
+		</div>
+		<div class="form-row">
+			<label>Daftar sebagai</label>
+			<select name="role">
+				<option value="mahasiswa">Mahasiswa</option>
+				<option value="dosen">Dosen</option>
+			</select>
 		</div>
 		<div class="actions">
 			<button type="submit">Buat Akun</button>

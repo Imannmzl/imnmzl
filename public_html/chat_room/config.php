@@ -61,6 +61,14 @@ function current_user(): ?array {
 	return $_SESSION['user'] ?? null;
 }
 
+function require_role(string $role): void {
+	if (empty($_SESSION['user']) || ($_SESSION['user']['role'] ?? '') !== $role) {
+		header('HTTP/1.1 403 Forbidden');
+		echo 'Forbidden';
+		exit;
+	}
+}
+
 function redirect(string $path): void {
 	global $APP_BASE_URL;
 	$location = rtrim($APP_BASE_URL, '/') . '/' . ltrim($path, '/');
