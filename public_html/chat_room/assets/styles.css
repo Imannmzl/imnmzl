@@ -17,7 +17,7 @@ body {
 
 .container { width: 100%; max-width: 980px; margin: 0 auto; padding: 0 16px; }
 @media (max-width: 768px) {
-	.container { max-width: 100%; padding: 0 8px; }
+	.container { max-width: 100%; padding: 0 4px; }
 }
 
 .site-header { background: var(--panel); border-bottom: 1px solid #1f2937; }
@@ -113,12 +113,15 @@ button:disabled { opacity: .5; cursor: not-allowed; }
 	position: sticky; bottom: 0; background: var(--panel); 
 	border-top: 1px solid #1f2937; padding: 12px; z-index: 10;
 }
+@media (max-width: 768px) {
+	.sticky-composer { padding: 8px; }
+}
 
 /* Responsive */
 @media (max-width: 768px) {
 	.site-header .container { flex-wrap: wrap; gap: 8px; }
-	main.container { padding: 16px 8px; max-width: 100%; }
-	.chat-layout { grid-template-columns: 1fr; gap: 12px; }
+	main.container { padding: 12px 4px; max-width: 100%; }
+	.chat-layout { grid-template-columns: 1fr; gap: 8px; }
 	
 	/* Mobile accordion - show on mobile only */
 	.desktop-content { display: none; }
@@ -133,12 +136,12 @@ button:disabled { opacity: .5; cursor: not-allowed; }
 	.messages { flex: 1; height: auto; }
 	
 	/* Mobile sidebar */
-	.mobile-sidebar { margin-bottom: 12px; width: 100%; }
+	.mobile-sidebar { margin-bottom: 8px; width: 100%; }
 	.room-list { max-height: 40vh; overflow: auto; }
 	.online-list { max-height: 40vh; overflow: auto; }
 	
 	/* Wider mobile content */
-	.card { width: 100%; margin: 0; }
+	.card { width: 100%; margin: 0; padding: 12px; }
 	.chat-section { width: 100%; }
 	.messages { width: 100%; }
 	
