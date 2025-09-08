@@ -53,23 +53,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $session_info && !$errors) {
 			// Check if username already exists in this session
 			$stmt = $pdo->prepare('SELECT id FROM session_participants WHERE session_id = ? AND username = ?');
 			$stmt->execute([$session_id, $username]);
-			if ($stmt->fetch()) {
-				$errors[] = 'Nama sudah digunakan di room ini';
-			} else {
-				// Add participant
+			$existing_participant = $stmt->fetch();
+			
+			$is_rejoin = false;
+			if (!$existing_participant) {
+				// Add new participant
 				$stmt = $pdo->prepare('INSERT INTO session_participants (session_id, username) VALUES (?, ?)');
 				$stmt->execute([$session_id, $username]);
-				
-				// Set session
-				$_SESSION['session_user'] = [
-					'session_id' => $session_id,
-					'username' => $username,
-					'room_slug' => $session_info['room_slug'],
-					'room_name' => $session_info['room_name']
-				];
-				
-				redirect('session_chat.php');
+			} else {
+				// Participant already exists - this is a rejoin
+				$is_rejoin = true;
 			}
+			
+			// Set session (allow rejoin)
+			$_SESSION['session_user'] = [
+				'session_id' => $session_id,
+				'username' => $username,
+				'room_slug' => $session_info['room_slug'],
+				'room_name' => $session_info['room_name'],
+				'is_rejoin' => $is_rejoin
+			];
+			
+			redirect('session_chat.php');
 		} catch (Throwable $e) {
 			$errors[] = 'Gagal bergabung: ' . $e->getMessage();
 		}

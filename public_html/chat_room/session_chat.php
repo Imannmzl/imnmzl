@@ -160,11 +160,12 @@ include __DIR__ . '/partials/header.php';
 window.SESSION_USER = <?= json_encode([
 	'session_id' => $session_user['session_id'],
 	'username' => $session_user['username'],
-	'room_slug' => $session_user['room_slug']
+	'room_slug' => $session_user['room_slug'],
+	'is_rejoin' => $session_user['is_rejoin'] ?? false
 ]) ?>;
 </script>
 <script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-database-compat.js"></script>
-<script src="assets/session_chat.js?v=20250109"></script>
+<script src="assets/session_chat.js?v=20250110"></script>
 
 <?php include __DIR__ . '/partials/footer.php'; ?>

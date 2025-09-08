@@ -39,15 +39,26 @@ function renderMessage(msgId, msg) {
 	const el = document.createElement('div');
 	el.className = 'message';
 	el.dataset.id = msgId;
-	const initials = (msg.username || '?').slice(0, 2).toUpperCase();
-	const imageHtml = msg.image_url ? `<img src="${msg.image_url}" class="img-thumb" alt="image" />` : '';
-	el.innerHTML = `
-		<div class="avatar">${initials}</div>
-		<div>
-			<div class="meta"><span>${msg.username} • ${formatTime(msg.created_at || Date.now())}</span></div>
-			<div class="bubble">${(msg.text || '').replace(/</g,'&lt;')}${imageHtml}</div>
-		</div>
-	`;
+	
+	// Handle system messages
+	if (msg.is_system) {
+		el.className += ' system';
+		el.innerHTML = `
+			<div class="bubble">${(msg.text || '').replace(/</g,'&lt;')}</div>
+		`;
+	} else {
+		// Regular message
+		const initials = (msg.username || '?').slice(0, 2).toUpperCase();
+		const imageHtml = msg.image_url ? `<img src="${msg.image_url}" class="img-thumb" alt="image" />` : '';
+		el.innerHTML = `
+			<div class="avatar">${initials}</div>
+			<div>
+				<div class="meta"><span>${msg.username} • ${formatTime(msg.created_at || Date.now())}</span></div>
+				<div class="bubble">${(msg.text || '').replace(/</g,'&lt;')}${imageHtml}</div>
+			</div>
+		`;
+	}
+	
 	messagesDiv.appendChild(el);
 	messagesDiv.scrollTop = messagesDiv.scrollHeight;
 }
@@ -314,3 +325,16 @@ initOnlineList();
 
 // Initial subscribe
 subscribeRoom(currentRoom);
+
+// Show rejoin message if applicable
+if (window.SESSION_USER && window.SESSION_USER.is_rejoin) {
+	setTimeout(() => {
+		const payload = {
+			text: `👋 ${window.SESSION_USER.username} bergabung kembali ke room`,
+			username: 'System',
+			created_at: Date.now(),
+			is_system: true
+		};
+		db.ref(`rooms/${currentRoom}/messages`).push(payload);
+	}, 1000); // Delay 1 second to ensure user is fully loaded
+}
