@@ -123,5 +123,8 @@ button:disabled { opacity: .5; cursor: not-allowed; }
 	/* Hide avatar on mobile to save space */
 	.message { grid-template-columns: 1fr; gap: 6px; }
 	.message .avatar { display: none; }
+	
+	/* Hide footer on mobile */
+	.site-footer { display: none; }
 }
 
