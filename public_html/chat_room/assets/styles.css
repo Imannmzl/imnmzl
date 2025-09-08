@@ -16,6 +16,9 @@ body {
 }
 
 .container { width: 100%; max-width: 980px; margin: 0 auto; padding: 0 16px; }
+@media (max-width: 768px) {
+	.container { max-width: 100%; padding: 0 8px; }
+}
 
 .site-header { background: var(--panel); border-bottom: 1px solid #1f2937; }
 .site-header .container { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; }
@@ -114,8 +117,8 @@ button:disabled { opacity: .5; cursor: not-allowed; }
 /* Responsive */
 @media (max-width: 768px) {
 	.site-header .container { flex-wrap: wrap; gap: 8px; }
-	main.container { padding: 16px 12px; }
-	.chat-layout { grid-template-columns: 1fr; }
+	main.container { padding: 16px 8px; max-width: 100%; }
+	.chat-layout { grid-template-columns: 1fr; gap: 12px; }
 	
 	/* Mobile accordion - show on mobile only */
 	.desktop-content { display: none; }
@@ -130,9 +133,14 @@ button:disabled { opacity: .5; cursor: not-allowed; }
 	.messages { flex: 1; height: auto; }
 	
 	/* Mobile sidebar */
-	.mobile-sidebar { margin-bottom: 12px; }
+	.mobile-sidebar { margin-bottom: 12px; width: 100%; }
 	.room-list { max-height: 40vh; overflow: auto; }
 	.online-list { max-height: 40vh; overflow: auto; }
+	
+	/* Wider mobile content */
+	.card { width: 100%; margin: 0; }
+	.chat-section { width: 100%; }
+	.messages { width: 100%; }
 	
 	.actions { flex-wrap: wrap; }
 	#room-select { width: 100%; }
