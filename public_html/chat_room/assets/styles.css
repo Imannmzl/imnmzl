@@ -85,5 +85,8 @@ button:disabled { opacity: .5; cursor: not-allowed; }
 	#room-select { width: 100%; }
 	.composer { grid-template-columns: 1fr auto; }
 	.composer input[type="file"] { max-width: 160px; }
+	/* Larger, easier tap targets for text input on mobile */
+	#message-input { font-size: 16px; padding: 14px 14px; }
+	input[type="text"], textarea { font-size: 16px; padding: 14px 14px; }
 }
 
