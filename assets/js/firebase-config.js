@@ -10,7 +10,7 @@
 // Konfigurasi project Firebase Anda
 const firebaseConfig = {
     apiKey: "AIzaSyBsWwXT8vZ3Y_G_HxLXCOucy8trXZ8vXog",
-    authDomain: "chat-room-realtime.firebaseapp.com",
+    authDomain: "localhost",
     databaseURL: "https://chat-room-realtime-default-rtdb.asia-southeast1.firebasedatabase.app",
     projectId: "chat-room-realtime",
     storageBucket: "chat-room-realtime.firebasestorage.app",
@@ -30,27 +30,10 @@ const database = firebase.database();
 let currentUser = null;
 let currentRoom = null;
 
-// Auth state change listener
-auth.onAuthStateChanged((user) => {
-    if (user) {
-        currentUser = user;
-        console.log('✅ User logged in:', user.email);
-        
-        // Update user info in database
-        updateUserInfo(user);
-        
-        // Redirect based on role
-        checkUserRole(user.uid);
-    } else {
-        currentUser = null;
-        console.log('❌ User logged out');
-        
-        // Redirect to login (only if not on login page)
-        if (!window.location.pathname.includes('index.php') && !window.location.pathname.includes('test-')) {
-            window.location.href = 'index.php';
-        }
-    }
-});
+// Auth state change listener (DISABLED - using PHP Hybrid Auth instead)
+// auth.onAuthStateChanged((user) => {
+//     // Firebase Auth disabled - using PHP Hybrid Auth
+// });
 
 // Update user info in database
 function updateUserInfo(user) {
@@ -70,28 +53,10 @@ function updateUserInfo(user) {
     });
 }
 
-// Check user role and redirect
-function checkUserRole(userId) {
-    // Skip redirect if on test pages or already on correct dashboard
-    if (window.location.pathname.includes('test-') || 
-        window.location.pathname.includes('dashboard/')) {
-        return;
-    }
-    
-    const userRef = database.ref('users/' + userId);
-    
-    userRef.once('value', (snapshot) => {
-        const userData = snapshot.val();
-        
-        if (userData && userData.role) {
-            if (userData.role === 'teacher' && !window.location.pathname.includes('teacher')) {
-                window.location.href = 'dashboard/teacher/index.php';
-            } else if (userData.role === 'student' && !window.location.pathname.includes('student')) {
-                window.location.href = 'dashboard/student/index.php';
-            }
-        }
-    });
-}
+// Check user role and redirect (DISABLED - using PHP Hybrid Auth instead)
+// function checkUserRole(userId) {
+//     // Firebase Auth disabled - using PHP Hybrid Auth
+// }
 
 // Helper function untuk sign in
 function signIn(email, password) {
@@ -153,7 +118,13 @@ function uploadImage(file, roomId) {
         const formData = new FormData();
         formData.append('image', file);
         
-        fetch(APP_URL + '/api/upload-image.php', {
+        // Get base URL dynamically
+        const baseUrl = window.location.origin + window.location.pathname.split('/').slice(0, -1).join('/');
+        const apiUrl = baseUrl.includes('/dashboard/') || baseUrl.includes('/chat/') 
+            ? baseUrl + '/../../api/upload-image.php'
+            : baseUrl + '/api/upload-image.php';
+        
+        fetch(apiUrl, {
             method: 'POST',
             body: formData
         })

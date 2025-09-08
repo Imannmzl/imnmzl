@@ -14,7 +14,7 @@
 // Firebase Project Configuration
 // Konfigurasi project Firebase Anda
 define('FIREBASE_API_KEY', 'AIzaSyBsWwXT8vZ3Y_G_HxLXCOucy8trXZ8vXog');
-define('FIREBASE_AUTH_DOMAIN', 'chat-room-realtime.firebaseapp.com');
+define('FIREBASE_AUTH_DOMAIN', 'localhost');
 define('FIREBASE_DATABASE_URL', 'https://chat-room-realtime-default-rtdb.asia-southeast1.firebasedatabase.app');
 define('FIREBASE_PROJECT_ID', 'chat-room-realtime');
 define('FIREBASE_STORAGE_BUCKET', 'chat-room-realtime.firebasestorage.app');
