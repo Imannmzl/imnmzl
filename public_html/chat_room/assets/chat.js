@@ -107,6 +107,21 @@ messagesDiv.addEventListener('click', (e) => {
 	subscribeRoom(currentRoom);
 });
 
+// Delete all Firebase data for a room (dosen only)
+window.deleteRoomData = function(roomSlug) {
+	if (!window.APP_USER || window.APP_USER.role !== 'dosen') return alert('Akses ditolak');
+	if (!confirm(`Hapus semua data pesan untuk room #${roomSlug}?`)) return;
+	db.ref(`rooms/${roomSlug}`).remove().then(() => {
+		if (roomSelect.value === roomSlug) {
+			messagesDiv.innerHTML = '';
+		}
+		alert('Data Firebase room dihapus');
+	}).catch(err => {
+		console.error(err);
+		alert('Gagal menghapus data Firebase');
+	});
+}
+
 // initial subscribe
 subscribeRoom(currentRoom);
 

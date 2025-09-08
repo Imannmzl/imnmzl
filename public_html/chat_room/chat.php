@@ -83,6 +83,7 @@ $rooms = $pdo->query('SELECT id, slug, name FROM rooms ORDER BY name')->fetchAll
 								<button name="action" value="update" type="submit" class="secondary">Ubah</button>
 								<button name="action" value="delete" type="submit" class="secondary" onclick="return confirm('Hapus room? Tidak menghapus data di Firebase');">Hapus</button>
 							</form>
+							<button type="button" class="secondary" onclick="deleteRoomData('<?= htmlspecialchars($r['slug']) ?>')">Hapus Data Firebase</button>
 						<?php endif; ?>
 					</div>
 				<?php endforeach; ?>
