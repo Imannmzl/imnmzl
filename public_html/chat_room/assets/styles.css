@@ -100,6 +100,11 @@ button:disabled { opacity: .5; cursor: not-allowed; }
 }
 .accordion-content.active { display: block; }
 
+/* Desktop: Show normal content, hide accordion */
+.desktop-content { display: block; }
+.desktop-content h3 { margin-top: 0; }
+.desktop-content .stack:first-child { margin-top: 0; }
+
 /* Sticky composer */
 .sticky-composer { 
 	position: sticky; bottom: 0; background: var(--panel); 
@@ -113,6 +118,7 @@ button:disabled { opacity: .5; cursor: not-allowed; }
 	.chat-layout { grid-template-columns: 1fr; }
 	
 	/* Mobile accordion - show on mobile only */
+	.desktop-content { display: none; }
 	.accordion-item { display: block; }
 	.accordion-header { display: flex; }
 	.accordion-content { display: none; }
